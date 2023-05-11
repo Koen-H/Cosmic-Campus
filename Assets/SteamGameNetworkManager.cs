@@ -90,6 +90,11 @@ public class SteamGameNetworkManager : MonoBehaviour
     {
         IEnumerable<Friend> friends = SteamFriends.GetFriends();
 
+        uint ip = default;
+        ushort port = default;
+        SteamId serverId = default;
+
+
         foreach (Friend friend in friends)
         {
             // Access friend properties or perform actions
@@ -97,9 +102,20 @@ public class SteamGameNetworkManager : MonoBehaviour
             if (friend.IsPlayingThisGame)
             {
                 Debug.Log($"{friendName} is playing this game, trying to join!");
-                await friend.GameInfo.Value.Lobby.Value.Join();
+                //if(await friend.GameInfo.Value.Lobby.Value.Join() == RoomEnter.Success)
+                //{
+                    await SteamMatchmaking.JoinLobbyAsync(friend.GameInfo.Value.Lobby.Value.Id);
+                    Debug.Log("succesfully joined!");
+                    if (friend.GameInfo.Value.Lobby.Value.GetGameServer(ref ip, ref port, ref serverId))
+                    {
+                        Debug.Log($"{ip}:{port} with id {serverId}");
+                        transport.targetSteamId = serverId;
+
+                    }
+               // }
             }
         }
+
         //LobbyQuery query = new LobbyQuery();
         //query.FilterDistanceClose();
         //Lobby[] lobbies = await query.RequestAsync();
@@ -164,6 +180,7 @@ public class SteamGameNetworkManager : MonoBehaviour
         lobby.SetPublic();
         lobby.SetData("name", "Awesome lobby name");
         lobby.SetJoinable(true);
+        lobby.SetGameServer(lobby.Owner.Id);
         Debug.Log($"Lobby {lobby.Id} has been created with name {lobby.GetData("name")}!", this);
     }
     private void OnLobbyEntered(Lobby lobby)
