@@ -101,7 +101,7 @@ public class SteamGameNetworkManager : MonoBehaviour
             string friendName = friend.Name;
             if (friend.IsPlayingThisGame)
             {
-                Debug.Log($"{friendName} is playing this game, trying to join!");
+                Debug.Log($"{friendName} is playing this game, trying to join {friend.Id}!");
                 //if(await friend.GameInfo.Value.Lobby.Value.Join() == RoomEnter.Success)
                 //{
                     await SteamMatchmaking.JoinLobbyAsync(friend.GameInfo.Value.Lobby.Value.Id);
@@ -110,6 +110,7 @@ public class SteamGameNetworkManager : MonoBehaviour
                     {
                         Debug.Log($"{ip}:{port} with id {serverId}");
                         transport.targetSteamId = serverId;
+                        //transport.targetSteamId = friend.GameInfo.Value.Lobby.Value.Owner.Id;
 
                     }
                // }
@@ -187,7 +188,7 @@ public class SteamGameNetworkManager : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsHost) return;
         Debug.Log($"entered lobby with id {lobby.Id}");
-        StartClient(lobby.Id);
+        StartClient(lobby.Owner.Id);
     }
     private void OnLobbyMemberJoined(Lobby lobby, Friend friend)
     {
@@ -207,6 +208,7 @@ public class SteamGameNetworkManager : MonoBehaviour
     }
     private void OnGameLobbyJoinRequested(Lobby lobby, SteamId steamId)
     {
+        Debug.Log("Lobby join request");
         StartClient(steamId);
     } 
     #endregion
