@@ -2,25 +2,39 @@ using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class ClientManager : NetworkBehaviour
 {
     [SerializeField] private ulong clientId;
-    public NetworkVariable<string> playerName = null;
-    public NetworkVariable<uint> steamAccountId = null;
+    //public NetworkVariable<string> playerName = null;
+    public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [SerializeField] public PlayerData playerData = null;
 
     GameObject playerCharacter = null;
 
-    private void Start()
+    //Get the clientManager, that belongs to you, the client.
+    private static ClientManager _myClient;
+    public static ClientManager MyClient
     {
+        get
+        {
+            if (_myClient == null) Debug.LogError("MyClient is null");
+            return _myClient;
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) return;
+        _myClient = this;
         clientId = NetworkManager.Singleton.LocalClientId;
         if (SteamClient.IsLoggedOn == true)
         {
-            playerName.Value = SteamClient.Name;
+        //    playerName.Value = SteamClient.Name;
             steamAccountId.Value = SteamClient.SteamId.AccountId;
-            this.gameObject.name = $"Client ({playerName.Value})";
+            this.gameObject.name = $"Client ({SteamClient.Name})";
         }
     }
 }

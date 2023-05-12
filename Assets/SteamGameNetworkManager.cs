@@ -12,7 +12,7 @@ using UnityEngine;
 public class SteamGameNetworkManager : MonoBehaviour
 {
 
-    public void UseSteam(bool toggle = false)
+    public void UseSteam(bool toggle = false)   
     {
         NetworkManager.Singleton.NetworkConfig.NetworkTransport = toggle ? GetComponent<FacepunchTransport>() : GetComponent<UnityTransport>();
         this.enabled = toggle;
@@ -90,29 +90,16 @@ public class SteamGameNetworkManager : MonoBehaviour
     {
         IEnumerable<Friend> friends = SteamFriends.GetFriends();
 
-        uint ip = default;
-        ushort port = default;
-        SteamId serverId = default;
-
-
         foreach (Friend friend in friends)
         {
             // Access friend properties or perform actions
             string friendName = friend.Name;
             if (friend.IsPlayingThisGame)
             {
-                Debug.Log($"{friendName} is playing this game, trying to join {friend.Id}!");
-                await SteamMatchmaking.JoinLobbyAsync(friend.GameInfo.Value.Lobby.Value.Id);
-                Debug.Log("succesfully joined!");
-                if (friend.GameInfo.Value.Lobby.Value.GetGameServer(ref ip, ref port, ref serverId))
-                {
-                    Debug.Log($"{ip}:{port} with id {serverId}");
-                    transport.targetSteamId = serverId;
-
-                }
+                Debug.Log($"{friendName} is playing this game, trying to join!");
+                await friend.GameInfo.Value.Lobby.Value.Join();
             }
         }
-
         //LobbyQuery query = new LobbyQuery();
         //query.FilterDistanceClose();
         //Lobby[] lobbies = await query.RequestAsync();
@@ -177,14 +164,13 @@ public class SteamGameNetworkManager : MonoBehaviour
         lobby.SetPublic();
         lobby.SetData("name", "Awesome lobby name");
         lobby.SetJoinable(true);
-        lobby.SetGameServer(lobby.Owner.Id);
         Debug.Log($"Lobby {lobby.Id} has been created with name {lobby.GetData("name")}!", this);
     }
     private void OnLobbyEntered(Lobby lobby)
     {
         if (NetworkManager.Singleton.IsHost) return;
         Debug.Log($"entered lobby with id {lobby.Id}");
-        StartClient(lobby.Owner.Id);
+        StartClient(lobby.Id);
     }
     private void OnLobbyMemberJoined(Lobby lobby, Friend friend)
     {
@@ -204,7 +190,6 @@ public class SteamGameNetworkManager : MonoBehaviour
     }
     private void OnGameLobbyJoinRequested(Lobby lobby, SteamId steamId)
     {
-        Debug.Log("Lobby join request");
         StartClient(steamId);
     } 
     #endregion
