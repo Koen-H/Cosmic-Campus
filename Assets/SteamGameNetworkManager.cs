@@ -102,18 +102,14 @@ public class SteamGameNetworkManager : MonoBehaviour
             if (friend.IsPlayingThisGame)
             {
                 Debug.Log($"{friendName} is playing this game, trying to join {friend.Id}!");
-                //if(await friend.GameInfo.Value.Lobby.Value.Join() == RoomEnter.Success)
-                //{
-                    await SteamMatchmaking.JoinLobbyAsync(friend.GameInfo.Value.Lobby.Value.Id);
-                    Debug.Log("succesfully joined!");
-                    if (friend.GameInfo.Value.Lobby.Value.GetGameServer(ref ip, ref port, ref serverId))
-                    {
-                        Debug.Log($"{ip}:{port} with id {serverId}");
-                        transport.targetSteamId = serverId;
-                        //transport.targetSteamId = friend.GameInfo.Value.Lobby.Value.Owner.Id;
+                await SteamMatchmaking.JoinLobbyAsync(friend.GameInfo.Value.Lobby.Value.Id);
+                Debug.Log("succesfully joined!");
+                if (friend.GameInfo.Value.Lobby.Value.GetGameServer(ref ip, ref port, ref serverId))
+                {
+                    Debug.Log($"{ip}:{port} with id {serverId}");
+                    transport.targetSteamId = serverId;
 
-                    }
-               // }
+                }
             }
         }
 
