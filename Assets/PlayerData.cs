@@ -9,19 +9,55 @@ using UnityEngine;
 public class PlayerData : NetworkBehaviour
 {
     //Networkvariables
-    public NetworkVariable<PlayerRole> playerRole = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
-    public NetworkVariable<int> avatarId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What avatar from that role is the player using?
-    public NetworkVariable<int> weaponId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What weapon from that role is the player using?
+    [HideInInspector] public NetworkVariable<PlayerRole> playerRole = new(PlayerRole.UNSET, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
+    [HideInInspector] public NetworkVariable<int> avatarId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What avatar from that role is the player using?
+    [HideInInspector] public NetworkVariable<int> weaponId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What weapon from that role is the player using?
+    //Local
+    public PlayerRoleData playerRoleData = null;//The SO object that has the related data/models
+
+    public override void OnNetworkSpawn()
+    {
+        playerRole.OnValueChanged += SelectPlayerRoleData;
+    }
+    public override void OnNetworkDespawn()
+    {
+        playerRole.OnValueChanged -= SelectPlayerRoleData;
+    }
+
+    /// <summary>
+    /// When the role changes, so does the related SO.
+    /// </summary>
+    void SelectPlayerRoleData(PlayerRole oldRole, PlayerRole newRole)
+    {
+        switch (newRole)
+        {
+            case PlayerRole.ARTIST:
+                playerRoleData = GameData.Instance.artistData;
+                break;
+
+            case PlayerRole.DESIGNER:
+                playerRoleData = GameData.Instance.designerData;
+                break;
+
+            case PlayerRole.ENGINEER:
+                playerRoleData = GameData.Instance.engineerData;
+                break;
+
+            default:
+                break;
+        }
+        Debug.Log($"{newRole} And avatar id {avatarId.Value}");
+    }
 
     /// <summary>
     /// Set the player Data
     /// </summary>
     public void SetData(PlayerRole newPlayerRole, int newAvatarId)
     {
-        playerRole.Value = newPlayerRole;
         avatarId.Value = newAvatarId;
-        Debug.Log("Player data set!");
+        playerRole.Value = newPlayerRole;
+        Debug.Log($"Player data set! {newPlayerRole} {newAvatarId}");
     }
 
 }
-public enum PlayerRole { ARTIST, DESIGNER, ENGINEER}
+public enum PlayerRole {UNSET, ARTIST, DESIGNER, ENGINEER}
