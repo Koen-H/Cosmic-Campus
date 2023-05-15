@@ -7,6 +7,14 @@ public class Player : NetworkBehaviour
 {
     public float moveSpeed = 5f;
 
+    private float health; 
+
+
+    public void TakeDamage(float damage)
+    {
+        if (damage > 0) health -= damage;
+        if (health <= 0) Debug.Log("Player Died");
+    }
     void Update()
     {
         // Check if this is the local player.
