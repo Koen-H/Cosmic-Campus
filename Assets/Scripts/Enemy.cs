@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyMovement))]
-public class Enemy : MonoBehaviour
+public class Enemy : NetworkBehaviour
 {
     private EnemyMovement enemyMovement;
     private Transform currentTarget; // Add this line
 
     [SerializeField] EnemySO enemySO;
+    [SerializeField] private GameObject avatar;
+    [SerializeField] TextMeshPro healthText;
 
-    private float health;
+    NetworkVariable<float> health = new(10);
     private float moveSpeed;
     private float detectionRange;
     private float trackingRange;
@@ -81,13 +85,35 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0) Debug.Log("EnemyDied");
+        health.Value -= damage;
+        if (health.Value <= 0) Die();
+    }
+
+
+    void OnHealthChange(float prevHealth, float newHealth)
+    {
+        healthText.text = health.Value.ToString();
+        if (prevHealth > newHealth)//Do thing where the player takes damage!
+        {
+            Debug.Log("Take damage!");
+        }
+        else if (prevHealth < newHealth)//Do things where the player gained health!
+        {
+            Debug.Log("Gained healht!");
+        }
+        else { Debug.LogError("Networking error?"); }
+    }
+
+
+    private void Die()
+    {
+        //do dead things, such as body falling apart
+        Debug.Log("EnemyDied");
     }
 
     void SetSOData()
     {
-        health = enemySO.health;
+        health.Value = enemySO.health;
         moveSpeed = enemySO.moveSpeed;
         detectionRange = enemySO.detectionRange;
         trackingRange = enemySO.trackingRange;

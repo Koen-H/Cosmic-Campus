@@ -13,7 +13,6 @@ public class EnemyEditor : Editor
         private void OnEnable()
         {
             enemy = (EnemySO)target;
-        
         }
 
 
