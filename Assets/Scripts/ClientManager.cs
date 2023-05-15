@@ -1,6 +1,7 @@
 using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class ClientManager : NetworkBehaviour
 {
     [SerializeField] private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //public NetworkVariable<string> playerName = null;
+    private NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [SerializeField] public PlayerData playerData = null;
 
@@ -34,7 +36,7 @@ public class ClientManager : NetworkBehaviour
         clientId.Value = NetworkManager.Singleton.LocalClientId;
         if (SteamClient.IsLoggedOn == true)
         {
-        //    playerName.Value = SteamClient.Name;
+            playerName.Value = SteamClient.Name;
             steamAccountId.Value = SteamClient.SteamId.AccountId;
             this.gameObject.name = $"Client ({SteamClient.Name})";
         }

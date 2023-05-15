@@ -28,7 +28,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void OnHealthChange(float prevHealth, float newHealth)
     {
-        healthText.text = health.ToString();
+        healthText.text = health.Value.ToString();
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
             Debug.Log("Take damage!");
@@ -48,6 +48,9 @@ public class PlayerCharacterController : NetworkBehaviour
         Move();
     }
 
+    /// <summary>
+    /// Movement
+    /// </summary>
     private void Move()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -68,7 +71,7 @@ public class PlayerCharacterController : NetworkBehaviour
         Debug.Log(playerData.avatarId.Value);
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
-        healthText.text = health.ToString();
+        healthText.text = health.Value.ToString();
 
     }
 
