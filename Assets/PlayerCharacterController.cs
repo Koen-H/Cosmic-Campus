@@ -43,7 +43,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void Update()
     {
-        if (!IsOwner) return;//Things below this should only happen on the client!
+        if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
 
         Move();
     }
