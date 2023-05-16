@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1271862486755720467}
   m_Layer: 0
   m_Name: Avatar
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -350,6 +350,8 @@ MonoBehaviour:
   enemySO: {fileID: 11400000, guid: 1718a9f973b1f6441bb0b596bb92ec63, type: 2}
   avatar: {fileID: 6880509871702667903}
   healthText: {fileID: 6880509872380289768}
+  health:
+    m_InternalValue: 10
 --- !u!1 &6880509873163893433
 GameObject:
   m_ObjectHideFlags: 0
