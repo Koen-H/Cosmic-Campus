@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Weapon : NetworkBehaviour
+public abstract class Weapon : NetworkBehaviour
 {
     private int weaponID;
     [SerializeField] protected int damage;
@@ -12,9 +12,11 @@ public class Weapon : NetworkBehaviour
     private bool canAttack = true;
     internal PlayerCharacterController playerController;
 
+    [SerializeField] internal GameObject weaponObj;
+
     private void Awake()
     {
-        playerController = transform.parent.transform.parent.transform.parent.GetComponent<PlayerCharacterController>();
+        playerController = GetComponent<PlayerCharacterController>();
     }
 
 

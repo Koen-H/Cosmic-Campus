@@ -33,7 +33,11 @@ public class Bow : Weapon
     {
         float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime) * 1000;
 
-        ShootArrowServerRpc(chargeLevel);
+        if (isCharging)
+        {
+            ShootArrowServerRpc(chargeLevel);
+            isCharging = false;
+        }
     }
 
 
@@ -55,19 +59,17 @@ public class Bow : Weapon
     {
         isCharging = true;
         chargeStartTime = Time.time;
+        Debug.Log("starting"); 
     }
 
     [ServerRpc]
     private void ShootArrowServerRpc(float chargeLevel)
     {
-        if (!isCharging)
-            return;
 
-        isCharging = false;
 
-        GameObject arrow = Instantiate(arrowPrefab, transform.position, transform.rotation);
+        GameObject arrow = Instantiate(arrowPrefab, weaponObj.transform.position, weaponObj.transform.rotation);
         arrow.GetComponent<NetworkObject>().Spawn();
-        arrow.GetComponent<Rigidbody>().AddForce(transform.forward * chargeLevel);
+        arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
         //ArrowController arrowController = arrow.GetComponent<ArrowController>();
 
         // Set the charge level of the arrow

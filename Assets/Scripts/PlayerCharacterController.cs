@@ -69,6 +69,7 @@ public class PlayerCharacterController : NetworkBehaviour
         //}
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log("click");
             weapon.OnAttackInputStart();
         }
         else if (Input.GetMouseButtonUp(0))
@@ -132,6 +133,8 @@ public class PlayerCharacterController : NetworkBehaviour
         Instantiate(newAvatar, playerAvatar.transform);
         healthText.text = health.Value.ToString();
 
+        //TODO: Add weapon programmatically based on stored playerData.WeaponId!
+        weapon = GetComponent<Weapon>();
     }
 
 }
