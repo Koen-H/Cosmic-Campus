@@ -16,7 +16,8 @@ public class PlayerCharacterController : NetworkBehaviour
     //LocalVariables
     public float moveSpeed = 5f;
 
-    [SerializeField] private GameObject playerAvatar;
+    [SerializeField] private GameObject playerAvatar;//The player mesh/model
+    public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
 
     [SerializeField] private float damage;
@@ -62,9 +63,21 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
 
         Move();
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    weapon.Attack(); 
+        //}
         if (Input.GetMouseButtonDown(0))
         {
-            weapon.Attack(); 
+            weapon.OnAttackInputStart();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            weapon.OnAttackInputStop();
+        }
+        if (Input.GetMouseButton(0))
+        {
+            weapon.OnAttackInputHold();
         }
     }
 

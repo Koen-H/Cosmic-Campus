@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Bow : MonoBehaviour
+public class Bow : Weapon    
 {
     public float maxChargeTime = 2f; // Maximum time to charge the bow
     public GameObject arrowPrefab; // Prefab of the arrow
@@ -10,21 +11,32 @@ public class Bow : MonoBehaviour
     private bool isCharging;
     private float chargeStartTime;
 
-    private void Update()
+    /// <summary>
+    /// When the player starts with the input
+    /// </summary>
+    public override void OnAttackInputStart()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            StartCharge();
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            ShootArrow();
-        }
-        if (Input.GetMouseButton(0))
-        {
-            Aim();
-        }
+        StartCharge();
+
     }
+    /// <summary>
+    /// While the player is holding the input
+    /// </summary>
+    public override void OnAttackInputHold()
+    {
+        Aim();
+    }
+    /// <summary>
+    /// When the player lets go of the input
+    /// </summary>
+    public override void OnAttackInputStop()
+    {
+        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime) * 1000;
+
+        ShootArrowServerRpc(chargeLevel);
+    }
+
+
 
     void Aim()
     {
@@ -33,9 +45,9 @@ public class Bow : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Vector3 clickPoint = hit.point;
-
-            transform.LookAt(new Vector3(transform.position.x + clickPoint.x, transform.position.y, transform.position.z + clickPoint.z));
-            //transform.forward = new Vector3(transform.position.x + clickPoint.x, transform.position.y, transform.position.z + clickPoint.z);
+            Transform playerObj = playerController.playerObj.transform;
+            playerObj.LookAt(new Vector3(playerObj.position.x + clickPoint.x, playerObj.position.y, playerObj.position.z + clickPoint.z));
+            //transform.LookAt(new Vector3(transform.position.x + clickPoint.x, transform.position.y, transform.position.z + clickPoint.z));
         }
     }
 
@@ -45,15 +57,16 @@ public class Bow : MonoBehaviour
         chargeStartTime = Time.time;
     }
 
-    private void ShootArrow()
+    [ServerRpc]
+    private void ShootArrowServerRpc(float chargeLevel)
     {
         if (!isCharging)
             return;
 
         isCharging = false;
 
-        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime) * 1000;
         GameObject arrow = Instantiate(arrowPrefab, transform.position, transform.rotation);
+        arrow.GetComponent<NetworkObject>().Spawn();
         arrow.GetComponent<Rigidbody>().AddForce(transform.forward * chargeLevel);
         //ArrowController arrowController = arrow.GetComponent<ArrowController>();
 
