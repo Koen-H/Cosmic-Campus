@@ -30,11 +30,17 @@ public class Enemy : NetworkBehaviour
     {
         enemyMovement = GetComponent<EnemyMovement>();
     }
-
-    private void Start()
+    public override void OnNetworkSpawn()
     {
+        health.OnValueChanged += OnHealthChange;
+
         SetSOData();
         SetNavMeshData();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        health.OnValueChanged -= OnHealthChange;
     }
 
     private void Update()
@@ -114,6 +120,8 @@ public class Enemy : NetworkBehaviour
     void SetSOData()
     {
         health.Value = enemySO.health;
+        
+        if (!IsServer) return;//Everything below this line is handled on the server only!
         moveSpeed = enemySO.moveSpeed;
         detectionRange = enemySO.detectionRange;
         trackingRange = enemySO.trackingRange;
