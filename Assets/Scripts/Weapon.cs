@@ -5,15 +5,15 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     private int weaponID;
-    private int damage;
+    [SerializeField] protected int damage;
 
-    private float cooldown;
+    [SerializeField] private float cooldown;
     private bool canAttack = true; 
 
 
 
 
-    protected virtual void Attack()
+    public virtual void Attack()
     {
         canAttack = false;
         StartCoroutine(Cooldown(cooldown));

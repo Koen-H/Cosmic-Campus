@@ -19,7 +19,9 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerAvatar;
     [SerializeField] TextMeshPro healthText;
 
-    [SerializeField] private float damage; 
+    [SerializeField] private float damage;
+
+    [SerializeField] private Weapon weapon; 
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -62,11 +64,11 @@ public class PlayerCharacterController : NetworkBehaviour
         Move();
         if (Input.GetMouseButtonDown(0))
         {
-            Attack();
+            weapon.Attack(); 
         }
     }
 
-    void Attack()
+/*    void Attack()
     {
         // calculate raycast direction
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
@@ -90,7 +92,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void DealDamage(GameObject enemy)
     {
         enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }
+    }*/
 
         /// <summary>
         /// Movement
