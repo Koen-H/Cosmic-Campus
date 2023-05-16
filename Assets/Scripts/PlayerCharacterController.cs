@@ -19,6 +19,12 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerAvatar;
     [SerializeField] TextMeshPro healthText;
 
+    public void TakeDamage(float damage)
+    {
+        if (damage > 0) health.Value -= damage;
+        if (health.Value <= 0) Debug.Log("Player Died");
+    }
+
 
     public override void OnNetworkSpawn()
     {

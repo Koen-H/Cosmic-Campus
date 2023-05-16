@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyMovement))]
-public class Enemy : MonoBehaviour
+public class Enemy : NetworkBehaviour
 {
     private EnemyMovement enemyMovement;
     private Transform currentTarget; // Add this line
-
+    [SerializeField] private Transform enemyEyes;
     [SerializeField] EnemySO enemySO;
+    [SerializeField] private GameObject avatar;
+    [SerializeField] TextMeshPro healthText;
 
-    private float health;
+    NetworkVariable<float> health = new(10);
     private float moveSpeed;
     private float detectionRange;
     private float trackingRange;
@@ -26,11 +30,17 @@ public class Enemy : MonoBehaviour
     {
         enemyMovement = GetComponent<EnemyMovement>();
     }
-
-    private void Start()
+    public override void OnNetworkSpawn()
     {
+        health.OnValueChanged += OnHealthChange;
+
         SetSOData();
         SetNavMeshData();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        health.OnValueChanged -= OnHealthChange;
     }
 
     private void Update()
@@ -46,7 +56,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            currentTarget = FindClosestPlayer(90, detectionRange, 10);
+            currentTarget = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
             if (currentTarget != null)
             {
                 enemyMovement.SetTarget(currentTarget);
@@ -59,42 +69,69 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void AttackLogic(Transform Target)
+    void AttackLogic(Transform target)
     {
-        if ((Target.position - transform.position).magnitude < meleeRange && canAttack)
+        Debug.Log((target.position - transform.position).magnitude);
+        Debug.Log(meleeRange);
+        if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
-            Attack(Target);
+            Debug.Log("ATTACKKK");
+            Attack(target);
             canAttack = false;
         }
     }
 
     void Attack(Transform target)
     {
-        DealDamage(damage, target.GetComponent<Player>());
+        DealDamage(damage, target.transform.parent.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 
-    void DealDamage(float damage, Player to)
+    void DealDamage(float damage, PlayerCharacterController to)
     {
         to.TakeDamage(damage);
     }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0) Debug.Log("EnemyDied");
+        health.Value -= damage;
+        if (health.Value <= 0) Die();
+    }
+
+
+    void OnHealthChange(float prevHealth, float newHealth)
+    {
+        healthText.text = health.Value.ToString();
+        if (prevHealth > newHealth)//Do thing where the player takes damage!
+        {
+            Debug.Log("Take damage!");
+        }
+        else if (prevHealth < newHealth)//Do things where the player gained health!
+        {
+            Debug.Log("Gained healht!");
+        }
+        else { Debug.LogError("Networking error?"); }
+    }
+
+
+    private void Die()
+    {
+        //do dead things, such as body falling apart
+        Debug.Log("EnemyDied");
     }
 
     void SetSOData()
     {
-        health = enemySO.health;
+        health.Value = enemySO.health;
+        
+        if (!IsServer) return;//Everything below this line is handled on the server only!
         moveSpeed = enemySO.moveSpeed;
         detectionRange = enemySO.detectionRange;
         trackingRange = enemySO.trackingRange;
         damage = enemySO.damage;
         attackCooldown = enemySO.attackCooldown;
-
-        if (enemySO.enemyType == EnemySO.EnemyType.Range)
+        Debug.Log("test");
+        if (enemySO.enemyType == EnemySO.EnemyType.Melee)
         {
             meleeRange = enemySO.meleeRange;
         }
@@ -109,7 +146,7 @@ public class Enemy : MonoBehaviour
         enemyMovement.SetSpeed(moveSpeed);
     }
 
-    Transform FindClosestPlayer(float angle, float range, int amount)
+    Transform FindClosestPlayer(float angle, float range, int amount, Transform transform)
     {
         Transform closest = null;
         float closestDistance = range;
