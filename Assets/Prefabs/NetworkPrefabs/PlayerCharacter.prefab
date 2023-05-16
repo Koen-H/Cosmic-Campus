@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7664058158976064489}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -306,6 +306,8 @@ MonoBehaviour:
   moveSpeed: 5
   playerAvatar: {fileID: 4730861772226633752}
   healthText: {fileID: 3350172605391908658}
+  damage: 2
+  attackRange: 10
 --- !u!114 &4730861770734180506
 MonoBehaviour:
   m_ObjectHideFlags: 0
