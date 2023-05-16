@@ -69,18 +69,21 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    void AttackLogic(Transform Target)
+    void AttackLogic(Transform target)
     {
-        if ((Target.position - transform.position).magnitude < meleeRange && canAttack)
+        Debug.Log((target.position - transform.position).magnitude);
+        Debug.Log(meleeRange);
+        if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
-            Attack(Target);
+            Debug.Log("ATTACKKK");
+            Attack(target);
             canAttack = false;
         }
     }
 
     void Attack(Transform target)
     {
-        DealDamage(damage, target.GetComponent<PlayerCharacterController>());
+        DealDamage(damage, target.transform.parent.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 
@@ -127,8 +130,8 @@ public class Enemy : NetworkBehaviour
         trackingRange = enemySO.trackingRange;
         damage = enemySO.damage;
         attackCooldown = enemySO.attackCooldown;
-
-        if (enemySO.enemyType == EnemySO.EnemyType.Range)
+        Debug.Log("test");
+        if (enemySO.enemyType == EnemySO.EnemyType.Melee)
         {
             meleeRange = enemySO.meleeRange;
         }
