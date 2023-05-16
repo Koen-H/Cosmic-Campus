@@ -9,7 +9,7 @@ public class Enemy : NetworkBehaviour
 {
     private EnemyMovement enemyMovement;
     private Transform currentTarget; // Add this line
-
+    [SerializeField] private Transform enemyEyes;
     [SerializeField] EnemySO enemySO;
     [SerializeField] private GameObject avatar;
     [SerializeField] TextMeshPro healthText;
@@ -56,7 +56,7 @@ public class Enemy : NetworkBehaviour
         }
         else
         {
-            currentTarget = FindClosestPlayer(90, detectionRange, 10);
+            currentTarget = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
             if (currentTarget != null)
             {
                 enemyMovement.SetTarget(currentTarget);
@@ -143,7 +143,7 @@ public class Enemy : NetworkBehaviour
         enemyMovement.SetSpeed(moveSpeed);
     }
 
-    Transform FindClosestPlayer(float angle, float range, int amount)
+    Transform FindClosestPlayer(float angle, float range, int amount, Transform transform)
     {
         Transform closest = null;
         float closestDistance = range;
