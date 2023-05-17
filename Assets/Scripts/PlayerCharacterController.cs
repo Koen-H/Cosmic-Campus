@@ -143,13 +143,13 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         foreach (Transform child in playerWeapon.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
         WeaponData newWeapon = playerData.playerRoleData.GetWeapon(playerData.weaponId.Value);//Get the new weapon
-        
-        AttachWeaponBehaviour(newWeapon.weaponType);
+
+        GetWeaponBehaviour(newWeapon.weaponType);
         weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
         weaponBehaviour.weaponData = newWeapon;
     }
 
-    private void AttachWeaponBehaviour(WeaponType weaponType)
+    private void GetWeaponBehaviour(WeaponType weaponType)
     {
         switch (weaponType)
         {
@@ -162,7 +162,7 @@ public class PlayerCharacterController : NetworkBehaviour
                 break;
 
             case WeaponType.STAFF:
-                //weaponBehaviour = this.gameObject.AddComponent<Staff>();
+                weaponBehaviour = this.gameObject.GetComponent<Staff>();
                 break;
 
             default:
