@@ -92,9 +92,14 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("ENEMEY TAKEN DAMAGE!!! ");
+        TakeDamgeServerRpc();
+       
+    }
+
+    [ServerRpc]
+    void TakeDamgeServerRpc()
+    {
         health.Value -= damage;
-        if (health.Value <= 0) Die();
     }
 
 
@@ -104,6 +109,7 @@ public class Enemy : NetworkBehaviour
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
             Debug.Log("Take damage!");
+            if (health.Value <= 0) Die();
         }
         else if (prevHealth < newHealth)//Do things where the player gained health!
         {
