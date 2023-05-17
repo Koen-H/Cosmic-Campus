@@ -14,11 +14,12 @@ public class ArrowManager : NetworkBehaviour
         if (!IsOwner || attached) return;
         if(other.tag == "Enemy")
         {
-            other.GetComponent<Enemy>().TakeDamage(damage);
+            other.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
+            Destroy(gameObject);
         }
         if (other.gameObject.TryGetComponent<Rigidbody>(out Rigidbody rig))
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         attached = true;

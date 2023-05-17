@@ -16,6 +16,7 @@ public class Bow : Weapon
     public override void OnAttackInputStart()
     {
         StartCharge();
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// While the player is holding the input
@@ -23,22 +24,22 @@ public class Bow : Weapon
     public override void OnAttackInputHold()
     {
         Aim();
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// When the player lets go of the input
     /// </summary>
     public override void OnAttackInputStop()
     {
+        Aim();
         float chargeLevel =  Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
         chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
-
-
-
         if (isCharging)
         {
             ShootArrowServerRpc(chargeLevel, weaponData.damage);
             isCharging = false;
         }
+        playerController.ToggleMovement(true);
     }
 
 
