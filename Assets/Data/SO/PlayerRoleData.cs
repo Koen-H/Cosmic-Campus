@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerRoleData : ScriptableObject
 {
     [SerializeField] private List<GameObject> avatars;
-    [SerializeField] private List<GameObject> weapons;
+    [SerializeField] private List<WeaponData> weapons;
 
     public int AvatarCount()
     {
@@ -23,7 +23,7 @@ public class PlayerRoleData : ScriptableObject
         index = Mathf.Clamp(index % avatars.Count, 0, avatars.Count);
         return avatars[index]; 
     }
-    public GameObject GetWeapon(int index) {
+    public WeaponData GetWeapon(int index) {
         index = Mathf.Clamp(index % weapons.Count, 0, weapons.Count);
         return weapons[index]; 
     }

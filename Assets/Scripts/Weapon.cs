@@ -5,14 +5,11 @@ using UnityEngine;
 
 public abstract class Weapon : NetworkBehaviour
 {
-    private int weaponID;
-    [SerializeField] protected int damage;
+    internal WeaponData weaponData;
 
-    [SerializeField] private float cooldown;
     private bool canAttack = true;
     internal PlayerCharacterController playerController;
-
-    [SerializeField] internal GameObject weaponObj;
+    internal GameObject weaponObj;//The object that exists
 
     private void Awake()
     {
@@ -25,21 +22,21 @@ public abstract class Weapon : NetworkBehaviour
     /// </summary>
     public virtual void OnAttackInputStart()
     {
-
+        Aim();
     }
     /// <summary>
     /// While the player is holding the input
     /// </summary>
     public virtual void OnAttackInputHold()
     {
-
+        Aim();
     }
     /// <summary>
     /// When the player lets go of the input
     /// </summary>
     public virtual void OnAttackInputStop()
     {
-
+        Aim();
     }
 
     /// <summary>
@@ -50,12 +47,27 @@ public abstract class Weapon : NetworkBehaviour
 
     }
 
+    /// <summary>
+    /// Aim rotates the player towards where the mouse clicks.
+    /// </summary>
+    internal void Aim()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            Vector3 clickPoint = hit.point;
+            Transform playerObj = playerController.playerObj.transform;
+            playerObj.LookAt(new Vector3(clickPoint.x, playerObj.position.y, clickPoint.z));
+        }
+    }
+
 
 
     public virtual void Attack()
     {
         canAttack = false;
-        StartCoroutine(Cooldown(cooldown));
+        StartCoroutine(Cooldown(weaponData.cooldown));
     }
 
     IEnumerator Cooldown(float time)
@@ -66,3 +78,5 @@ public abstract class Weapon : NetworkBehaviour
 
 
 }
+
+public enum WeaponType { UNSET, SWORD, BOW, STAFF }

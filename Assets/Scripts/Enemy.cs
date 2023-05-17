@@ -71,8 +71,6 @@ public class Enemy : NetworkBehaviour
 
     void AttackLogic(Transform target)
     {
-        Debug.Log((target.position - transform.position).magnitude);
-        Debug.Log(meleeRange);
         if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
             Debug.Log("ATTACKKK");

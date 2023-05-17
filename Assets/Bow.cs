@@ -6,7 +6,6 @@ using UnityEngine;
 public class Bow : Weapon    
 {
     public float maxChargeTime = 2f; // Maximum time to charge the bow
-    public GameObject arrowPrefab; // Prefab of the arrow
 
     private bool isCharging;
     private float chargeStartTime;
@@ -17,7 +16,6 @@ public class Bow : Weapon
     public override void OnAttackInputStart()
     {
         StartCharge();
-
     }
     /// <summary>
     /// While the player is holding the input
@@ -31,29 +29,20 @@ public class Bow : Weapon
     /// </summary>
     public override void OnAttackInputStop()
     {
-        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime) * 1000;
+        float chargeLevel =  Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
+        chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
+
+
 
         if (isCharging)
         {
-            ShootArrowServerRpc(chargeLevel);
+            ShootArrowServerRpc(chargeLevel, weaponData.damage);
             isCharging = false;
         }
     }
 
 
 
-    void Aim()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            Vector3 clickPoint = hit.point;
-            Transform playerObj = playerController.playerObj.transform;
-            playerObj.LookAt(new Vector3(playerObj.position.x + clickPoint.x, playerObj.position.y, playerObj.position.z + clickPoint.z));
-            //transform.LookAt(new Vector3(transform.position.x + clickPoint.x, transform.position.y, transform.position.z + clickPoint.z));
-        }
-    }
 
     private void StartCharge()
     {
@@ -63,20 +52,11 @@ public class Bow : Weapon
     }
 
     [ServerRpc]
-    private void ShootArrowServerRpc(float chargeLevel)
+    private void ShootArrowServerRpc(float chargeLevel, float damage)
     {
-
-
-        GameObject arrow = Instantiate(arrowPrefab, weaponObj.transform.position, weaponObj.transform.rotation);
+        GameObject arrow = Instantiate(weaponData.projectilePrefab, weaponObj.transform.position, weaponObj.transform.rotation);
         arrow.GetComponent<NetworkObject>().Spawn();
         arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
-        //ArrowController arrowController = arrow.GetComponent<ArrowController>();
-
-        // Set the charge level of the arrow
-        //arrowController.SetChargeLevel(chargeLevel);
-
-        // Apply any other logic to the arrow (e.g., add force, apply damage, etc.)
-        // arrowController.ApplyForce(...);
-        // arrowController.ApplyDamage(...);
+        arrow.GetComponent<ArrowManager>().damage = damage;
     }
 }

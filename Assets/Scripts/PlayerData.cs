@@ -18,6 +18,7 @@ public class PlayerData : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         playerRole.OnValueChanged += SelectPlayerRoleData;
+        if (playerRole.Value != PlayerRole.UNSET) SelectPlayerRoleData();
     }
     public override void OnNetworkDespawn()
     {
@@ -27,7 +28,7 @@ public class PlayerData : NetworkBehaviour
     /// <summary>
     /// When the role changes, so does the related SO.
     /// </summary>
-    void SelectPlayerRoleData(PlayerRole oldRole, PlayerRole newRole)
+    void SelectPlayerRoleData(PlayerRole oldRole = PlayerRole.UNSET, PlayerRole newRole = PlayerRole.UNSET)
     {
         switch (newRole)
         {
@@ -52,11 +53,11 @@ public class PlayerData : NetworkBehaviour
     /// <summary>
     /// Set the player Data
     /// </summary>
-    public void SetData(PlayerRole newPlayerRole, int newAvatarId)
+    public void SetData(PlayerRole newPlayerRole, int newAvatarId, int newWeaponId)
     {
         avatarId.Value = newAvatarId;
         playerRole.Value = newPlayerRole;
-        Debug.Log($"Player data set! {newPlayerRole} {newAvatarId}");
+        weaponId.Value = newWeaponId;
     }
 
 }

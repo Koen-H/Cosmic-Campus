@@ -15,18 +15,19 @@ public class PlayerCharacterController : NetworkBehaviour
     NetworkVariable<float> health = new(10);
     //LocalVariables
     public float moveSpeed = 5f;
+    public bool canMove = true;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
 
     [SerializeField] private float damage;
-
-    [SerializeField] private Weapon weapon; 
+    [SerializeField] private GameObject playerWeapon;//The object
+    [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
-
+    PlayerData playerData;
     public void TakeDamage(float damage)
     {
         if (damage > 0) health.Value -= damage;
@@ -63,22 +64,17 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
 
         Move();
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    weapon.Attack(); 
-        //}
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("click");
-            weapon.OnAttackInputStart();
+            weaponBehaviour.OnAttackInputStart();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            weapon.OnAttackInputStop();
+            weaponBehaviour.OnAttackInputStop();
         }
         if (Input.GetMouseButton(0))
         {
-            weapon.OnAttackInputHold();
+            weaponBehaviour.OnAttackInputHold();
         }
     }
 
@@ -111,12 +107,15 @@ public class PlayerCharacterController : NetworkBehaviour
         /// <summary>
         /// Movement
         /// </summary>
-        private void Move()
+    private void Move()
     {
+        if(!canMove) return;
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical) * moveSpeed * Time.deltaTime;
+        if (moveHorizontal == 0 && moveVertical == 0) return;
+        Vector3 direction = new Vector3(moveHorizontal, 0f, moveVertical);
+        Vector3 movement = direction * moveSpeed * Time.deltaTime;
+        playerObj.transform.forward = direction;
         transform.Translate(movement);
     }
 
@@ -126,15 +125,50 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     public void InitCharacter(ulong clientId)
     {
-        PlayerData playerData = LobbyManager.Instance.GetClient(clientId).GetComponent<PlayerData>();
+        playerData = LobbyManager.Instance.GetClient(clientId).GetComponent<PlayerData>();
         foreach (Transform child in playerAvatar.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
-        Debug.Log(playerData.avatarId.Value);
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
         healthText.text = health.Value.ToString();
 
-        //TODO: Add weapon programmatically based on stored playerData.WeaponId!
-        weapon = GetComponent<Weapon>();
+        InitWeapon();
+    }
+
+    public void ToggleMovement(bool toggle)
+    {
+        canMove = toggle;
+    }
+
+    public void InitWeapon()
+    {
+        foreach (Transform child in playerWeapon.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
+        WeaponData newWeapon = playerData.playerRoleData.GetWeapon(playerData.weaponId.Value);//Get the new weapon
+        
+        AttachWeaponBehaviour(newWeapon.weaponType);
+        weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
+        weaponBehaviour.weaponData = newWeapon;
+    }
+
+    private void AttachWeaponBehaviour(WeaponType weaponType)
+    {
+        switch (weaponType)
+        {
+            case WeaponType.SWORD:
+                weaponBehaviour = this.gameObject.GetComponent<Sword>();
+                break;
+
+            case WeaponType.BOW:
+                weaponBehaviour = this.gameObject.GetComponent<Bow>();
+                break;
+
+            case WeaponType.STAFF:
+                //weaponBehaviour = this.gameObject.AddComponent<Staff>();
+                break;
+
+            default:
+                Debug.LogError("No weapon selected?!");
+                return;
+        }
     }
 
 }
