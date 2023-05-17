@@ -22,6 +22,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private float damage;
 
     [SerializeField] private Weapon weapon; 
+    [SerializeField] private Ability ability;
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -66,38 +67,33 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weapon.Attack(); 
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+           // Ability();
+        }
     }
 
-/*    void Attack()
+    void Ability()
     {
         // calculate raycast direction
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
 
-        Debug.DrawRay(transform.position + Vector3.up, rayDirection , Color.red, 0.01f);
+        Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.green, 0.01f);
         // initialize a variable to store the hit information
         RaycastHit hit;
 
         // shoot the raycast
         if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
         {
-            // check if the object hit has the tag "Enemy"
-            if (hit.transform.CompareTag("Enemy"))
-            {
-                // call DealDamage function
-                DealDamage(hit.transform.gameObject);
-            }
+            ability.Activate(hit.collider.gameObject);
         }
     }
 
-    void DealDamage(GameObject enemy)
-    {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }*/
-
-        /// <summary>
-        /// Movement
-        /// </summary>
-        private void Move()
+    /// <summary>
+    /// Movement
+    /// </summary>
+    private void Move()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
