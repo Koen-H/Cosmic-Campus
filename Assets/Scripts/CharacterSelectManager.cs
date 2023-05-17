@@ -10,10 +10,13 @@ public class CharacterSelectManager : MonoBehaviour
 {
     PlayerRoleData playerRoleData = null;
     [SerializeField] TMP_InputField avatarIdInput;
+    [SerializeField] TMP_InputField weaponIdInput;
     [SerializeField] GameObject avatarShowcase;
+    [SerializeField] GameObject weaponShowcase;
 
     PlayerRole playerRole;
     int avatarId;
+    int weaponId;
 
 
     public void AssignRole(int newRoleInt)
@@ -48,16 +51,21 @@ public class CharacterSelectManager : MonoBehaviour
         string newAvatarIdstr = avatarIdInput.text;
         if (newAvatarIdstr == "") return;
         avatarId = int.Parse(newAvatarIdstr);
+        string newWeaponIdstr = weaponIdInput.text;
+        if (newWeaponIdstr == "") return;
+        weaponId = int.Parse(newWeaponIdstr);
+        
         GameObject newAvatar = playerRoleData.GetAvatar(avatarId);
-
         foreach (Transform child in avatarShowcase.transform) Destroy(child.gameObject);
-
         Instantiate(newAvatar, avatarShowcase.transform);
+        GameObject newWeapon = playerRoleData.GetWeapon(weaponId).weaponPrefab;
+        foreach (Transform child in weaponShowcase.transform) Destroy(child.gameObject);
+        Instantiate(newWeapon, weaponShowcase.transform);
     }
 
     public void ConfirmPlayerCharacter()
     {
-        ClientManager.MyClient.playerData.SetData(playerRole, avatarId);
+        ClientManager.MyClient.playerData.SetData(playerRole, avatarId, weaponId);
        //NetworkManager.LocalClient.PlayerObject
     }
 

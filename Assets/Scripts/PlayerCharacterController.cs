@@ -15,10 +15,19 @@ public class PlayerCharacterController : NetworkBehaviour
     NetworkVariable<float> health = new(10);
     //LocalVariables
     public float moveSpeed = 5f;
+    public bool canMove = true;
 
-    [SerializeField] private GameObject playerAvatar;
+    [SerializeField] private GameObject playerAvatar;//The player mesh/model
+    public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
 
+    [SerializeField] private float damage;
+    [SerializeField] private GameObject playerWeapon;//The object
+    [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
+
+
+    [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
+    PlayerData playerData;
     public void TakeDamage(float damage)
     {
         if (damage > 0) health.Value -= damage;
@@ -30,6 +39,9 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
+        if (!IsOwner) return;
+
+        Camera.main.GetComponent<CameraFollow>().target = this.transform;
     }
 
     void OnHealthChange(float prevHealth, float newHealth)
@@ -52,17 +64,58 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
 
         Move();
+        if (Input.GetMouseButtonDown(0))
+        {
+            weaponBehaviour.OnAttackInputStart();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            weaponBehaviour.OnAttackInputStop();
+        }
+        if (Input.GetMouseButton(0))
+        {
+            weaponBehaviour.OnAttackInputHold();
+        }
     }
 
-    /// <summary>
-    /// Movement
-    /// </summary>
+/*    void Attack()
+    {
+        // calculate raycast direction
+        Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
+
+        Debug.DrawRay(transform.position + Vector3.up, rayDirection , Color.red, 0.01f);
+        // initialize a variable to store the hit information
+        RaycastHit hit;
+
+        // shoot the raycast
+        if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
+        {
+            // check if the object hit has the tag "Enemy"
+            if (hit.transform.CompareTag("Enemy"))
+            {
+                // call DealDamage function
+                DealDamage(hit.transform.gameObject);
+            }
+        }
+    }
+
+    void DealDamage(GameObject enemy)
+    {
+        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
+    }*/
+
+        /// <summary>
+        /// Movement
+        /// </summary>
     private void Move()
     {
+        if(!canMove) return;
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical) * moveSpeed * Time.deltaTime;
+        if (moveHorizontal == 0 && moveVertical == 0) return;
+        Vector3 direction = new Vector3(moveHorizontal, 0f, moveVertical);
+        Vector3 movement = direction * moveSpeed * Time.deltaTime;
+        playerObj.transform.forward = direction;
         transform.Translate(movement);
     }
 
@@ -72,13 +125,50 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     public void InitCharacter(ulong clientId)
     {
-        PlayerData playerData = LobbyManager.Instance.GetClient(clientId).GetComponent<PlayerData>();
+        playerData = LobbyManager.Instance.GetClient(clientId).GetComponent<PlayerData>();
         foreach (Transform child in playerAvatar.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
-        Debug.Log(playerData.avatarId.Value);
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
         healthText.text = health.Value.ToString();
 
+        InitWeapon();
+    }
+
+    public void ToggleMovement(bool toggle)
+    {
+        canMove = toggle;
+    }
+
+    public void InitWeapon()
+    {
+        foreach (Transform child in playerWeapon.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
+        WeaponData newWeapon = playerData.playerRoleData.GetWeapon(playerData.weaponId.Value);//Get the new weapon
+        
+        AttachWeaponBehaviour(newWeapon.weaponType);
+        weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
+        weaponBehaviour.weaponData = newWeapon;
+    }
+
+    private void AttachWeaponBehaviour(WeaponType weaponType)
+    {
+        switch (weaponType)
+        {
+            case WeaponType.SWORD:
+                weaponBehaviour = this.gameObject.GetComponent<Sword>();
+                break;
+
+            case WeaponType.BOW:
+                weaponBehaviour = this.gameObject.GetComponent<Bow>();
+                break;
+
+            case WeaponType.STAFF:
+                //weaponBehaviour = this.gameObject.AddComponent<Staff>();
+                break;
+
+            default:
+                Debug.LogError("No weapon selected?!");
+                return;
+        }
     }
 
 }

@@ -14,7 +14,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private GameObject avatar;
     [SerializeField] TextMeshPro healthText;
 
-    NetworkVariable<float> health = new(10);
+    [SerializeField] NetworkVariable<float> health = new(10);
     private float moveSpeed;
     private float detectionRange;
     private float trackingRange;
@@ -71,8 +71,6 @@ public class Enemy : NetworkBehaviour
 
     void AttackLogic(Transform target)
     {
-        Debug.Log((target.position - transform.position).magnitude);
-        Debug.Log(meleeRange);
         if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
             Debug.Log("ATTACKKK");
@@ -94,6 +92,7 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
+        Debug.Log("ENEMEY TAKEN DAMAGE!!! ");
         health.Value -= damage;
         if (health.Value <= 0) Die();
     }
@@ -130,7 +129,7 @@ public class Enemy : NetworkBehaviour
         trackingRange = enemySO.trackingRange;
         damage = enemySO.damage;
         attackCooldown = enemySO.attackCooldown;
-        Debug.Log("test");
+
         if (enemySO.enemyType == EnemySO.EnemyType.Melee)
         {
             meleeRange = enemySO.meleeRange;
