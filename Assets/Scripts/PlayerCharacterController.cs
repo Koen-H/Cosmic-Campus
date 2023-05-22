@@ -25,6 +25,8 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
 
+    [SerializeField] private Weapon weapon; 
+    [SerializeField] private Ability ability;
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -76,30 +78,33 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weaponBehaviour.OnAttackInputHold();
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+           // Ability();
+        }
     }
 
-/*    void Attack()
+    void Ability()
     {
         // calculate raycast direction
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
 
-        Debug.DrawRay(transform.position + Vector3.up, rayDirection , Color.red, 0.01f);
+        Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.green, 0.01f);
         // initialize a variable to store the hit information
         RaycastHit hit;
 
         // shoot the raycast
         if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
         {
-            // check if the object hit has the tag "Enemy"
-            if (hit.transform.CompareTag("Enemy"))
-            {
-                // call DealDamage function
-                DealDamage(hit.transform.gameObject);
-            }
+            ability.Activate(hit.collider.gameObject);
         }
     }
 
-    void DealDamage(GameObject enemy)
+    /// <summary>
+    /// Movement
+    /// </summary>
+    private void Move()
     {
         enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
     }*/
@@ -169,6 +174,43 @@ public class PlayerCharacterController : NetworkBehaviour
                 Debug.LogError("No weapon selected?!");
                 return;
         }
+    }
+
+    /// <summary>
+    /// To notify the server, that the client is attacking
+    /// </summary>
+    [ServerRpc]
+    public void AttackServerRpc()
+    {
+        AttackClientRpc();
+    }
+
+
+    /// <summary>
+    /// Tell each client this character is attacking!
+    /// </summary>
+    [ClientRpc]
+    void AttackClientRpc()
+    {
+        weaponBehaviour.Attack();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ServerRpc]
+    public void AttackStartServerRpc()
+    {
+        AttackStartClientRpc();
+    }
+
+    /// <summary>
+    /// Begin of attack
+    /// </summary>
+    [ClientRpc]
+    private void AttackStartClientRpc()
+    {
+        weaponBehaviour.AttackStart();
     }
 
 }

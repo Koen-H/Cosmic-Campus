@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2160.6885, g: 2264.8945, b: 3288.3008, a: 1}
+  m_IndirectSpecularColor: {r: 2159.163, g: 2263.5762, b: 3287.2227, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 66364758}
   - component: {fileID: 66364757}
   - component: {fileID: 66364756}
+  - component: {fileID: 66364760}
   m_Layer: 5
   m_Name: Admin UI
   m_TagString: Untagged
@@ -1156,7 +1157,7 @@ GameObject:
   - component: {fileID: 390164674}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
@@ -4378,7 +4379,7 @@ GameObject:
   - component: {fileID: 1700821789}
   - component: {fileID: 1700821788}
   - component: {fileID: 1700821787}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ public class Sword : Weapon
     public override void OnAttackInputStart()
     {
         Aim();
-        Attack();
+        playerController.AttackServerRpc();
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -57,7 +57,7 @@ public class Sword : Weapon
             if (hit.transform.CompareTag("Enemy"))
             {
                 // call DealDamage function
-                DealDamage(hit.transform.gameObject);
+                if(playerController.IsOwner)DealDamage(hit.transform.gameObject);
             }
         }
     }

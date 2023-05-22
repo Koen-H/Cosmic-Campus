@@ -96,7 +96,7 @@ public class Enemy : NetworkBehaviour
        
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     void TakeDamgeServerRpc()
     {
         health.Value -= damage;
