@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 6044075372312755327}
   - component: {fileID: 4823783926444303511}
   - component: {fileID: 4489523786314819954}
-  - component: {fileID: -6790194232423729260}
+  - component: {fileID: 6773873308900505223}
   m_Layer: 3
   m_Name: PlayerCharacter
   m_TagString: Interactable
@@ -294,7 +294,7 @@ MonoBehaviour:
   playerWeapon: {fileID: 5890912343632651228}
   weaponBehaviour: {fileID: 0}
   weapon: {fileID: 0}
-  ability: {fileID: -6790194232423729260}
+  ability: {fileID: 6773873308900505223}
   attackRange: 10
 --- !u!114 &4730861770734180506
 MonoBehaviour:
@@ -474,7 +474,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &-6790194232423729260
+--- !u!114 &6773873308900505223
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -483,18 +483,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4730861770734180509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c56328c3d28e3945b6efa7d4a981a20, type: 3}
+  m_Script: {fileID: 11500000, guid: 17eac70a6e3536846a3815e20679c0a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   interactionRange: 5
   cooldown: 0
-  offset: 5
-  distFromGround: 3
-  maxScale: 30
-  minScale: 0.2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!1 &4730861772226633752
 GameObject:
   m_ObjectHideFlags: 0

@@ -166,7 +166,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [ServerRpc]
     public void ActivateServerRpc(Vector3 origin, Vector3 direction)
     {
-        AbilityClientRpc( origin, direction);
+        AbilityClientRpc(origin, direction);
     }
     [ClientRpc]
     void AbilityClientRpc(Vector3 origin, Vector3 direction)

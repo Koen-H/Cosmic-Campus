@@ -49,35 +49,6 @@ public class Ability : MonoBehaviour
             player.DeavtivateServerRpc();
         }
     }
-
-/*    [ServerRpc]
-    public void ActivateServerRpc(Vector3 origin, Vector3 direction)
-    {
-        //According to the client, we hit something...
-        Ray ray = new Ray(origin,direction);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.CompareTag(interactableTag))
-            {
-                if ((hit.transform.position - transform.position).magnitude <= interactionRange)
-                {
-                    Debug.Log("You right-clicked on " + hit.collider.gameObject.name);
-
-                    //Client is telling the truth! Do the same functionality for each client!
-                    ///ActivateClientRpc(ray.origin, ray.direction);
-                    ///
-
-
-                }
-                else Debug.Log("You are out of range");
-            }
-            else Debug.Log("You clicked on a different taged object");
-        }
-        else Debug.Log("Nothing was clicked");
-    }*/
-
-
     protected GameObject GetTarget(Vector3 origin, Vector3 direction)
     {
         Ray ray = new Ray(origin, direction);

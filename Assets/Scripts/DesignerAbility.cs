@@ -22,8 +22,6 @@ public class DesignerAbility : Ability
 
         canUse = false;
         target = GetTarget(origin,direction);
-//        initialScale = target.transform.localScale;
-  //      initialRotation = target.transform.rotation;
     }
     private void Start()
     {
@@ -39,51 +37,8 @@ public class DesignerAbility : Ability
         if (target != noTarget) return; 
         if (target == null) return;
 
-
-
         PickedUp(target);
     }
-
-    /*    void PickedUp(GameObject target)
-        {
-            // Calculate the direction towards the mouse cursor on the ground plane
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer)) // Added groundLayer here
-            {
-                Vector3 directionToMouse = (new Vector3(hit.point.x, transform.position.y, hit.point.z) - transform.position).normalized;
-
-                // Calculate the target position by offsetting from the player/camera position
-                // in the direction towards the mouse
-                Vector3 targetPosition = transform.position + directionToMouse * offset + new Vector3(0, distFromGround, 0);
-                target.transform.position = targetPosition;
-
-                // Calculate rotation towards the mouse and add it to the initial rotation
-                Vector3 directionToMouseFlat = new Vector3(directionToMouse.x, 0, directionToMouse.z);
-                Quaternion rotationTowardsMouse = Quaternion.LookRotation(directionToMouseFlat);
-                target.transform.rotation = initialRotation * rotationTowardsMouse;
-            }
-
-            // Handle scale changes based on mouse scroll
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
-            scaleAmount += scroll * 0.1f;
-            Vector3 targetScale = initialScale * scaleAmount;
-
-            if (targetScale.x > maxScale || targetScale.x < minScale
-                || targetScale.y > maxScale || targetScale.y < minScale
-                || targetScale.z > maxScale || targetScale.z < minScale)
-            {
-                scaleAmount -= scroll * 0.1f;
-                return;
-            }
-
-            // Ensure each component is within the min and max scale
-            targetScale.x = Mathf.Clamp(targetScale.x, minScale, maxScale);
-            targetScale.y = Mathf.Clamp(targetScale.y, minScale, maxScale);
-            targetScale.z = Mathf.Clamp(targetScale.z, minScale, maxScale);
-
-            target.transform.localScale = targetScale;
-        }*/
 
     void PickedUp(GameObject target)
     {
@@ -92,8 +47,6 @@ public class DesignerAbility : Ability
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer)) // Added groundLayer here
         {
-
-
             // Calculate the target position by offsetting from the player/camera position
             // in the direction towards the mouse
             Vector3 targetPosition = transform.position + playerObject.transform.forward * offset + new Vector3(0, distFromGround, 0);
@@ -102,37 +55,7 @@ public class DesignerAbility : Ability
             // Calculate rotation towards the mouse and add it to the initial rotation
             target.transform.rotation = Quaternion.Euler(Mathf.Rad2Deg * target.transform.rotation.x, Mathf.Rad2Deg * playerObject.transform.rotation.y, Mathf.Rad2Deg * target.transform.rotation.z);
         }
-
-/*        // Handle scale changes based on mouse scroll
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        scaleAmount += scroll * 0.1f;
-        Vector3 targetScale = initialScale * scaleAmount;
-
-        if (targetScale.x > maxScale || targetScale.x < minScale
-            || targetScale.y > maxScale || targetScale.y < minScale
-            || targetScale.z > maxScale || targetScale.z < minScale)
-        {
-            scaleAmount -= scroll * 0.1f;
-            return;
-        }
-
-        // Ensure each component is within the min and max scale
-        targetScale.x = Mathf.Clamp(targetScale.x, minScale, maxScale);
-        targetScale.y = Mathf.Clamp(targetScale.y, minScale, maxScale);
-        targetScale.z = Mathf.Clamp(targetScale.z, minScale, maxScale);
-
-        target.transform.localScale = targetScale;*/
     }
-
-
-
-
-
-
-
-
-
-
     public void PutDown()
     {
         // Place target on the ground
