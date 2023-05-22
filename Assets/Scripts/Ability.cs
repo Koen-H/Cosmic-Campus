@@ -20,7 +20,7 @@ public class Ability : MonoBehaviour
 
     public void Update()
     { 
-        if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
+        if (Input.GetMouseButtonDown(1) && canUse)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -36,6 +36,7 @@ public class Ability : MonoBehaviour
                         //When we click on something, tell the server we clicked something!
                         Debug.Log(player);
                         player.ActivateServerRpc(ray.origin,ray.direction);
+                        return;
                     }
                     else Debug.Log("You are out of range");
                 }
@@ -43,9 +44,13 @@ public class Ability : MonoBehaviour
             }
             else Debug.Log("Nothing was clicked");
         }
+        if (Input.GetMouseButtonDown(1) && !canUse)
+        {
+            player.DeavtivateServerRpc();
+        }
     }
 
-    [ServerRpc]
+/*    [ServerRpc]
     public void ActivateServerRpc(Vector3 origin, Vector3 direction)
     {
         //According to the client, we hit something...
@@ -70,31 +75,9 @@ public class Ability : MonoBehaviour
             else Debug.Log("You clicked on a different taged object");
         }
         else Debug.Log("Nothing was clicked");
-    }
-
-
-  /*  [ClientRpc]
-    public void ActivateClientRpc(Vector3 origin, Vector3 direction)
-    {
-        Ray ray = new Ray(origin, direction);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.CompareTag(interactableTag))
-            {
-                if ((hit.transform.position - transform.position).magnitude <= interactionRange)
-                {
-                    Debug.Log("You right-clicked on " + hit.collider.gameObject.name);
-
-                    //Client is telling the truth! Do the same functionality for each client!
-                    Activate(hit.collider.gameObject);
-                }
-                else Debug.Log("You are out of range");
-            }
-            else Debug.Log("You clicked on a different taged object");
-        }
-        else Debug.Log("Nothing was clicked");
     }*/
+
+
     protected GameObject GetTarget(Vector3 origin, Vector3 direction)
     {
         Ray ray = new Ray(origin, direction);

@@ -141,7 +141,7 @@ public class DesignerAbility : Ability
 
 
 
-    void PutDown(GameObject target)
+    public void PutDown()
     {
         // Place target on the ground
         target.transform.position = new Vector3(
@@ -150,6 +150,7 @@ public class DesignerAbility : Ability
             target.transform.position.z
         );
         canUse = true;
+        target = null;
     }
 
     IEnumerator Cooldown(float time)

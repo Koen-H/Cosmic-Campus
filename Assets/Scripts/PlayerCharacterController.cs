@@ -172,9 +172,20 @@ public class PlayerCharacterController : NetworkBehaviour
     void AbilityClientRpc(Vector3 origin, Vector3 direction)
     {
         ability.Activate( origin, direction); 
-
     }
 
+
+    [ServerRpc]
+    public void DeavtivateServerRpc()
+    {
+        DeavtivateAbilityClientRpc();
+    }
+    [ClientRpc]
+    void DeavtivateAbilityClientRpc()
+    {
+        DesignerAbility bruh = (DesignerAbility)ability;
+        bruh.PutDown();
+    }
 
 
     /// <summary>
