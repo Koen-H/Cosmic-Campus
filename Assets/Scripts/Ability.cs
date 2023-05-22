@@ -11,7 +11,7 @@ public class Ability : MonoBehaviour
     [SerializeField] protected float cooldown;
     protected bool canUse = true;
 
-    PlayerCharacterController player;
+    protected PlayerCharacterController player;
 
     protected void Start()
     {
@@ -63,9 +63,6 @@ public class Ability : MonoBehaviour
                     Debug.Log("You right-clicked on " + hit.collider.gameObject.name);
 
                     //Client is telling the truth! Do the same functionality for each client!
-                    ///ActivateClientRpc(ray.origin, ray.direction);
-                    ///
-
                     target = hit.collider.gameObject;
 
 
