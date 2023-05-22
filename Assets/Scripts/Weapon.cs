@@ -62,7 +62,10 @@ public abstract class Weapon : MonoBehaviour
         }
     }
 
+    public virtual void AttackStart()
+    {
 
+    }
 
     public virtual void Attack()
     {

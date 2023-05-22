@@ -17,6 +17,7 @@ public class Bow : Weapon
     {
         StartCharge();
         playerController.ToggleMovement(false);
+        playerController.AttackStartServerRpc();
     }
     /// <summary>
     /// While the player is holding the input
@@ -32,19 +33,25 @@ public class Bow : Weapon
     public override void OnAttackInputStop()
     {
         Aim();
-        float chargeLevel =  Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
-        chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
+        
         if (isCharging)
         {
-            ShootArrowServerRpc(chargeLevel, weaponData.damage);
-            isCharging = false;
+            playerController.AttackServerRpc();
+            
         }
         playerController.ToggleMovement(true);
     }
 
-
-
-
+    public override void Attack()
+    {
+        base.Attack();
+        ShootArrow();
+    }
+    
+    public override void AttackStart()
+    {
+        StartCharge();
+    }
     private void StartCharge()
     {
         isCharging = true;
@@ -52,12 +59,17 @@ public class Bow : Weapon
         Debug.Log("starting"); 
     }
 
-    [ServerRpc]
-    private void ShootArrowServerRpc(float chargeLevel, float damage)
+
+    private void ShootArrow()
     {
+        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
+        chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
+        isCharging = false;
+
         GameObject arrow = Instantiate(weaponData.projectilePrefab, weaponObj.transform.position, weaponObj.transform.rotation);
-        arrow.GetComponent<NetworkObject>().Spawn();
         arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
-        arrow.GetComponent<ArrowManager>().damage = damage;
+        ArrowManager arrowManager = arrow.GetComponent<ArrowManager>();
+        arrowManager.damage = weaponData.damage;
+        arrowManager.playerController = playerController;
     }
 }

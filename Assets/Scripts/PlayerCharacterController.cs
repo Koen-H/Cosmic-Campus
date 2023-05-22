@@ -180,6 +180,7 @@ public class PlayerCharacterController : NetworkBehaviour
         AttackClientRpc();
     }
 
+
     /// <summary>
     /// Tell each client this character is attacking!
     /// </summary>
@@ -187,6 +188,24 @@ public class PlayerCharacterController : NetworkBehaviour
     void AttackClientRpc()
     {
         weaponBehaviour.Attack();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [ServerRpc]
+    public void AttackStartServerRpc()
+    {
+        AttackStartClientRpc();
+    }
+
+    /// <summary>
+    /// Begin of attack
+    /// </summary>
+    [ClientRpc]
+    private void AttackStartClientRpc()
+    {
+        weaponBehaviour.AttackStart();
     }
 
 }
