@@ -106,14 +106,6 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     private void Move()
     {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }*/
-
-        /// <summary>
-        /// Movement
-        /// </summary>
-    private void Move()
-    {
         if(!canMove) return;
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
