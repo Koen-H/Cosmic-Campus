@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class Weapon : NetworkBehaviour
+public abstract class Weapon : MonoBehaviour
 {
     internal WeaponData weaponData;
 

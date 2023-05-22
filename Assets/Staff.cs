@@ -22,7 +22,7 @@ public class Staff : Weapon
     public override void OnAttackInputHold()
     {
         Aim();
-        AttackServerRpc();//Tell the server, that we are attacking!
+        playerController.AttackServerRpc();//Tell the server, that we are attacking!
     }
     /// <summary>
     /// When the player lets go of the input
@@ -43,18 +43,10 @@ public class Staff : Weapon
 
     public override void Attack()
     {
-        base.Attack();
-        
+        FindClosestEnemy();
     }
 
-    [ServerRpc]
-    public void AttackServerRpc()
-    {
-        FindClosestEnemyClientRpc();//Tell each client, that this player is attacking!
-    }
-
-    [ClientRpc]//On each client we get the closest enemy
-    void FindClosestEnemyClientRpc()
+    void FindClosestEnemy()
     {
         Vector3 playerPosition = playerController.playerObj.transform.position;
         Vector3 playerForward = playerController.playerObj.transform.forward;
@@ -99,7 +91,7 @@ public class Staff : Weapon
             //draw fancy laser line
             Debug.DrawLine(playerPosition + Vector3.up, closestEnemy.transform.position + Vector3.up, Color.yellow, 1f);
             ShowStaffBeam(weaponObj.transform,closestEnemy.transform);
-            if (IsOwner) DealDamage(closestEnemy);//Only on the client that owns the weapon, we do damage!
+            if (playerController.IsOwner) DealDamage(closestEnemy);//Only on the client that owns the weapon, we do damage!
         }
 
     }
@@ -118,6 +110,7 @@ public class Staff : Weapon
         Debug.Log("dealing damage");
         Debug.Log(enemy.name);
         enemy.transform.parent.GetComponent<Enemy>().TakeDamage(weaponData.damage);
+        base.Attack();//Handle cooldown?
     }
 }
 

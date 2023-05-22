@@ -171,4 +171,22 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// To notify the server, that the client is attacking
+    /// </summary>
+    [ServerRpc]
+    public void AttackServerRpc()
+    {
+        AttackClientRpc();
+    }
+
+    /// <summary>
+    /// Tell each client this character is attacking!
+    /// </summary>
+    [ClientRpc]
+    void AttackClientRpc()
+    {
+        weaponBehaviour.Attack();
+    }
+
 }
