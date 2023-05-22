@@ -39,14 +39,6 @@ public class DesignerAbility : Ability
         if (target != noTarget) return; 
         if (target == null) return;
 
-        if (Input.GetMouseButtonUp(1))
-        {
-            Debug.Log("Placed Down! ");
-            PutDown(target);
-            target = null;
-            scaleAmount = 1;
-            return;
-        }
 
 
         PickedUp(target);
