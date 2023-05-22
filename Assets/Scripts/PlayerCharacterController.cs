@@ -78,14 +78,9 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weaponBehaviour.OnAttackInputHold();
         }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-           // Ability();
-        }
     }
 
-    void Ability()
+/*    void Ability()
     {
         // calculate raycast direction
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
@@ -99,11 +94,12 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             ability.Activate(hit.collider.gameObject);
         }
-    }
+    }*/
 
-    /// <summary>
-    /// Movement
-    /// </summary>
+
+        /// <summary>
+        /// Movement
+        /// </summary>
     private void Move()
     {
         if(!canMove) return;
@@ -167,6 +163,30 @@ public class PlayerCharacterController : NetworkBehaviour
                 return;
         }
     }
+    [ServerRpc]
+    public void ActivateServerRpc(Vector3 origin, Vector3 direction)
+    {
+        AbilityClientRpc(origin, direction);
+    }
+    [ClientRpc]
+    void AbilityClientRpc(Vector3 origin, Vector3 direction)
+    {
+        ability.Activate( origin, direction); 
+    }
+
+
+    [ServerRpc]
+    public void DeavtivateServerRpc()
+    {
+        DeavtivateAbilityClientRpc();
+    }
+    [ClientRpc]
+    void DeavtivateAbilityClientRpc()
+    {
+        DesignerAbility bruh = (DesignerAbility)ability;
+        bruh.PutDown();
+    }
+
 
     /// <summary>
     /// To notify the server, that the client is attacking
