@@ -101,17 +101,10 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+
     /// <summary>
     /// Movement
     /// </summary>
-    private void Move()
-    {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }*/
-
-        /// <summary>
-        /// Movement
-        /// </summary>
     private void Move()
     {
         if(!canMove) return;
@@ -159,15 +152,15 @@ public class PlayerCharacterController : NetworkBehaviour
         switch (weaponType)
         {
             case WeaponType.SWORD:
-                weaponBehaviour = this.gameObject.GetComponent<Sword>();
+                weaponBehaviour = this.gameObject.AddComponent<Sword>();
                 break;
 
             case WeaponType.BOW:
-                weaponBehaviour = this.gameObject.GetComponent<Bow>();
+                weaponBehaviour = this.gameObject.AddComponent<Bow>();
                 break;
 
             case WeaponType.STAFF:
-                weaponBehaviour = this.gameObject.GetComponent<Staff>();
+                weaponBehaviour = this.gameObject.AddComponent<Staff>();
                 break;
 
             default:
