@@ -20,7 +20,7 @@ public class Ability : MonoBehaviour
 
     public void Update()
     { 
-        if (Input.GetMouseButtonDown(1) && canUse)  // 1 is the right mouse button
+        if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -44,7 +44,7 @@ public class Ability : MonoBehaviour
             }
             else Debug.Log("Nothing was clicked");
         }
-        if (Input.GetMouseButtonDown(1) && !canUse)
+        if (Input.GetMouseButtonUp(1) && !canUse)
         {
             player.DeavtivateServerRpc();
         }

@@ -4,6 +4,7 @@ using System.Globalization;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using static PlayerSO;
 
 
 /// <summary>
@@ -26,7 +27,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
 
     [SerializeField] private Weapon weapon; 
-    [SerializeField] private Ability ability;
+    private Ability ability;
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -136,7 +137,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         foreach (Transform child in playerWeapon.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
         WeaponData newWeapon = playerData.playerRoleData.GetWeapon(playerData.weaponId.Value);//Get the new weapon
-
+        GetAbilityBehaviour();
         GetWeaponBehaviour(newWeapon.weaponType);
         weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
         weaponBehaviour.weaponData = newWeapon;
@@ -147,15 +148,15 @@ public class PlayerCharacterController : NetworkBehaviour
         switch (weaponType)
         {
             case WeaponType.SWORD:
-                weaponBehaviour = this.gameObject.GetComponent<Sword>();
+                weaponBehaviour = this.gameObject.AddComponent<Sword>();
                 break;
 
             case WeaponType.BOW:
-                weaponBehaviour = this.gameObject.GetComponent<Bow>();
+                weaponBehaviour = this.gameObject.AddComponent<Bow>();
                 break;
 
             case WeaponType.STAFF:
-                weaponBehaviour = this.gameObject.GetComponent<Staff>();
+                weaponBehaviour = this.gameObject.AddComponent<Staff>();
                 break;
 
             default:
@@ -163,7 +164,31 @@ public class PlayerCharacterController : NetworkBehaviour
                 return;
         }
     }
-    [ServerRpc]
+
+    private void GetAbilityBehaviour()
+    {
+        switch (playerData.playerRole.Value)
+        {
+            case PlayerRole.ENGINEER:
+                ability = this.gameObject.AddComponent<EngineerAbility>();
+                break;
+
+            case PlayerRole.DESIGNER:
+                ability = this.gameObject.AddComponent<DesignerAbility>();
+                break;
+
+            case PlayerRole.ARTIST:
+                ability = this.gameObject.AddComponent<ArtistAbility>();
+                break;
+
+            default:
+                Debug.LogError("No role selected?!");
+                return;
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
     public void ActivateServerRpc(Vector3 origin, Vector3 direction)
     {
         AbilityClientRpc(origin, direction);

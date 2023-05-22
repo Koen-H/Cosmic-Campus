@@ -244,11 +244,7 @@ GameObject:
   - component: {fileID: 4730861770734180507}
   - component: {fileID: 4730861770734180506}
   - component: {fileID: 4730861770734180505}
-  - component: {fileID: 7570894151699853274}
-  - component: {fileID: 6044075372312755327}
-  - component: {fileID: 4823783926444303511}
   - component: {fileID: 4489523786314819954}
-  - component: {fileID: 2889204960288520413}
   m_Layer: 3
   m_Name: PlayerCharacter
   m_TagString: Interactable
@@ -294,7 +290,6 @@ MonoBehaviour:
   playerWeapon: {fileID: 5890912343632651228}
   weaponBehaviour: {fileID: 0}
   weapon: {fileID: 0}
-  ability: {fileID: 2889204960288520413}
   attackRange: 10
 --- !u!114 &4730861770734180506
 MonoBehaviour:
@@ -338,43 +333,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &7570894151699853274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2fd83db89d78341a20279203722c3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxChargeTime: 2
---- !u!114 &6044075372312755327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 138f55ee8e4aac94bad9d04436f43b58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4823783926444303511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ae79f8bf48b1d4a9499bf8cc488d78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!120 &4489523786314819954
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -474,22 +432,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &2889204960288520413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 359787e7ce784b1449a775471a779580, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionRange: 5
-  cooldown: 0
-  artistDecalPrefab: {fileID: 2191158424249565990, guid: 912a6786997bfb446a00d518214a7690,
-    type: 3}
 --- !u!1 &4730861772226633752
 GameObject:
   m_ObjectHideFlags: 0
