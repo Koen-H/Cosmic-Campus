@@ -8,6 +8,7 @@ public class LobbyManager : MonoBehaviour
 {
     [SerializeField] GameObject playerObj;
     Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
+    public static event System.Action<ClientManager> OnNewClientJoined;
 
     private static LobbyManager _instance;
     public static LobbyManager Instance
@@ -27,6 +28,7 @@ public class LobbyManager : MonoBehaviour
     public void AddClient(ulong id, ClientManager newClient)
     {
         clients.Add(id, newClient);
+        OnNewClientJoined.Invoke(newClient);
         Debug.Log("client added!");
     }
     public void RemoveClient(ulong id)
@@ -38,6 +40,11 @@ public class LobbyManager : MonoBehaviour
     public ClientManager GetClient(ulong id)
     {
         return clients[id];
+    }
+
+    public int ConnectedClientsAmount()
+    {
+        return clients.Count;
     }
 
     public void CreateCharacters()

@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ClientManager : NetworkBehaviour
 {
-    [SerializeField] private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //public NetworkVariable<string> playerName = null;
     private NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -45,5 +45,10 @@ public class ClientManager : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         LobbyManager.Instance.RemoveClient(OwnerClientId);
+    }
+
+    public ulong GetClientId()
+    {
+        return clientId.Value;
     }
 }
