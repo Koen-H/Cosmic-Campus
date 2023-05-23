@@ -12,11 +12,25 @@ public class Ability : NetworkBehaviour
     protected bool canUse = true;
 
     public void Update()
-    { 
+    {
+        if (!player.IsOwner) return;
         if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+<<<<<<< Updated upstream
 
+=======
+            if (GetTarget(ray.origin, ray.direction) != null)
+            {
+                player.ActivateServerRpc(ray.origin, ray.direction);
+                Activate(ray.origin, ray.direction);
+                return;
+            }
+        }
+        if (Input.GetMouseButtonUp(1) && !canUse)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+>>>>>>> Stashed changes
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {

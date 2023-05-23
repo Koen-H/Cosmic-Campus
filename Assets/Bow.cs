@@ -18,6 +18,7 @@ public class Bow : Weapon
         StartCharge();
         playerController.ToggleMovement(false);
         playerController.AttackStartServerRpc();
+        AttackStart();
     }
     /// <summary>
     /// While the player is holding the input
@@ -37,7 +38,7 @@ public class Bow : Weapon
         if (isCharging)
         {
             playerController.AttackServerRpc();
-            
+            Attack();
         }
         playerController.ToggleMovement(true);
     }

@@ -12,6 +12,7 @@ public class Sword : Weapon
     {
         Aim();
         playerController.AttackServerRpc();
+        Attack();
         playerController.ToggleMovement(false);
     }
     /// <summary>

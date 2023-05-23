@@ -23,6 +23,7 @@ public class Staff : Weapon
     {
         Aim();
         playerController.AttackServerRpc();//Tell the server, that we are attacking!
+        Attack();
     }
     /// <summary>
     /// When the player lets go of the input

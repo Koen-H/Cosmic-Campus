@@ -106,14 +106,6 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     private void Move()
     {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }*/
-
-        /// <summary>
-        /// Movement
-        /// </summary>
-    private void Move()
-    {
         if(!canMove) return;
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -176,13 +168,67 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    private void GetAbilityBehaviour()
+    {
+        switch (playerData.playerRole.Value)
+        {
+            case PlayerRole.ENGINEER:
+                ability = this.gameObject.AddComponent<EngineerAbility>();
+                break;
+
+            case PlayerRole.DESIGNER:
+                ability = this.gameObject.AddComponent<DesignerAbility>();
+                break;
+
+            case PlayerRole.ARTIST:
+                ability = this.gameObject.AddComponent<ArtistAbility>();
+                break;
+
+            default:
+                Debug.LogError("No role selected?!");
+                return;
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ActivateServerRpc(Vector3 origin, Vector3 direction, ServerRpcParams serverRpcParams = default)
+    {
+        AbilityClientRpc(origin, direction, serverRpcParams.Receive.SenderClientId);
+    }
+    [ClientRpc]
+    void AbilityClientRpc(Vector3 origin, Vector3 direction, ulong receivedClientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        ability.Activate( origin, direction); 
+    }
+
+
+    [ServerRpc]
+    public void DeactivateServerRpc(Vector3 clickPoint, ServerRpcParams serverRpcParams = default)
+    {
+        DeactivateAbilityClientRpc(clickPoint, serverRpcParams.Receive.SenderClientId);
+    }
+
+    [ClientRpc]
+    void DeactivateAbilityClientRpc(Vector3 clickPoint, ulong receivedClientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        DesignerAbility bruh = (DesignerAbility)ability;
+        bruh.PutDown(clickPoint);
+    }
+
+
+>>>>>>> Stashed changes
     /// <summary>
     /// To notify the server, that the client is attacking
     /// </summary>
     [ServerRpc]
-    public void AttackServerRpc()
+    public void AttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        AttackClientRpc();
+        AttackClientRpc(serverRpcParams.Receive.SenderClientId);
     }
 
 
@@ -190,8 +236,9 @@ public class PlayerCharacterController : NetworkBehaviour
     /// Tell each client this character is attacking!
     /// </summary>
     [ClientRpc]
-    void AttackClientRpc()
+    void AttackClientRpc(ulong receivedClientId)
     {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.Attack();
     }
 
@@ -199,17 +246,18 @@ public class PlayerCharacterController : NetworkBehaviour
     /// 
     /// </summary>
     [ServerRpc]
-    public void AttackStartServerRpc()
+    public void AttackStartServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        AttackStartClientRpc();
+        AttackStartClientRpc(serverRpcParams.Receive.SenderClientId);
     }
 
     /// <summary>
     /// Begin of attack
     /// </summary>
     [ClientRpc]
-    private void AttackStartClientRpc()
+    private void AttackStartClientRpc(ulong receivedClientId)
     {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.AttackStart();
     }
 
