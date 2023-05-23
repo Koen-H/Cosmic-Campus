@@ -13,7 +13,7 @@ public class Ability : MonoBehaviour
 
     protected PlayerCharacterController player;
 
-    protected void Start()
+    protected void Awake()
     {
         player = GetComponent<PlayerCharacterController>();
     }
@@ -23,30 +23,18 @@ public class Ability : MonoBehaviour
         if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (GetTarget(ray.origin, ray.direction) != null)
             {
-                if (hit.collider.gameObject.CompareTag(interactableTag))
-                {
-                    if ((hit.transform.position - transform.position).magnitude <= interactionRange)
-                    {
-                        Debug.Log("You right-clicked on " + hit.collider.gameObject.name);
-
-                        //When we click on something, tell the server we clicked something!
-                        Debug.Log(player);
-                        player.ActivateServerRpc(ray.origin,ray.direction);
-                        return;
-                    }
-                    else Debug.Log("You are out of range");
-                }
-                else Debug.Log("You clicked on a different taged object");
+                player.ActivateServerRpc(ray.origin, ray.direction);
+                return;
             }
-            else Debug.Log("Nothing was clicked");
         }
         if (Input.GetMouseButtonUp(1) && !canUse)
         {
-            player.DeavtivateServerRpc();
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Physics.Raycast(ray, out hit);
+            if (hit.point != null) player.DeactivateServerRpc(hit.point);
         }
     }
     protected GameObject GetTarget(Vector3 origin, Vector3 direction)
@@ -62,16 +50,10 @@ public class Ability : MonoBehaviour
                 {
                     Debug.Log("You right-clicked on " + hit.collider.gameObject.name);
 
-                    //Client is telling the truth! Do the same functionality for each client!
                     target = hit.collider.gameObject;
-
-
                 }
-                else Debug.Log("You are out of range");
             }
-            else Debug.Log("You clicked on a different taged object");
         }
-        else Debug.Log("Nothing was clicked");
 
         return target;
 

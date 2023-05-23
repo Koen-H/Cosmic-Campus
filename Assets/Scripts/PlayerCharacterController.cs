@@ -201,15 +201,16 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
     [ServerRpc]
-    public void DeavtivateServerRpc()
+    public void DeactivateServerRpc(Vector3 clickPoint)
     {
-        DeavtivateAbilityClientRpc();
+        DeactivateAbilityClientRpc(clickPoint);
     }
+
     [ClientRpc]
-    void DeavtivateAbilityClientRpc()
+    void DeactivateAbilityClientRpc(Vector3 clickPoint)
     {
         DesignerAbility bruh = (DesignerAbility)ability;
-        bruh.PutDown();
+        bruh.PutDown(clickPoint);
     }
 
 

@@ -10,6 +10,12 @@ public class ArtistAbility : Ability
     [SerializeField] GameObject artistDecalPrefab;
     ArtistDecalType type;
 
+    private void Awake()
+    {
+        artistDecalPrefab = Resources.Load<GameObject>("Artist Decal");
+    }
+
+
     public void Update()
     {
         if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
