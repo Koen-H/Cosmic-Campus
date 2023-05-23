@@ -20,14 +20,21 @@ public class ReadyUpManager : MonoBehaviour
 
     void NewClientJoined(ClientManager newClient)
     {
-        if(newClient.GetClientId() == NetworkManager.Singleton.LocalClientId)
-        {
-            clientAvatars.Add(newClient.GetClientId(), avatarPlatform[0]);
-        }
-        else
-        {
-            clientAvatars.Add(newClient.GetClientId(), avatarPlatform[LobbyManager.Instance.ConnectedClientsAmount()]);
-        }
+        int connectedClients = LobbyManager.Instance.ConnectedClientsAmount();
+        //if (newClient.GetClientId() == NetworkManager.Singleton.LocalClientId)
+        //{
+        //    if (clientAvatars.ContainsValue(avatarPlatform[0]))//If someone took the spot...
+        //    {
+
+
+        //    }
+        //    clientAvatars.Add(newClient.GetClientId(), avatarPlatform[0]);
+        //}
+        //else
+        //{
+        //    clientAvatars.Add(newClient.GetClientId(), avatarPlatform[connectedClients]);
+        //}
+        clientAvatars.Add(newClient.GetClientId(), avatarPlatform[connectedClients]);
         UpdatePlayerCharacter(newClient.GetClientId());
     }
 
