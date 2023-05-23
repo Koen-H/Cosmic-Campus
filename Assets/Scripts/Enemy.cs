@@ -90,16 +90,16 @@ public class Enemy : NetworkBehaviour
         to.TakeDamage(damage);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damageInc)
     {
-        TakeDamgeServerRpc();
+        TakeDamgeServerRpc(damageInc);
        
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc()
+    void TakeDamgeServerRpc(float damageInc)
     {
-        health.Value -= damage;
+        health.Value -= damageInc;
     }
 
 
