@@ -16,6 +16,8 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> generatedCorrectPath = new List<Room>();
     public List<Room> correctPath = new List<Room>();
 
+    List<Room> connectedRooms = new List<Room>();
+
 
     private float averageRoomSize;
 
@@ -84,6 +86,8 @@ public class RoomGenerator : MonoBehaviour
             Debug.DrawLine(generatedCorrectPath[i].transform.position, generatedCorrectPath[i + 1].transform.position, Color.green, 10f);
         }
     }
+
+
     void DrawRedLinesBetweenNonPathRooms()
     {
         // Store the rooms that are not in the generatedCorrectPath list
@@ -92,25 +96,75 @@ public class RoomGenerator : MonoBehaviour
         // Sort the nonPathRooms list based on z position
         nonPathRooms = nonPathRooms.OrderBy(room => room.transform.position.z).ToList();
 
-        int lineLength = 0;  // keep track of current line length
+        List<Room> currentLine = new List<Room>();  // keep track of current line
+        bool isNewLine = true;  // boolean to determine if it's the start of a new line
+
+        // Variable to store the current color of the red line
+        Color currentColor = Color.red;
 
         for (int i = 0; i < nonPathRooms.Count - 1; i++)
         {
             Room currentRoom = nonPathRooms[i];
             Room nextRoom = nonPathRooms[i + 1];
 
-            // If the next room is at the same z location, or lineLength reached the max value, reset lineLength and skip drawing a line
-            if (Mathf.Approximately(currentRoom.transform.position.z, nextRoom.transform.position.z) || lineLength >= maxDeadEndRooms)
+            if (isNewLine)
             {
-                lineLength = 0;
+                // Reset the color
+                currentColor = Color.red;
+
+                // Find the closest path room that's behind the current room
+                Room closestPathRoom = generatedCorrectPath
+                    .Where(room => room.transform.position.z < currentRoom.transform.position.z)
+                    .OrderBy(room => (room.transform.position - currentRoom.transform.position).sqrMagnitude)
+                    .FirstOrDefault();
+
+                // Make sure the connection doesn't result in a single upwards link
+                if (closestPathRoom != null && closestPathRoom.transform.position.z < currentRoom.transform.position.z)
+                {
+                    Debug.DrawLine(currentRoom.transform.position, closestPathRoom.transform.position, Color.yellow, 10);
+                }
+                isNewLine = false;
+            }
+
+            // If the next room is at the same z location, or lineLength reached the max value, or the next room is behind the current room, start a new line from the next room
+            if (Mathf.Approximately(currentRoom.transform.position.z, nextRoom.transform.position.z)
+                || currentLine.Count >= maxDeadEndRooms
+                || currentRoom.transform.position.z > nextRoom.transform.position.z)
+            {
+                currentLine.Clear();
+
+                // If there's a closer non-path room ahead, connect to it. If not, connect to the closest path room below.
+                Room closerRoom = nonPathRooms
+                    .Where(room => room.transform.position.z > currentRoom.transform.position.z)
+                    .OrderBy(room => (room.transform.position - currentRoom.transform.position).sqrMagnitude)
+                    .FirstOrDefault()
+                    ?? generatedCorrectPath
+                        .Where(room => room.transform.position.z < currentRoom.transform.position.z)
+                        .OrderBy(room => (room.transform.position - currentRoom.transform.position).sqrMagnitude)
+                        .FirstOrDefault();
+
+                // Make sure the connection doesn't result in a single upwards link
+                if (closerRoom != null && closerRoom.transform.position.z < currentRoom.transform.position.z)
+                {
+                    Debug.DrawLine(currentRoom.transform.position, closerRoom.transform.position, currentColor, 10);
+                }
+                isNewLine = true;  // Start a new line
                 continue;
             }
 
-            Debug.DrawLine(currentRoom.transform.position, nextRoom.transform.position, Color.red, 10);
-            lineLength++;
+            // Add the room to the current line
+            currentLine.Add(currentRoom);
+
+            // Draw the red line, if it doesn't result in a single upwards link
+            if (currentLine.Count > 1 && currentLine[currentLine.Count - 2].transform.position.z < currentRoom.transform.position.z)
+            {
+                Debug.DrawLine(currentLine[currentLine.Count - 2].transform.position, currentRoom.transform.position, currentColor, 10);
+            }
+
+            // Gradually lighten the color of the line
+            currentColor += new Color(0.1f, 0.1f, 0.1f);
         }
     }
-
 
     bool CheckOverlap()
     {
