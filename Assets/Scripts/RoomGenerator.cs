@@ -18,6 +18,11 @@ public class RoomGenerator : MonoBehaviour
 
     List<Room> connectedRooms = new List<Room>();
 
+    public List<RoomConnection> roomConnections = new List<RoomConnection>();
+
+    int totalRemovedRooms; 
+
+
 
     private float averageRoomSize;
 
@@ -30,6 +35,7 @@ public class RoomGenerator : MonoBehaviour
             Room initialRoom = InstantiateRandomRoom();
             rooms.Add(initialRoom);
             correctPath.Add(initialRoom);
+            generatedCorrectPath.Add(initialRoom);
         }
         StartCoroutine(GenerateRoomsCoroutine());
     }
@@ -42,9 +48,56 @@ public class RoomGenerator : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
+            totalRemovedRooms = 0;
             RemoveAllRooms();
             StopAllCoroutines();
             StartCoroutine(GenerateRoomsCoroutine());
+        }
+    }
+    IEnumerator GenerateRoomsCoroutine()
+    {
+        while (generatedCorrectPath.Count <= numberOfRooms)
+        {
+            GenerateRoom(correctPath[0]);
+            yield return new WaitForSeconds(0.1f); // Adjust this delay as needed
+            if (generatedCorrectPath.Count > numberOfRooms)
+            {
+                CheckOverlap();
+                ColorizeCorrectPath();
+                DrawLinesBetweenRooms();
+                Debug.Log("Total Number of Rooms Removed : " + totalRemovedRooms);
+                //DrawRedLinesBetweenNonPathRooms();
+                yield break;
+            }
+        }
+    }
+    void GenerateRoom(Room from, bool rightPath = true)
+    {
+        if (CheckOverlap()) return;
+        Room newRoom = InstantiateRandomRoom();
+        float xRand = Random.Range(-xOffsetVariation, xOffsetVariation);
+        newRoom.transform.position = new Vector3(from.transform.position.x + xRand * from.roomDepth, from.transform.position.y, from.transform.position.z + from.roomDepth * extraOffset);
+
+        if (rightPath)
+        {
+            correctPath.Add(newRoom);
+            correctPath.Remove(from);
+            generatedCorrectPath.Add(newRoom);
+        }
+
+        rooms.Add(newRoom);
+        roomConnections.Add(new RoomConnection(from, newRoom, rightPath));
+
+        float rand = Random.Range(0.0f, 1.0f);
+        if (rand < falseRoomProbability)
+        {
+            Room extraRoom = InstantiateRandomRoom();
+            xRand = Random.Range(-xOffsetVariation, xOffsetVariation);
+            extraRoom.transform.position = new Vector3(from.transform.position.x + xRand * from.roomDepth, from.transform.position.y, from.transform.position.z + from.roomDepth * extraOffset);
+            rooms.Add(extraRoom);
+            roomConnections.Add(new RoomConnection(from, extraRoom, false));
+
+            GenerateRoom(extraRoom, false);
         }
     }
 
@@ -63,27 +116,16 @@ public class RoomGenerator : MonoBehaviour
         return Instantiate(roomPrefabs[randomRoom]);
     }
 
-    IEnumerator GenerateRoomsCoroutine()
-    {
-        while (generatedCorrectPath.Count <= numberOfRooms)
-        {
-            GenerateRoom(correctPath[0]);
-            yield return new WaitForSeconds(0.1f); // Adjust this delay as needed
-            if (generatedCorrectPath.Count > numberOfRooms)
-            {
-                CheckOverlap();
-                ColorizeCorrectPath();
-                DrawLinesBetweenRooms();
-                DrawRedLinesBetweenNonPathRooms();
-                yield break;
-            }
-        }
-    }
+
     void DrawLinesBetweenRooms()
     {
-        for (int i = 0; i < generatedCorrectPath.Count - 1; i++)
+        foreach (var connection in roomConnections)
         {
-            Debug.DrawLine(generatedCorrectPath[i].transform.position, generatedCorrectPath[i + 1].transform.position, Color.green, 10f);
+            if (connection.from == null || connection.to == null) continue;
+            Color color;
+            if (!connection.falseRoom) color = Color.red;
+            else color = Color.green;
+            Debug.DrawLine(connection.from.transform.position, connection.to.transform.position, color, 3f);
         }
     }
 
@@ -168,12 +210,18 @@ public class RoomGenerator : MonoBehaviour
 
     bool CheckOverlap()
     {
-        foreach (var room in rooms)
+        List<Room> roomsCopy = new List<Room>(rooms);
+
+        foreach (var room in roomsCopy)
         {
             if (IsOverlapping(room))
             {
                 if (!generatedCorrectPath.Contains(room))
                 {
+                    // Remove any associated RoomConnections.
+                    //roomConnections.RemoveAll(connection => connection.from == room || connection.to == room);
+                    //RemoveConnectionsToRoom(room);
+                    totalRemovedRooms++; 
                     rooms.Remove(room);
                     Destroy(room.gameObject);
                     return true;
@@ -182,6 +230,11 @@ public class RoomGenerator : MonoBehaviour
         }
         return false;
     }
+    void RemoveConnectionsToRoom(Room room)
+    {
+        roomConnections = roomConnections.Where(connection => connection.from != room && connection.to != room).ToList();
+    }
+
     void RemoveAllRooms()
     {
         for (int i = rooms.Count - 1; i >= 0; i--)
@@ -191,6 +244,7 @@ public class RoomGenerator : MonoBehaviour
         rooms.Clear();
         generatedCorrectPath.Clear();
         correctPath.Clear();
+        roomConnections.Clear();
 
         int randomRoom = Random.Range(0, roomPrefabs.Count);
         Room initialRoom = Instantiate(roomPrefabs[randomRoom]);
@@ -198,7 +252,7 @@ public class RoomGenerator : MonoBehaviour
         correctPath.Add(initialRoom);
     }
 
-    void GenerateRooms()
+/*    void GenerateRooms()
     {
         if(correctPath.Count == 0)
         {
@@ -209,31 +263,10 @@ public class RoomGenerator : MonoBehaviour
         }
         GenerateRoom(correctPath[0]);
         GenerateRooms();
-    }
+    }*/
 
-    void GenerateRoom(Room from, bool rightPath = true)
-    {
-        if (CheckOverlap()) return;
-        Room newRoom = InstantiateRandomRoom();
-        float xRand = Random.Range(-xOffsetVariation, xOffsetVariation);
-        newRoom.transform.position = new Vector3(from.transform.position.x + xRand * from.roomDepth, from.transform.position.y, from.transform.position.z + from.roomDepth * extraOffset);
+  
 
-
-
-
-        if (rightPath) {
-            correctPath.Add(newRoom);
-            correctPath.Remove(from);
-            generatedCorrectPath.Add(newRoom);
-        }
-
-        rooms.Add(newRoom);
-        float rand = Random.Range(0.0f, 1.0f);
-        if(rand < falseRoomProbability)
-        {
-            GenerateRoom(newRoom, false); 
-        }
-    }
 
     void ColorizeCorrectPath()
     {
@@ -268,3 +301,18 @@ public class RoomGenerator : MonoBehaviour
         return false; // No overlaps found.
     }
 }
+
+public class RoomConnection
+{
+    public Room from;
+    public Room to;
+    public bool falseRoom; 
+
+    public RoomConnection(Room f, Room t, bool fR)
+    {
+        from = f;
+        to = t;
+        falseRoom = fR;
+    }
+}
+
