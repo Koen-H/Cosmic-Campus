@@ -9,6 +9,7 @@ public class ObjectSlamManager : MonoBehaviour
     private bool hasFallen = false;
     float raycastDistance = 3;
     float damage = 2;
+    GameObject slamObjVFX;
 
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class ObjectSlamManager : MonoBehaviour
         raycastDistance *= transform.lossyScale.z;
         //TODO: Make damage better/correct?
         damage += transform.lossyScale.z;
+        slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
     }
     private void Update()
     {
@@ -34,6 +36,8 @@ public class ObjectSlamManager : MonoBehaviour
     {
         rb.isKinematic = true;
         //Do fancy particle stuff
+        slamObjVFX = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
+        slamObjVFX.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         //If the current client is the owner, we deal the damage
         if (owner.IsOwner)
         {

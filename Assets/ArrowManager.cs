@@ -22,6 +22,7 @@ public class ArrowManager : MonoBehaviour
         attachedObject = other.gameObject.transform;
         this.transform.parent = attachedObject;
         GetComponent<Rigidbody>().isKinematic = true;
+        Destroy(GetComponent<Collider>());
     }
     private void Update()
     {

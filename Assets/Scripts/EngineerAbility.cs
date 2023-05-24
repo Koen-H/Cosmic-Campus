@@ -10,7 +10,8 @@ public class EngineerAbility : Ability
 
         GameObject target = GetTarget(origin, direction);
 
-        target.transform.forward = transform.forward;
-        target.AddComponent<Walker>();
+        target.transform.forward = player.playerObj.transform.forward;
+        Walker walker = target.AddComponent<Walker>();
+        walker.owner = player;
     }
 }
