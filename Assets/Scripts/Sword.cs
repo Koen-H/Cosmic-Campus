@@ -88,7 +88,6 @@ public class Sword : Weapon
         if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
         {
             Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
-            Debug.Log(enemy);
             if (enemy == null) return;
             enemy.TakeDamage(weaponData.damage);
         }
@@ -96,9 +95,7 @@ public class Sword : Weapon
 
     IEnumerator AfterAnim(float duration)
     {
-        Debug.Log("anim started with duration of " + duration);
         yield return new WaitForSeconds(duration);
-        Debug.Log("anim ended");
         AfterAttack();
     }
 }
