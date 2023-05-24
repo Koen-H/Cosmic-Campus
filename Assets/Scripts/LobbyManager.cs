@@ -28,7 +28,7 @@ public class LobbyManager : MonoBehaviour
     public void AddClient(ulong id, ClientManager newClient)
     {
         clients.Add(id, newClient);
-        OnNewClientJoined.Invoke(newClient);
+        //OnNewClientJoined.Invoke(newClient);
         Debug.Log("client added!");
     }
     public void RemoveClient(ulong id)

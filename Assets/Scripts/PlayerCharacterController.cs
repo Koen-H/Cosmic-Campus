@@ -25,8 +25,6 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
-
-    [SerializeField] private Weapon weapon; 
     private Ability ability;
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -209,7 +207,8 @@ public class PlayerCharacterController : NetworkBehaviour
     [ClientRpc]
     void DeactivateAbilityClientRpc(Vector3 clickPoint, ulong receivedClientId)
     {
-        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        //Commented this line, please uncomment when the deactivate is modular!
+        //if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         DesignerAbility bruh = (DesignerAbility)ability;
         bruh.PutDown(clickPoint);
     }

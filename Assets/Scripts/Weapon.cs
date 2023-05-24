@@ -11,6 +11,8 @@ public abstract class Weapon : MonoBehaviour
     internal PlayerCharacterController playerController;
     internal GameObject weaponObj;//The object that exists
 
+    protected WeaponState weaponState = WeaponState.READY;
+
     private void Awake()
     {
         playerController = GetComponent<PlayerCharacterController>();
@@ -22,6 +24,7 @@ public abstract class Weapon : MonoBehaviour
     /// </summary>
     public virtual void OnAttackInputStart()
     {
+        if (weaponState != WeaponState.READY) return;
         Aim();
     }
     /// <summary>
@@ -70,6 +73,7 @@ public abstract class Weapon : MonoBehaviour
     public virtual void Attack()
     {
         canAttack = false;
+        weaponState= WeaponState.COOLDOWN;
         StartCoroutine(Cooldown(weaponData.cooldown));
     }
 
@@ -77,9 +81,11 @@ public abstract class Weapon : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         canAttack = true;
+        weaponState = WeaponState.READY;
     }
 
 
 }
 
 public enum WeaponType { UNSET, SWORD, BOW, STAFF }
+public enum WeaponState { COOLDOWN, READY, START, HOLD, STOP, DISABLED}

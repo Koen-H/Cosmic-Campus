@@ -10,6 +10,7 @@ public class Sword : Weapon
     /// </summary>
     public override void OnAttackInputStart()
     {
+        if (weaponState != WeaponState.READY) return;
         Aim();
         playerController.AttackServerRpc();
         Attack();
@@ -21,6 +22,10 @@ public class Sword : Weapon
     public override void OnAttackInputHold()
     {
         Aim();
+        if (weaponState != WeaponState.READY) return;
+        playerController.AttackServerRpc();
+        Attack();
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// When the player lets go of the input

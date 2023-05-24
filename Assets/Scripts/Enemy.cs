@@ -81,7 +81,7 @@ public class Enemy : NetworkBehaviour
 
     void Attack(Transform target)
     {
-        DealDamage(damage, target.transform.parent.GetComponent<PlayerCharacterController>());
+        DealDamage(damage, target.transform.parent.transform.parent.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 
@@ -123,6 +123,7 @@ public class Enemy : NetworkBehaviour
     {
         //do dead things, such as body falling apart
         Debug.Log("EnemyDied");
+        if (IsOwner) Destroy(gameObject);
     }
 
     void SetSOData()

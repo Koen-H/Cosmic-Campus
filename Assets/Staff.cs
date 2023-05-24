@@ -87,12 +87,10 @@ public class Staff : Weapon
 
         if (closestEnemy != null)
         {
-            Debug.Log(" ENEMY!!");
-
             //draw fancy laser line
             Debug.DrawLine(playerPosition + Vector3.up, closestEnemy.transform.position + Vector3.up, Color.yellow, 1f);
             ShowStaffBeam(weaponObj.transform,closestEnemy.transform);
-            if (playerController.IsOwner) DealDamage(closestEnemy);//Only on the client that owns the weapon, we do damage!
+            if (playerController.IsOwner && weaponState == WeaponState.READY) DealDamage(closestEnemy);//Only on the client that owns the weapon, we do damage!
         }
 
     }
