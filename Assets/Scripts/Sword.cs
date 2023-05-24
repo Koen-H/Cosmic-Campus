@@ -25,7 +25,6 @@ public class Sword : Weapon
     /// </summary>
     public override void OnAttackInputHold()
     {
-        Aim();
         if (weaponState != WeaponState.READY) return;
         playerController.AttackServerRpc();
         Attack();
@@ -36,8 +35,8 @@ public class Sword : Weapon
     /// </summary>
     public override void OnAttackInputStop()
     {
-        Aim();
-        playerController.ToggleMovement(true);
+        //Aim();
+        //playerController.ToggleMovement(true);
     }
 
     /// <summary>
@@ -45,11 +44,7 @@ public class Sword : Weapon
     /// </summary>
     public override void CancelAttack()
     {
-
-    }
-    private void FixedUpdate()
-    {
-        
+        AfterAttack();
     }
 
     public override void Attack()
@@ -59,6 +54,8 @@ public class Sword : Weapon
         weaponAnimation = GetComponentInChildren<Animator>();
         weaponAnimation.SetTrigger("Animate");
 
+        StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
+            
 /*        // calculate raycast direction
         Vector3 rayDirection = weaponObj.transform.TransformDirection(Vector3.forward);
 
@@ -95,5 +92,13 @@ public class Sword : Weapon
             if (enemy == null) return;
             enemy.TakeDamage(weaponData.damage);
         }
+    }
+
+    IEnumerator AfterAnim(float duration)
+    {
+        Debug.Log("anim started with duration of " + duration);
+        yield return new WaitForSeconds(duration);
+        Debug.Log("anim ended");
+        AfterAttack();
     }
 }

@@ -55,6 +55,12 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
+
+    protected void AfterAttack()
+    {
+        playerController.ToggleMovement(true);
+    }
+
     /// <summary>
     /// Aim rotates the player towards where the mouse clicks.
     /// </summary>
