@@ -244,9 +244,6 @@ GameObject:
   - component: {fileID: 4730861770734180507}
   - component: {fileID: 4730861770734180506}
   - component: {fileID: 4730861770734180505}
-  - component: {fileID: 7570894151699853274}
-  - component: {fileID: 6044075372312755327}
-  - component: {fileID: 4823783926444303511}
   - component: {fileID: 4489523786314819954}
   m_Layer: 3
   m_Name: PlayerCharacter
@@ -335,43 +332,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &7570894151699853274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2fd83db89d78341a20279203722c3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxChargeTime: 2
---- !u!114 &6044075372312755327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 138f55ee8e4aac94bad9d04436f43b58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4823783926444303511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861770734180509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ae79f8bf48b1d4a9499bf8cc488d78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!120 &4489523786314819954
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -481,6 +441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4730861772226633753}
   - component: {fileID: 4594330186589629300}
+  - component: {fileID: 7454409003589104594}
   m_Layer: 3
   m_Name: Avatar
   m_TagString: Player
@@ -518,6 +479,22 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &7454409003589104594
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4730861772226633752}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5890912343632651228
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,15 +15,23 @@ public class Bow : Weapon
     /// </summary>
     public override void OnAttackInputStart()
     {
-        StartCharge();
+        if (weaponState != WeaponState.READY) return;
         playerController.ToggleMovement(false);
         playerController.AttackStartServerRpc();
+        AttackStart();
     }
     /// <summary>
     /// While the player is holding the input
     /// </summary>
     public override void OnAttackInputHold()
     {
+        if (weaponState == WeaponState.READY)
+        {
+            playerController.ToggleMovement(false);
+            playerController.AttackStartServerRpc();
+            AttackStart();
+        }
+        if (weaponState != WeaponState.HOLD) return;
         Aim();
         playerController.ToggleMovement(false);
     }
@@ -32,20 +40,21 @@ public class Bow : Weapon
     /// </summary>
     public override void OnAttackInputStop()
     {
+        if (weaponState != WeaponState.HOLD) return;
         Aim();
-        
         if (isCharging)
         {
             playerController.AttackServerRpc();
-            
+            Attack();
         }
         playerController.ToggleMovement(true);
     }
 
     public override void Attack()
     {
-        base.Attack();
+        
         ShootArrow();
+        base.Attack();
     }
     
     public override void AttackStart()
@@ -54,9 +63,9 @@ public class Bow : Weapon
     }
     private void StartCharge()
     {
+        weaponState = WeaponState.HOLD;
         isCharging = true;
         chargeStartTime = Time.time;
-        Debug.Log("starting"); 
     }
 
 

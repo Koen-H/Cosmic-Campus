@@ -5,13 +5,19 @@ using UnityEngine;
 public class Sword : Weapon
 {
 
+    private void Start()
+    {
+        GetComponentInChildren<SwordCollider>().swrod = this;
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
     public override void OnAttackInputStart()
     {
+        if (weaponState != WeaponState.READY) return;
         Aim();
         playerController.AttackServerRpc();
+        Attack();
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -19,15 +25,18 @@ public class Sword : Weapon
     /// </summary>
     public override void OnAttackInputHold()
     {
-        Aim();
+        if (weaponState != WeaponState.READY) return;
+        playerController.AttackServerRpc();
+        Attack();
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// When the player lets go of the input
     /// </summary>
     public override void OnAttackInputStop()
     {
-        Aim();
-        playerController.ToggleMovement(true);
+        //Aim();
+        //playerController.ToggleMovement(true);
     }
 
     /// <summary>
@@ -35,15 +44,19 @@ public class Sword : Weapon
     /// </summary>
     public override void CancelAttack()
     {
-
+        AfterAttack();
     }
 
     public override void Attack()
     {
         base.Attack();
 
+        weaponAnimation = GetComponentInChildren<Animator>();
+        weaponAnimation.SetTrigger("Animate");
 
-        // calculate raycast direction
+        StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
+            
+/*        // calculate raycast direction
         Vector3 rayDirection = weaponObj.transform.TransformDirection(Vector3.forward);
 
         Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.red, 0.01f);
@@ -59,10 +72,30 @@ public class Sword : Weapon
                 // call DealDamage function
                 if(playerController.IsOwner)DealDamage(hit.transform.gameObject);
             }
+        }*/
+    }
+
+/*    private void weaponCollider.OnTriggerEnter(Collider other)
+    {
+        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
+        {
+            DealDamage(other.transform.gameObject);
+        }
+    }*/
+    public void DealDamage(GameObject enemyObject)
+    {
+        if (!weaponAnimation) return;
+        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
+        {
+            Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
+            if (enemy == null) return;
+            enemy.TakeDamage(weaponData.damage);
         }
     }
-    void DealDamage(GameObject enemy)
+
+    IEnumerator AfterAnim(float duration)
     {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(weaponData.damage);
+        yield return new WaitForSeconds(duration);
+        AfterAttack();
     }
 }

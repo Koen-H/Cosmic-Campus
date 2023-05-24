@@ -81,7 +81,7 @@ public class Enemy : NetworkBehaviour
 
     void Attack(Transform target)
     {
-        DealDamage(damage, target.transform.parent.GetComponent<PlayerCharacterController>());
+        DealDamage(damage, target.transform.parent.transform.parent.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 
@@ -90,16 +90,16 @@ public class Enemy : NetworkBehaviour
         to.TakeDamage(damage);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damageInc)
     {
-        TakeDamgeServerRpc();
+        TakeDamgeServerRpc(damageInc);
        
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc()
+    void TakeDamgeServerRpc(float damageInc)
     {
-        health.Value -= damage;
+        health.Value -= damageInc;
     }
 
 
@@ -108,7 +108,6 @@ public class Enemy : NetworkBehaviour
         healthText.text = health.Value.ToString();
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
-            Debug.Log("Take damage!");
             if (health.Value <= 0) Die();
         }
         else if (prevHealth < newHealth)//Do things where the player gained health!
@@ -123,6 +122,7 @@ public class Enemy : NetworkBehaviour
     {
         //do dead things, such as body falling apart
         Debug.Log("EnemyDied");
+        if (IsOwner) Destroy(gameObject);
     }
 
     void SetSOData()

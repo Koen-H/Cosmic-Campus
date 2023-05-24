@@ -4,6 +4,7 @@ using System.Globalization;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using static PlayerSO;
 
 
 /// <summary>
@@ -24,9 +25,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
-
-    [SerializeField] private Weapon weapon; 
-    [SerializeField] private Ability ability;
+    private Ability ability;
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -78,14 +77,9 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weaponBehaviour.OnAttackInputHold();
         }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-           // Ability();
-        }
     }
 
-    void Ability()
+/*    void Ability()
     {
         // calculate raycast direction
         Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
@@ -99,19 +93,11 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             ability.Activate(hit.collider.gameObject);
         }
-    }
+    }*/
 
     /// <summary>
     /// Movement
     /// </summary>
-    private void Move()
-    {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
-    }*/
-
-        /// <summary>
-        /// Movement
-        /// </summary>
     private void Move()
     {
         if(!canMove) return;
@@ -148,7 +134,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         foreach (Transform child in playerWeapon.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
         WeaponData newWeapon = playerData.playerRoleData.GetWeapon(playerData.weaponId.Value);//Get the new weapon
-
+        GetAbilityBehaviour();
         GetWeaponBehaviour(newWeapon.weaponType);
         weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
         weaponBehaviour.weaponData = newWeapon;
@@ -159,15 +145,15 @@ public class PlayerCharacterController : NetworkBehaviour
         switch (weaponType)
         {
             case WeaponType.SWORD:
-                weaponBehaviour = this.gameObject.GetComponent<Sword>();
+                weaponBehaviour = this.gameObject.AddComponent<Sword>();
                 break;
 
             case WeaponType.BOW:
-                weaponBehaviour = this.gameObject.GetComponent<Bow>();
+                weaponBehaviour = this.gameObject.AddComponent<Bow>();
                 break;
 
             case WeaponType.STAFF:
-                weaponBehaviour = this.gameObject.GetComponent<Staff>();
+                weaponBehaviour = this.gameObject.AddComponent<Staff>();
                 break;
 
             default:
@@ -176,13 +162,65 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+    private void GetAbilityBehaviour()
+    {
+        switch (playerData.playerRole.Value)
+        {
+            case PlayerRole.ENGINEER:
+                ability = this.gameObject.AddComponent<EngineerAbility>();
+                break;
+
+            case PlayerRole.DESIGNER:
+                ability = this.gameObject.AddComponent<DesignerAbility>();
+                break;
+
+            case PlayerRole.ARTIST:
+                ability = this.gameObject.AddComponent<ArtistAbility>();
+                break;
+
+            default:
+                Debug.LogError("No role selected?!");
+                return;
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ActivateServerRpc(Vector3 origin, Vector3 direction, ServerRpcParams serverRpcParams = default)
+    {
+        AbilityClientRpc(origin, direction, serverRpcParams.Receive.SenderClientId);
+    }
+    [ClientRpc]
+    void AbilityClientRpc(Vector3 origin, Vector3 direction, ulong receivedClientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        ability.Activate( origin, direction); 
+    }
+
+
+    [ServerRpc]
+    public void DeactivateServerRpc(Vector3 clickPoint, ServerRpcParams serverRpcParams = default)
+    {
+        DeactivateAbilityClientRpc(clickPoint, serverRpcParams.Receive.SenderClientId);
+    }
+
+    [ClientRpc]
+    void DeactivateAbilityClientRpc(Vector3 clickPoint, ulong receivedClientId)
+    {
+        //Commented this line, please uncomment when the deactivate is modular!
+        //if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        DesignerAbility bruh = (DesignerAbility)ability;
+        bruh.PutDown(clickPoint);
+    }
+
+
     /// <summary>
     /// To notify the server, that the client is attacking
     /// </summary>
     [ServerRpc]
-    public void AttackServerRpc()
+    public void AttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        AttackClientRpc();
+        AttackClientRpc(serverRpcParams.Receive.SenderClientId);
     }
 
 
@@ -190,8 +228,9 @@ public class PlayerCharacterController : NetworkBehaviour
     /// Tell each client this character is attacking!
     /// </summary>
     [ClientRpc]
-    void AttackClientRpc()
+    void AttackClientRpc(ulong receivedClientId)
     {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.Attack();
     }
 
@@ -199,17 +238,18 @@ public class PlayerCharacterController : NetworkBehaviour
     /// 
     /// </summary>
     [ServerRpc]
-    public void AttackStartServerRpc()
+    public void AttackStartServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        AttackStartClientRpc();
+        AttackStartClientRpc(serverRpcParams.Receive.SenderClientId);
     }
 
     /// <summary>
     /// Begin of attack
     /// </summary>
     [ClientRpc]
-    private void AttackStartClientRpc()
+    private void AttackStartClientRpc(ulong receivedClientId)
     {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.AttackStart();
     }
 
