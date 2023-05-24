@@ -5,6 +5,10 @@ using UnityEngine;
 public class Sword : Weapon
 {
 
+    private void Start()
+    {
+        GetComponentInChildren<SwordCollider>().swrod = this;
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -43,13 +47,19 @@ public class Sword : Weapon
     {
 
     }
+    private void FixedUpdate()
+    {
+        
+    }
 
     public override void Attack()
     {
         base.Attack();
 
+        weaponAnimation = GetComponentInChildren<Animator>();
+        weaponAnimation.SetTrigger("Animate");
 
-        // calculate raycast direction
+/*        // calculate raycast direction
         Vector3 rayDirection = weaponObj.transform.TransformDirection(Vector3.forward);
 
         Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.red, 0.01f);
@@ -65,10 +75,25 @@ public class Sword : Weapon
                 // call DealDamage function
                 if(playerController.IsOwner)DealDamage(hit.transform.gameObject);
             }
-        }
+        }*/
     }
-    void DealDamage(GameObject enemy)
+
+/*    private void weaponCollider.OnTriggerEnter(Collider other)
     {
-        enemy.transform.parent.GetComponent<Enemy>().TakeDamage(weaponData.damage);
+        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
+        {
+            DealDamage(other.transform.gameObject);
+        }
+    }*/
+    public void DealDamage(GameObject enemyObject)
+    {
+        if (!weaponAnimation) return;
+        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
+        {
+            Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
+            Debug.Log(enemy);
+            if (enemy == null) return;
+            enemy.TakeDamage(weaponData.damage);
+        }
     }
 }

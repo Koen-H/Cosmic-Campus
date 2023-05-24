@@ -11,11 +11,16 @@ public abstract class Weapon : MonoBehaviour
     internal PlayerCharacterController playerController;
     internal GameObject weaponObj;//The object that exists
 
+    protected Animator weaponAnimation;
+    protected BoxCollider weaponCollider; 
+
     protected WeaponState weaponState = WeaponState.READY;
 
     private void Awake()
     {
         playerController = GetComponent<PlayerCharacterController>();
+
+
     }
 
 
