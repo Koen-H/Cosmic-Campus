@@ -9,6 +9,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] GameObject playerObj;
     Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
     public static event System.Action<ClientManager> OnNewClientJoined;
+    [SerializeField] GameObject spawnLocation;
+
 
     private static LobbyManager _instance;
     public static LobbyManager Instance
@@ -53,7 +55,7 @@ public class LobbyManager : MonoBehaviour
         foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients)
         {
             
-            GameObject obj = Instantiate(playerObj);
+            GameObject obj = Instantiate(playerObj, spawnLocation.transform.position, Quaternion.LookRotation(spawnLocation.transform.forward));
             ClientManager clientManager = client.Value.PlayerObject.GetComponent<ClientManager>();
             clientManager.playerCharacter = obj;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
