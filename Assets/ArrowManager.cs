@@ -9,9 +9,20 @@ public class ArrowManager : MonoBehaviour
     private Transform attachedObject;
     public float damage = 0;
     public PlayerCharacterController playerController;
+    public RangeEnemy rangeEnemy; 
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Collision");
+        if (rangeEnemy)
+        {
+            Debug.Log("range Enemy is not null");
+            PlayerCharacterController player = other.transform.GetComponent<PlayerCharacterController>();
+            Debug.Log("Player : " + player + "  : name =  " + other.gameObject.name);
+            DealDamage(damage, player);
+            return;
+        }
+        if (!playerController) return;
         if (attached) return;
         if(other.tag == "Enemy")
         {
@@ -24,6 +35,12 @@ public class ArrowManager : MonoBehaviour
         GetComponent<Rigidbody>().isKinematic = true;
         Destroy(GetComponent<Collider>());
     }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision! As OnCollisionEnter");
+    }
     private void Update()
     {
         if (attached)
@@ -33,7 +50,16 @@ public class ArrowManager : MonoBehaviour
                 Destroy(gameObject);
                 return;
             }
-
         }
     }
+
+    void DealDamage(float damage, PlayerCharacterController to)
+    {
+        if(to)
+        {
+            Debug.Log("to is not null");
+            to.TakeDamage(damage);
+        }
+    }
+
 }

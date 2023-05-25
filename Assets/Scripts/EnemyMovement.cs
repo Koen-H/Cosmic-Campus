@@ -16,7 +16,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void SetTarget(Transform Target) { if (Target != null) target = Target; }
     public void RemoveTarget(){target = null;}
-    public void SetSpeed(float speed) { if (speed > 0) agent.speed = speed;}
+    public void SetSpeed(float speed) { if (speed >= 0) agent.speed = speed;}
 
 
 
