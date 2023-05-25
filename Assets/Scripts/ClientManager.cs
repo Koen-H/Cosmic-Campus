@@ -26,20 +26,38 @@ public class ClientManager : NetworkBehaviour
             return _myClient;
         }
     }
+    //private void Awake()
+    //{
+    //    Debug.Log("hey");
+    //    LobbyManager.Instance.AddClient(OwnerClientId, this);
+    //    DontDestroyOnLoad(this.gameObject);
+    //    if (!IsOwner) return;
+    //    _myClient = this;
+    //    clientId.Value = NetworkManager.Singleton.LocalClientId;
+    //    Debug.Log(GetClientId());
+    //    if (SteamClient.IsLoggedOn == true)
+    //    {
+    //        playerName.Value = SteamClient.Name;
+    //        steamAccountId.Value = SteamClient.SteamId.AccountId;
+    //        this.gameObject.name = $"Client ({SteamClient.Name})";
+    //    }
+    //}
 
     public override void OnNetworkSpawn()
     {
-        LobbyManager.Instance.AddClient(OwnerClientId,this);
         DontDestroyOnLoad(this.gameObject);
-        if (!IsOwner) return;
-        _myClient = this;
-        clientId.Value = NetworkManager.Singleton.LocalClientId;
-        if (SteamClient.IsLoggedOn == true)
+        if (IsOwner)
         {
-            playerName.Value = SteamClient.Name;
-            steamAccountId.Value = SteamClient.SteamId.AccountId;
-            this.gameObject.name = $"Client ({SteamClient.Name})";
+            _myClient = this;
+            clientId.Value = NetworkManager.Singleton.LocalClientId;
+            if (SteamClient.IsLoggedOn == true)
+            {
+                playerName.Value = SteamClient.Name;
+                steamAccountId.Value = SteamClient.SteamId.AccountId;
+                this.gameObject.name = $"Client ({SteamClient.Name})";
+            }
         }
+        LobbyManager.Instance.AddClient(OwnerClientId, this);
     }
 
     public override void OnNetworkDespawn()
@@ -49,6 +67,6 @@ public class ClientManager : NetworkBehaviour
 
     public ulong GetClientId()
     {
-        return clientId.Value;
+        return OwnerClientId;
     }
 }

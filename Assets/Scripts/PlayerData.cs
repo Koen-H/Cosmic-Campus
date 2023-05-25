@@ -47,7 +47,7 @@ public class PlayerData : NetworkBehaviour
             default:
                 break;
         }
-        Debug.Log($"{newRole} And avatar id {avatarId.Value}");
+        Debug.Log($"Playerdata role changed to {newRole} for client {OwnerClientId}");
     }
 
     /// <summary>
@@ -55,8 +55,8 @@ public class PlayerData : NetworkBehaviour
     /// </summary>
     public void SetData(PlayerRole newPlayerRole, int newAvatarId, int newWeaponId)
     {
-        avatarId.Value = newAvatarId;
         playerRole.Value = newPlayerRole;
+        avatarId.Value = newAvatarId;
         weaponId.Value = newWeaponId;
     }
 

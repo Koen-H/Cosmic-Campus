@@ -120,7 +120,6 @@ public class Enemy : NetworkBehaviour
     private void Die()
     {
         //do dead things, such as body falling apart
-        Debug.Log("EnemyDied");
         if (IsOwner) Destroy(gameObject);
     }
 
