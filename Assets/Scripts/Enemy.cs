@@ -73,7 +73,6 @@ public class Enemy : NetworkBehaviour
     {
         if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
-            Debug.Log("ATTACKKK");
             Attack(target);
             canAttack = false;
         }

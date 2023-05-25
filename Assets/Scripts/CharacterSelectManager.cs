@@ -14,6 +14,7 @@ public class CharacterSelectManager : MonoBehaviour
     [SerializeField] GameObject avatarShowcase;
     [SerializeField] GameObject weaponShowcase;
 
+
     PlayerRole playerRole;
     int avatarId;
     int weaponId;

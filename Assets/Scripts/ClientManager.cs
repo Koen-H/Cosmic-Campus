@@ -30,7 +30,7 @@ public class ClientManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         LobbyManager.Instance.AddClient(OwnerClientId,this);
-
+        DontDestroyOnLoad(this.gameObject);
         if (!IsOwner) return;
         _myClient = this;
         clientId.Value = NetworkManager.Singleton.LocalClientId;
