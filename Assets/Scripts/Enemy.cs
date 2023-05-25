@@ -81,7 +81,7 @@ public class Enemy : NetworkBehaviour
 
     void Attack(Transform target)
     {
-        DealDamage(damage, target.transform.parent.transform.parent.GetComponent<PlayerCharacterController>());
+        DealDamage(damage, target.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 

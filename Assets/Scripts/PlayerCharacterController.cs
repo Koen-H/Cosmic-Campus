@@ -4,6 +4,7 @@ using System.Globalization;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 using static PlayerSO;
 
 
@@ -27,8 +28,26 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
 
+    private bool isGrounded;
+
+
+    [SerializeField]float accelerationTime = 0.5f;
+    [SerializeField]float decelerationTime = 0.5f;
+    [SerializeField]float maxSpeed = 10f;
+    [SerializeField]float currentSpeed = 0f;
+
+
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
+
+    private Rigidbody rigidbody;
+    Vector3 movementDirection;
+
+    [SerializeField] float grav; 
+    private void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
     public void TakeDamage(float damage)
     {
         if (damage > 0) health.Value -= damage;
@@ -77,37 +96,121 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weaponBehaviour.OnAttackInputHold();
         }
+
+
+
+
+
+
+
+    }
+    private void FixedUpdate()
+    {
+/*        float groundCheckDist = 0.5f;
+        Vector3 rayDirection = Vector3.down * groundCheckDist;
+        Debug.DrawRay(transform.position, rayDirection, Color.blue, 0.01f);
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, rayDirection, out hit, rayDirection.magnitude))
+        {
+            isGrounded = true;
+        }
+        else isGrounded = false; */
     }
 
-/*    void Ability()
-    {
-        // calculate raycast direction
-        Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
-
-        Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.green, 0.01f);
-        // initialize a variable to store the hit information
-        RaycastHit hit;
-
-        // shoot the raycast
-        if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
+    /*    void Ability()
         {
-            ability.Activate(hit.collider.gameObject);
-        }
-    }*/
+            // calculate raycast direction
+            Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
+
+            Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.green, 0.01f);
+            // initialize a variable to store the hit information
+            RaycastHit hit;
+
+            // shoot the raycast
+            if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
+            {
+                ability.Activate(hit.collider.gameObject);
+            }
+        }*/
 
     /// <summary>
     /// Movement
     /// </summary>
     private void Move()
     {
-        if(!canMove) return;
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        if (moveHorizontal == 0 && moveVertical == 0) return;
-        Vector3 direction = new Vector3(moveHorizontal, 0f, moveVertical);
-        Vector3 movement = direction * moveSpeed * Time.deltaTime;
-        playerObj.transform.forward = direction;
-        transform.Translate(movement);
+
+
+
+        int horizontalInput = 0;
+        int verticalInput = 0;
+
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1;
+
+
+        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        Debug.Log($"MOve {horizontalInput} , {verticalInput}");
+        // Check if there is input
+        if (movementDirection != Vector3.zero)
+        {
+            // If there is input, accelerate the object
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+            Debug.Log("moving");
+        }
+        else
+        {
+            Debug.Log("else");
+            // If there is no input, decelerate the object
+            currentSpeed = 0;
+            //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
+        }
+
+        // Apply the calculated speed to the Rigidbody
+        rigidbody.velocity = movementDirection * currentSpeed;
+
+
+
+
+        /*        // Capture input from WASD keys
+                float horizontalInput = Input.GetAxis("Horizontal");
+                float verticalInput = Input.GetAxis("Vertical");
+
+
+                // Calculate the movement direction based on input
+                movementDirection = new Vector3(horizontalInput, 0f, verticalInput).normalized;
+
+                // Move the player based on the movement direction
+                if (movementDirection != Vector3.zero)
+                {
+                    // Calculate the desired position based on movement direction
+                    Vector3 desiredPosition = transform.position + movementDirection * moveSpeed * Time.deltaTime;
+
+                    // Use NavMesh.SamplePosition to find the closest valid position on the NavMesh
+                    NavMeshHit hit;
+                    if (NavMesh.SamplePosition(desiredPosition, out hit, 1, NavMesh.AllAreas))
+                    {
+                        // Move the player to the valid NavMesh position
+                        transform.position = hit.position;
+                    }
+                }*/
+
+
+
+
+
+
+        /*        if (!canMove) return;
+                float moveHorizontal = Input.GetAxis("Horizontal");
+                float moveVertical = Input.GetAxis("Vertical");
+
+
+                Vector3 direction = new Vector3(moveHorizontal, 0, moveVertical);
+                Vector3 movement = direction.normalized * moveSpeed * Time.deltaTime;
+                playerObj.transform.forward = new Vector3(direction.x, 0, direction.z);
+                //rigidbody.AddForce(movement, ForceMode.);
+                rigidbody.velocity = movement + Vector3.down * grav;*/
     }
 
 

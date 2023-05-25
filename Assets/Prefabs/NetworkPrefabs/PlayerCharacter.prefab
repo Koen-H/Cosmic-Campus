@@ -245,9 +245,11 @@ GameObject:
   - component: {fileID: 4730861770734180506}
   - component: {fileID: 4730861770734180505}
   - component: {fileID: 4489523786314819954}
+  - component: {fileID: 667747077447552527}
+  - component: {fileID: 2505549040542676982}
   m_Layer: 3
   m_Name: PlayerCharacter
-  m_TagString: Interactable
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -289,7 +291,12 @@ MonoBehaviour:
   damage: 2
   playerWeapon: {fileID: 5890912343632651228}
   weaponBehaviour: {fileID: 0}
+  accelerationTime: 0.5
+  decelerationTime: 0.5
+  maxSpeed: 5
+  currentSpeed: 0
   attackRange: 10
+  grav: 0
 --- !u!114 &4730861770734180506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,6 +438,36 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!136 &667747077447552527
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4730861770734180509}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &2505549040542676982
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4730861770734180509}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &4730861772226633752
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +477,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4730861772226633753}
-  - component: {fileID: 4594330186589629300}
   - component: {fileID: 7454409003589104594}
   m_Layer: 3
   m_Name: Avatar
@@ -465,20 +501,6 @@ Transform:
   m_Father: {fileID: 1059717653454241339}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &4594330186589629300
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4730861772226633752}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &7454409003589104594
 Rigidbody:
   m_ObjectHideFlags: 0
