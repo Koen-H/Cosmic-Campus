@@ -13,7 +13,6 @@ public class ArrowManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collision");
         if (rangeEnemy)
         {
             Debug.Log("range Enemy is not null");
