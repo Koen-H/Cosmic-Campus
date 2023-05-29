@@ -33,6 +33,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
+    private Collider col;
 
     private bool isGrounded;
 
@@ -54,9 +55,20 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
     }
+
+    /// <summary>
+    /// Heal the player based on percentage of max health.
+    /// </summary>
+    public void Heal(float percentage)
+    {
+        float addedHealth = maxHealth.Value * (percentage / 100);
+        health.Value += addedHealth;
+    }
+
     public void TakeDamage(float damage)
     {
         if (isDead.Value) return;
+        if (damage >= health.Value) damage = health.Value;
         if (damage > 0) health.Value -= damage;
         if (health.Value <= 0) isDead.Value = true;
     }
@@ -68,12 +80,14 @@ public class PlayerCharacterController : NetworkBehaviour
             //Tell the gamemanager that this player is dead, if all other players are dead it's a game over!
             //Gamemanager.player died!
             weaponBehaviour.CancelAttack();
+            col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
         }
         else
         {
             myReviveArea.gameObject.SetActive(false);
+            col.enabled = true;//Enable collider to allow it to be targeted and attacked again.
             //Resurrected animation here!
             playerObj.gameObject.SetActive(true);
         }
