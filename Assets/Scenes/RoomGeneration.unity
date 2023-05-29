@@ -453,10 +453,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ee58c74395a004ea3e9b7d68e13d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 0
+  drawingDelay: 2
+  numberOfPyramids: 3
+  numberOfRooms: 5
   roomPrefabs: []
   forwardOffset: 2
   rightOffset: 1
+  randomXOffset: 0
+  numberOfBranches: 1
+  maxDepthOfBranch: 2
+  ittiriations: 1
+  randomError: 0
 --- !u!4 &806128546
 Transform:
   m_ObjectHideFlags: 0
@@ -465,7 +472,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 806128544}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.182839, y: 24.173151, z: -18.546108}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

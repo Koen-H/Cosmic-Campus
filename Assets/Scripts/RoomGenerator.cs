@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class RoomGenerator : MonoBehaviour
 {
+    [SerializeField] private float drawingDelay;
+    [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
     public List<RoomInfo> roomPrefabs;
     //private List<RoomInfo> generatedRooms = new List<RoomInfo>();
@@ -18,43 +20,27 @@ public class RoomGenerator : MonoBehaviour
     [SerializeField] private int numberOfBranches;
     [SerializeField] private int maxDepthOfBranch;
 
-    [SerializeField] float ittiriations; 
+    [SerializeField] float ittiriations;
 
-    private List<RoomsLayer> roomLayers = new List<RoomsLayer>();
+    [SerializeField] float randomError; 
+
+    private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
 
     private void Start()
     {
-        GeneratePyramid(); 
+
     }
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.R)) ResetRooms();
-        if (Input.GetKeyUp(KeyCode.KeypadEnter)) VisualiseRooms();
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            AddLayer();
-            VisualiseRooms();
-        }
-        if (Input.GetKeyUp(KeyCode.Return))
-        {
-            for (int i = 0; i < ittiriations; i++)
-            {
-                int rand = Random.Range(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
-                Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
-                Room to = roomLayers[0].roomPositions[0];
-                List<Room> correctPath = FindPath(from, to);
-                VisualisePath(correctPath, Color.green);
-                InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch);
-            }
-        }
     }
     private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches)
     {
         int totalRooms = path.Count;
-        if (numberOfBranches > totalRooms || depthOfBranches > totalRooms)
+        if (numberOfBranches*2 >= totalRooms)
         {
-            Debug.LogWarning("Number of branches or Max Depth of branches is more than number of Rooms!");
+            Debug.LogWarning("numberOfBranches is too high, please decrease it or increase number of rooms");
             return;
         }
         List<Room> branchingPoints = new List<Room>();
@@ -65,30 +51,30 @@ public class RoomGenerator : MonoBehaviour
             int rand = Random.Range(lowerBound, upperBound);
             Room point = path[rand];
             branchingPoints.Add(point);
-            //Debug.Log(lowerBound + " to " + upperBound + " rnad : " + rand + " // total rooms = " + totalRooms);
             lowerBound = upperBound-1;
         }
         for (int i = 0; i < branchingPoints.Count; i++)
         {
             Room point = branchingPoints[i];
-            Debug.DrawLine(point.GetRoomPosition(), point.GetRoomPosition() + Vector3.right, Color.white, 2f);
+            Debug.DrawLine(point.GetRoomPosition(), point.GetRoomPosition() + Vector3.right, Color.white, drawingDelay);
         }
         GenerateBranches(branchingPoints, path);
     }
 
     private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath)
     {
-        for (int i = 0; i < branchingPoints.Count; i++)
+        List<Room> allBranches = new List<Room>(); 
+        for (int i = branchingPoints.Count -1; i >= 0 ; i--)
         {
-            //int rand = Random.Range(1, maxDepthOfBranch + 1);
             int rand = maxDepthOfBranch;
-            List<Room> branchedPath = BranchOff(branchingPoints[i], rand, correctPath);
+            List<Room> branchedPath = BranchOff(branchingPoints[i], rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
             VisualisePath(branchedPath, Color.red);
+            foreach (var branch in branchedPath) allBranches.Add(branch);
         }
     }
 
-    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath)
+    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
     {
         Debug.Log("Ittiration attempt");
         if (maxDepthOfBranch == 0)
@@ -98,7 +84,7 @@ public class RoomGenerator : MonoBehaviour
         }
             if (correctPath == null) Debug.LogError("correctPath was NULL");
         if (from == null) Debug.LogError("from was NULL");
-        if (from.layerNumber > correctPath.Count - 1){
+        if (from.layerNumber > correctPath.Count - 2){
             Debug.LogWarning("FROM LAYER WAS MORE THAN CORRECT PATH DOT COUNT");
             return null;
         }
@@ -119,10 +105,10 @@ public class RoomGenerator : MonoBehaviour
             tempB = from.roomA;
         }
 
-        if (!correctPath.Contains(tempA) && tempA != null)
+        if (!correctPath.Contains(tempA) && tempA != null && !generatedBranches.Contains(tempA))
         {
             branchedPath.Add(tempA);
-            List<Room> newRooms = BranchOff(tempA, maxDepthOfBranch - 1, correctPath);
+            List<Room> newRooms = BranchOff(tempA, maxDepthOfBranch - 1, correctPath, generatedBranches);
             if (newRooms != null)
             {
                 foreach (var newRoom in newRooms)
@@ -132,12 +118,12 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
         }
-        else if(!correctPath.Contains(tempB) && tempB != null)
+        else if(tempB != null)
         {
-            List<Room> newRooms = BranchOff(tempB, maxDepthOfBranch - 1, correctPath);
+            branchedPath.Add(tempB);
+            List<Room> newRooms = BranchOff(tempB, maxDepthOfBranch - 1, correctPath, generatedBranches);
             if (newRooms != null)
             {
-                branchedPath.Add(tempB);
                 foreach (var newRoom in newRooms)
                 {
                     if (branchedPath.Contains(newRoom)) continue;
@@ -146,7 +132,6 @@ public class RoomGenerator : MonoBehaviour
             }
         }
         else Debug.Log("Room A and B was NULL " + tempA + " : " + tempB);
-
         return branchedPath;
     }
 
@@ -154,14 +139,27 @@ public class RoomGenerator : MonoBehaviour
     {
         for (int i = 0; i < path.Count - 1; i++)
         {
-            Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, 2f);
+            Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
         }
     }
     private void ResetRooms()
     {
-        roomLayers.Clear(); 
+        generation.Clear();
+        GeneratePyramids();
     }
-    private List<Room> FindPath(Room from, Room to)
+
+    private void GeneratePyramids()
+    {
+        Vector3 origin = Vector3.zero;
+        for (int i = 0; i < numberOfPyramids; i++)
+        {
+            List<RoomsLayer> roomLayer = new List<RoomsLayer>(); 
+            Vector3 temp = GeneratePyramid(origin, roomLayer).GetRoomPosition();
+            origin = temp;
+        }
+    }
+
+    private List<Room> FindPath(Room from, Room to, List<RoomsLayer> roomLayers)
     {
         List<Room> path = new List<Room>();
         path.Add(from);
@@ -169,13 +167,10 @@ public class RoomGenerator : MonoBehaviour
         {
             Room closest = new Room(Vector3.zero,Vector3.zero, 0);
             float closestFloat = float.MaxValue;
-
-/*            Vector3 closestTO = Vector3.zero;
-            float closestFloatTO = float.MaxValue;*/
             foreach (var room in roomLayers[i].roomPositions)
             {
-                float diff = Mathf.Abs(room.GetRoomPosition().x - from.GetRoomPosition().x);
-                //float diffTO = Mathf.Abs()
+                float rand = Random.Range(-randomError, randomError);
+                float diff = Mathf.Abs(room.GetRoomPosition().x + rand - from.GetRoomPosition().x);
                 if (diff < closestFloat)
                 {
                     closest = room;
@@ -186,32 +181,44 @@ public class RoomGenerator : MonoBehaviour
         }
         return path;
     }
-    void AddLayer()
+    void AddLayer(List<RoomsLayer> roomLayers)
     {
-        if (roomLayers.Count == 0) AddInitialRoom();
-        Multiply(roomLayers[roomLayers.Count-1]);
+        Multiply(roomLayers[roomLayers.Count-1],roomLayers);
     }
-    private void VisualiseRooms()
+    private void VisualiseRooms(List<RoomsLayer> roomLayers)
     {
         foreach (var layer in roomLayers)
         {
-            foreach (var room in layer.roomPositions) Debug.DrawLine(room.GetRoomPosition(), room.GetRoomPosition() + Vector3.forward, Color.cyan, 2);
+            foreach (var room in layer.roomPositions) Debug.DrawLine(room.GetRoomPosition(), room.GetRoomPosition() + Vector3.forward, Color.cyan, drawingDelay);
         }
     }
 
-    void GeneratePyramid()
+    Room GeneratePyramid(Vector3 origin, List<RoomsLayer> roomLayers)
     {
-        Multiply(AddInitialRoom());
+        Multiply(AddInitialRoom(origin,roomLayers),roomLayers);
+        for (int i = 0; i < numberOfRooms; i++)
+        {
+            AddLayer(roomLayers);
+        }
+        VisualiseRooms(roomLayers);
+        int rand = Random.Range(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
+        Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
+        Room to = roomLayers[0].roomPositions[0];
+        List<Room> correctPath = FindPath(from, to,roomLayers);
+        VisualisePath(correctPath, Color.green);
+        InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch);
+        return from;
     }
-    private RoomsLayer AddInitialRoom()
+    private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
     {
         RoomsLayer initialLayer = new RoomsLayer(0);
-        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, Vector3.zero, 0)};
+        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0)};
         roomLayers.Add(initialLayer);
+        Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
         return initialLayer;
     }
 
-    void Multiply(RoomsLayer layer)
+    void Multiply(RoomsLayer layer, List<RoomsLayer> roomLayers)
     {
         RoomsLayer newLayer = new RoomsLayer(layer.layerIndex +1);
         for (int i = 0; i < layer.roomPositions.Count; i++)
@@ -244,8 +251,8 @@ public class RoomsLayer {
     }
 }
 public class Room {
-    public Vector3 variation;
-    public Vector3 origin;
+    public Vector3 variation { private set; get; }
+    public Vector3 origin { private set; get; }
     public bool multiplePaths = false;
 
     public Room roomA;
