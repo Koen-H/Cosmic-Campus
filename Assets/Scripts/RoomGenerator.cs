@@ -241,7 +241,7 @@ public class RoomGenerator : MonoBehaviour
     {
         foreach (var layer in roomLayers)
         {
-            foreach (var room in layer.roomPositions) Debug.DrawLine(room.GetRoomPosition(), room.GetRoomPosition() + Vector3.forward, Color.cyan, drawingDelay);
+            foreach (var room in layer.roomPositions) Debug.DrawLine(room.GetRoomPosition(), room.GetRoomPosition() + Vector3.forward, Color.cyan, drawingDelay/2);
         }
     }
 
@@ -266,7 +266,7 @@ public class RoomGenerator : MonoBehaviour
         RoomsLayer initialLayer = new RoomsLayer(0);
         int randInt = Random.Range(0, roomPrefabs.Count);
         RoomInfo roomInfo = roomPrefabs[randInt];
-        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0,new Door(roomInfo.GetEntrancePosition(),roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition(), roomInfo.normalExit)) };
+        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0,new Door(roomInfo.GetEntrancePosition()+ origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition()+ origin, roomInfo.normalExit)) };
         roomLayers.Add(initialLayer);
         Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
         return initialLayer;
