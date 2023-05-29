@@ -22,7 +22,9 @@ public class RoomGenerator : MonoBehaviour
 
     [SerializeField] float ittiriations;
 
-    [SerializeField] float randomError; 
+    [SerializeField] float randomError;
+
+    [SerializeField] float splineSharpness;
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
@@ -31,9 +33,55 @@ public class RoomGenerator : MonoBehaviour
     {
 
     }
+
+    void SplinePath(Door from, Door to)
+    {
+        Debug.Log("From : " + from.normal);
+        Debug.Log("To : " + to.normal);
+        int resolution = 15; // Higher numbers make the curve smoother
+        Vector3 fromDirection = from.normal.normalized * splineSharpness;
+        Vector3 toDirection = to.normal.normalized * splineSharpness;
+
+        Vector3 p0 = from.position; // Starting point
+        Vector3 p1 = from.position + fromDirection; // First control point
+        Vector3 p2 = to.position + toDirection; // Second control point
+        Vector3 p3 = to.position; // Ending point
+
+        // Draw the curve
+        for (int i = 0; i < resolution; i++)
+        {
+            float t = i / (float)resolution;
+            float u = 1 - t;
+            float tt = t * t;
+            float uu = u * u;
+            float uuu = uu * u;
+            float ttt = tt * t;
+            Vector3 point = uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3;
+
+            // For the next point
+            float t2 = (i + 1) / (float)resolution;
+            float u2 = 1 - t2;
+            float tt2 = t2 * t2;
+            float uu2 = u2 * u2;
+            float uuu2 = uu2 * u2;
+            float ttt2 = tt2 * t2;
+            Vector3 point2 = uuu2 * p0 + 3 * uu2 * t2 * p1 + 3 * u2 * tt2 * p2 + ttt2 * p3;
+
+            Debug.DrawLine(point, point2, Color.blue, drawingDelay);
+        }
+    }
+
+
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.R)) ResetRooms();
+        if (Input.GetKeyUp(KeyCode.S)) SplineDemo();
+    }
+    void SplineDemo()
+    {
+        Door from = new Door(Vector3.zero, Vector3.forward);
+        Door to = new Door((Vector3.right + Vector3.forward) * 5, Vector3.right);
+        SplinePath(from, to);
     }
     private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches)
     {
@@ -60,6 +108,8 @@ public class RoomGenerator : MonoBehaviour
         }
         GenerateBranches(branchingPoints, path);
     }
+
+
 
     private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath)
     {
@@ -135,11 +185,13 @@ public class RoomGenerator : MonoBehaviour
         return branchedPath;
     }
 
-    private void VisualisePath(List<Room> path, Color color)
+    private void VisualisePath(List<Room> path, Color color, bool reverse = false)
     {
+        if(reverse) path.Reverse();
         for (int i = 0; i < path.Count - 1; i++)
         {
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
+            SplinePath(path[i].exit, path[i + 1].entrance);
         }
     }
     private void ResetRooms()
@@ -165,7 +217,7 @@ public class RoomGenerator : MonoBehaviour
         path.Add(from);
         for (int i = roomLayers.Count -2; i >= 0; i--)
         {
-            Room closest = new Room(Vector3.zero,Vector3.zero, 0);
+            Room closest = new Room(Vector3.zero,Vector3.zero, 0, null, null);
             float closestFloat = float.MaxValue;
             foreach (var room in roomLayers[i].roomPositions)
             {
@@ -205,14 +257,16 @@ public class RoomGenerator : MonoBehaviour
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to,roomLayers);
-        VisualisePath(correctPath, Color.green);
+        VisualisePath(correctPath, Color.green, true);
         InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch);
         return from;
     }
     private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
     {
         RoomsLayer initialLayer = new RoomsLayer(0);
-        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0)};
+        int randInt = Random.Range(0, roomPrefabs.Count);
+        RoomInfo roomInfo = roomPrefabs[randInt];
+        initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0,new Door(roomInfo.GetEntrancePosition(),roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition(), roomInfo.normalExit)) };
         roomLayers.Add(initialLayer);
         Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
         return initialLayer;
@@ -228,8 +282,14 @@ public class RoomGenerator : MonoBehaviour
             float rand2 = Random.Range(-randomXOffset, randomXOffset);
             Vector3 variation1 = new Vector3(rand1, 0, 0);
             Vector3 variation2 = new Vector3(rand2, 0, 0);
-            Room firstBranch = new Room(variation1, room.origin + new Vector3(rightOffset, 0, forwardOffset), newLayer.layerIndex);
-            Room secondBranch = new Room(variation2, room.origin + new Vector3(-rightOffset, 0, forwardOffset), newLayer.layerIndex);
+            int randInt = Random.Range(0, roomPrefabs.Count);
+            RoomInfo roomInfo = roomPrefabs[randInt];
+            Room firstBranch = new Room(variation1, room.origin + new Vector3(rightOffset, 0, forwardOffset), newLayer.layerIndex,null,null);
+            Room secondBranch = new Room(variation2, room.origin + new Vector3(-rightOffset, 0, forwardOffset), newLayer.layerIndex,null,null);
+            firstBranch.entrance = new Door(firstBranch.GetRoomPosition() + roomInfo.GetEntrancePosition(), roomInfo.normalEntrance);
+            firstBranch.exit = new Door(firstBranch.GetRoomPosition() + roomInfo.GetExitPosition(), roomInfo.normalExit);
+            secondBranch.entrance = new Door(secondBranch.GetRoomPosition() + roomInfo.GetEntrancePosition(), roomInfo.normalEntrance);
+            secondBranch.exit = new Door(secondBranch.GetRoomPosition() + roomInfo.GetExitPosition(), roomInfo.normalExit);
             if (i == 0)
             {
                 newLayer.roomPositions.Add(firstBranch);
@@ -258,15 +318,31 @@ public class Room {
     public Room roomA;
     public Room roomB;
 
+    public Door entrance;
+    public Door exit;
+
     public int layerNumber; 
 
-    public Room(Vector3 Variation, Vector3 Origin, int LayerNumber)
+    public Room(Vector3 Variation, Vector3 Origin, int LayerNumber, Door Entrance, Door Exit)
     {
         variation = Variation;
         origin = Origin;
         layerNumber = LayerNumber;
+        entrance = Entrance;
+        exit = Exit;
     }
     public Vector3 GetRoomPosition() { return (origin + variation); }
+}
+
+public class Door
+{
+    public Vector3 position;
+    public Vector3 normal; 
+    public Door(Vector3 Position, Vector3 Normal)
+    {
+        position = Position;
+        normal = Normal;
+    }
 }
 
 

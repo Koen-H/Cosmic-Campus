@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &378665584
 Light:
   m_ObjectHideFlags: 0
@@ -454,16 +454,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawingDelay: 2
-  numberOfPyramids: 3
+  numberOfPyramids: 1
   numberOfRooms: 5
-  roomPrefabs: []
-  forwardOffset: 2
-  rightOffset: 1
+  roomPrefabs:
+  - {fileID: 8178778973823242893, guid: 349d365e89453d34197024ffc3d057f8, type: 3}
+  forwardOffset: 4
+  rightOffset: 2
   randomXOffset: 0
   numberOfBranches: 1
   maxDepthOfBranch: 2
   ittiriations: 1
   randomError: 0
+  splineSharpness: 2
 --- !u!4 &806128546
 Transform:
   m_ObjectHideFlags: 0
