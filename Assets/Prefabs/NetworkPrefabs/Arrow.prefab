@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5731794375960390530}
   - component: {fileID: 5731794375960390529}
   - component: {fileID: 5731794375960390528}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5731794376563490655}
   - component: {fileID: 5731794376563490652}
   - component: {fileID: 3980487865698536128}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,3 +160,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+  playerController: {fileID: 0}
+  rangeEnemy: {fileID: 0}

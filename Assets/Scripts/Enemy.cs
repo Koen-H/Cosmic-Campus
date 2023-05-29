@@ -8,7 +8,7 @@ using UnityEngine;
 public class Enemy : NetworkBehaviour
 {
     private EnemyMovement enemyMovement;
-    private Transform currentTarget; // Add this line
+    protected Transform currentTarget; // Add this line
     [SerializeField] private Transform enemyEyes;
     [SerializeField] EnemySO enemySO;
     [SerializeField] private GameObject avatar;
@@ -16,13 +16,13 @@ public class Enemy : NetworkBehaviour
 
     [SerializeField] NetworkVariable<float> health = new(10);
     private float moveSpeed;
-    private float detectionRange;
+    protected float detectionRange;
     private float trackingRange;
     private float damage;
     private float meleeRange;
-    private float attackCooldown;
+    protected float attackCooldown;
 
-    private bool canAttack = true;
+    protected bool canAttack = true;
 
     private float projectileSpeed;
 
@@ -43,7 +43,7 @@ public class Enemy : NetworkBehaviour
         health.OnValueChanged -= OnHealthChange;
     }
 
-    private void Update()
+    public virtual void Update()
     {
         // Check if the current target is still within the tracking range
         if (currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) <= trackingRange)
@@ -69,19 +69,18 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    void AttackLogic(Transform target)
+    public virtual void AttackLogic(Transform target)
     {
         if ((target.position - transform.position).magnitude < meleeRange && canAttack)
         {
-            Debug.Log("ATTACKKK");
             Attack(target);
             canAttack = false;
         }
     }
 
-    void Attack(Transform target)
+    public virtual void Attack(Transform target)
     {
-        DealDamage(damage, target.transform.parent.transform.parent.GetComponent<PlayerCharacterController>());
+        DealDamage(damage, target.GetComponent<PlayerCharacterController>());
         StartCoroutine(AttackCoolDown(attackCooldown));
     }
 
@@ -193,7 +192,7 @@ public class Enemy : NetworkBehaviour
         return closest;
     }
 
-    IEnumerator AttackCoolDown(float cooldown)
+    protected IEnumerator AttackCoolDown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAttack = true;

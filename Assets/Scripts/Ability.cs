@@ -18,9 +18,8 @@ public class Ability : MonoBehaviour
         player = GetComponent<PlayerCharacterController>();
     }
 
-    public void Update()
+    public void AbilityInput()
     {
-        if (!player.IsOwner) return;
         if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

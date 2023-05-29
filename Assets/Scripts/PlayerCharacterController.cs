@@ -4,6 +4,7 @@ using System.Globalization;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 using static PlayerSO;
 
 
@@ -13,26 +14,100 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
+    NetworkVariable<float> maxHealth = new(10);
     NetworkVariable<float> health = new(10);
+    NetworkVariable<bool> isDead = new(false);
     //LocalVariables
     public float moveSpeed = 5f;
     public bool canMove = true;
+    public bool canAttack = true;
+    public bool canAbility = true;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
+    [SerializeField] ReviveAreaManager myReviveArea;
+    public ReviveAreaManager otherReviveArea;
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
 
+    private bool isGrounded;
+
+
+    [SerializeField]float accelerationTime = 0.5f;
+    [SerializeField]float decelerationTime = 0.5f;
+    [SerializeField]float maxSpeed = 10f;
+    [SerializeField]float currentSpeed = 0f;
+
+
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
+
+    private Rigidbody rigidbody;
+    Vector3 movementDirection;
+
+    [SerializeField] float grav; 
+    private void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
     public void TakeDamage(float damage)
     {
+        if (isDead.Value) return;
         if (damage > 0) health.Value -= damage;
-        if (health.Value <= 0) Debug.Log("Player Died");
+        if (health.Value <= 0) isDead.Value = true;
+    }
+
+    void InjurePlayer(bool prevVal, bool isCurrentlyDead)
+    {
+        if (isCurrentlyDead)
+        {
+            //Tell the gamemanager that this player is dead, if all other players are dead it's a game over!
+            //Gamemanager.player died!
+            weaponBehaviour.CancelAttack();
+            playerObj.gameObject.SetActive(false);
+            myReviveArea.gameObject.SetActive(true);
+        }
+        else
+        {
+            myReviveArea.gameObject.SetActive(false);
+            //Resurrected animation here!
+            playerObj.gameObject.SetActive(true);
+        }
+
+        if (!IsOwner) return;
+        canMove = !isCurrentlyDead;
+        canAttack = !isCurrentlyDead;
+        canAbility = !isCurrentlyDead;
+    }
+
+    /// <summary>
+    /// Revive the player
+    /// </summary>
+    [ServerRpc(RequireOwnership=false)]
+    public void ReviveServerRpc()
+    {
+        isDead.Value = false;
+        health.Value = maxHealth.Value * 0.25f;
+    }
+
+    /// <summary>
+    /// Set the revive area that the player ented. Let the player know that he can heal his teammate by holding E!
+    /// </summary>
+    public void SetReviveArea(ReviveAreaManager reviveArea)
+    {
+        otherReviveArea = reviveArea;
+        if(otherReviveArea != null)
+        {
+            //TODO: show option for revive
+        }
+        else
+        {
+            //TODO: Hide that option for revive
+        }
     }
 
 
@@ -40,6 +115,8 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
+        isDead.OnValueChanged += InjurePlayer;
+        myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
 
         Camera.main.GetComponent<CameraFollow>().target = this.transform;
@@ -63,8 +140,24 @@ public class PlayerCharacterController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
+        if(canMove) Move();
+        if (canAttack) HandleAttackInput();
+        if (canAbility) HandleAbilityInput();
+        if (otherReviveArea != null) TryRevive();
+        
+    }
 
-        Move();
+    void TryRevive()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            otherReviveArea.OnRevivingServerRpc();
+        }
+    }
+
+
+    void HandleAttackInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             weaponBehaviour.OnAttackInputStart();
@@ -79,35 +172,45 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
-/*    void Ability()
+    void HandleAbilityInput()
     {
-        // calculate raycast direction
-        Vector3 rayDirection = transform.TransformDirection(Vector3.forward);
+        ability.AbilityInput();
+    }
 
-        Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.green, 0.01f);
-        // initialize a variable to store the hit information
-        RaycastHit hit;
-
-        // shoot the raycast
-        if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, attackRange))
-        {
-            ability.Activate(hit.collider.gameObject);
-        }
-    }*/
 
     /// <summary>
     /// Movement
     /// </summary>
     private void Move()
     {
-        if(!canMove) return;
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        if (moveHorizontal == 0 && moveVertical == 0) return;
-        Vector3 direction = new Vector3(moveHorizontal, 0f, moveVertical);
-        Vector3 movement = direction * moveSpeed * Time.deltaTime;
-        playerObj.transform.forward = direction;
-        transform.Translate(movement);
+        int horizontalInput = 0;
+        int verticalInput = 0;
+
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1;
+
+
+        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        // Check if there is input
+        if (movementDirection != Vector3.zero)
+        {
+            // If there is input, accelerate the object
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+        }
+        else
+        {
+            // If there is no input, decelerate the object
+            currentSpeed = 0;
+            //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
+        }
+
+        // Apply the calculated speed to the Rigidbody
+        rigidbody.velocity = movementDirection * currentSpeed;
+
+        if (movementDirection.magnitude == 0) return;
+        playerObj.transform.forward = movementDirection; 
     }
 
 
