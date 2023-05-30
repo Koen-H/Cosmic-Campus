@@ -125,7 +125,8 @@ public class RoomGenerator : MonoBehaviour
 
     private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath)
     {
-        List<Room> allBranches = new List<Room>(); 
+        List<Room> allBranches = new List<Room>();
+        branchingPoints.Reverse();
         for (int i = branchingPoints.Count -1; i >= 0 ; i--)
         {
             int rand = maxDepthOfBranch;
@@ -202,14 +203,14 @@ public class RoomGenerator : MonoBehaviour
         if(reverse) path.Reverse();
         for (int i = 0; i < path.Count - 1; i++)
         {
-            Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);  
+            Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
             List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
-            splinePath.Add(splinePath[splinePath.Count-1] + (splinePath[splinePath.Count-1] - splinePath[splinePath.Count-2]));
+            splinePath.Add(splinePath[splinePath.Count - 1] + (splinePath[splinePath.Count - 1] - splinePath[splinePath.Count - 2]));
             Curve newCurve = Instantiate(curveMesh, this.transform);
             newCurve.points = splinePath;
             newCurve.Apply();
 
-            Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(),Quaternion.identity,this.transform);
+            Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
         }
         Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);
     }
@@ -237,23 +238,62 @@ public class RoomGenerator : MonoBehaviour
     private List<Room> FindPath(Room from, Room to, List<RoomsLayer> roomLayers)
     {
         List<Room> path = new List<Room>();
-        path.Add(from);
-        for (int i = roomLayers.Count -2; i >= 0; i--)
+        Room temp = from;
+        path.Add(temp);
+
+        for (int i = roomLayers.Count - 2; i >= 1; i--)
         {
-            Room closest = new Room(Vector3.zero,Vector3.zero, 0, null, null, null);
-            float closestFloat = float.MaxValue;
-            foreach (var room in roomLayers[i].roomPositions)
+            RoomsLayer roomsLayer = roomLayers[i];
+            Room roomA = null;
+            Room roomB = null;
+
+            foreach (var room in roomsLayer.roomPositions)
             {
-                float rand = Random.Range(-randomError, randomError);
-                float diff = Mathf.Abs(room.GetRoomPosition().x + rand - from.GetRoomPosition().x);
-                if (diff < closestFloat)
+                if (temp == room.roomA)
                 {
-                    closest = room;
-                    closestFloat = diff;
+                    roomA = room;
+                    Debug.Log("ROOM A FOUND !"  + " LAYER :  " + roomsLayer.layerIndex);
                 }
-            }
-            path.Add(closest); 
+                if (temp == room.roomB)
+                {
+                    roomB = room;
+                    Debug.Log("ROOM B FOUND !" + " LAYER :  " + roomsLayer.layerIndex);
+                }
+                }
+                int randInt = Random.Range(0, 2);
+
+            if (roomA == null) roomA = roomB; 
+            if (roomB == null) roomB = roomA;
+
+            if (randInt == 0) temp = roomA;
+            else temp = roomB;
+
+            path.Add(temp);
         }
+        path.Add(roomLayers[0].roomPositions[0]);
+
+
+
+
+
+
+        /*        path.Add(from);
+                for (int i = roomLayers.Count - 2; i >= 0; i--)
+                {
+                    Room closest = new Room(Vector3.zero, Vector3.zero, 0, null, null, null);
+                    float closestFloat = float.MaxValue;
+                    foreach (var room in roomLayers[i].roomPositions)
+                    {
+                        float rand = Random.Range(-randomError, randomError);
+                        float diff = Mathf.Abs(room.GetRoomPosition().x + rand - from.GetRoomPosition().x);
+                        if (diff < closestFloat)
+                        {
+                            closest = room;
+                            closestFloat = diff;
+                        }
+                    }
+                    path.Add(closest);
+                }*/
         return path;
     }
     void AddLayer(List<RoomsLayer> roomLayers)
