@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using Random = UnityEngine.Random;
+using UnityEngine.AI;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -86,6 +87,13 @@ public class RoomGenerator : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.R)) ResetRooms();
         if (Input.GetKeyUp(KeyCode.S)) SplineDemo();
     }
+    void BakeNavMesh(List<NavMeshSurface> surfaces)
+    {
+        for (int i = 0; i < surfaces.Count; i++)
+        {
+            surfaces[i].BuildNavMesh();
+        }
+    }
     void SplineDemo()
     {
         Door from = new Door(Vector3.zero, Vector3.forward);
@@ -95,8 +103,9 @@ public class RoomGenerator : MonoBehaviour
         newCurve.points = splinePath;
         newCurve.Apply();
     }
-    private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches)
+    private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches, out List<NavMeshSurface> navMeshSurfaces)
     {
+        navMeshSurfaces = new List<NavMeshSurface>();
         int totalRooms = path.Count;
         if (numberOfBranches*2 >= totalRooms)
         {
@@ -118,21 +127,22 @@ public class RoomGenerator : MonoBehaviour
             Room point = branchingPoints[i];
             Debug.DrawLine(point.GetRoomPosition(), point.GetRoomPosition() + Vector3.right, Color.white, drawingDelay);
         }
-        GenerateBranches(branchingPoints, path);
+        GenerateBranches(branchingPoints, path, out navMeshSurfaces);
     }
 
 
 
-    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath)
+    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath, out List<NavMeshSurface> navMeshSurfaces)
     {
         List<Room> allBranches = new List<Room>();
+        navMeshSurfaces = new List<NavMeshSurface>();
         branchingPoints.Reverse();
         for (int i = branchingPoints.Count -1; i >= 0 ; i--)
         {
             int rand = maxDepthOfBranch;
             List<Room> branchedPath = BranchOff(branchingPoints[i], rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
-            VisualisePath(branchedPath, Color.red);
+            VisualisePath(branchedPath, Color.red, out navMeshSurfaces);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
     }
@@ -198,9 +208,10 @@ public class RoomGenerator : MonoBehaviour
         return branchedPath;
     }
 
-    private void VisualisePath(List<Room> path, Color color, bool reverse = false)
+    private void VisualisePath(List<Room> path, Color color, out List<NavMeshSurface> navMeshSurfaces, bool reverse = false)
     {
         if(reverse) path.Reverse();
+        navMeshSurfaces = new List<NavMeshSurface>();
         for (int i = 0; i < path.Count - 1; i++)
         {
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
@@ -209,6 +220,8 @@ public class RoomGenerator : MonoBehaviour
             Curve newCurve = Instantiate(curveMesh, this.transform);
             newCurve.points = splinePath;
             newCurve.Apply();
+
+            navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
 
             Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
         }
@@ -221,6 +234,12 @@ public class RoomGenerator : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
         generation.Clear();
+
+        StartCoroutine(GenerateNextFrame());
+    }
+    IEnumerator GenerateNextFrame()
+    {
+        yield return new WaitForFixedUpdate();
         GeneratePyramids();
     }
 
@@ -272,11 +291,6 @@ public class RoomGenerator : MonoBehaviour
         }
         path.Add(roomLayers[0].roomPositions[0]);
 
-
-
-
-
-
         /*        path.Add(from);
                 for (int i = roomLayers.Count - 2; i >= 0; i--)
                 {
@@ -320,8 +334,12 @@ public class RoomGenerator : MonoBehaviour
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to,roomLayers);
-        VisualisePath(correctPath, Color.green, true);
-        InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch);
+        List<NavMeshSurface> navMeshSurfaces; 
+        VisualisePath(correctPath, Color.green, out navMeshSurfaces, true);
+        List<NavMeshSurface> newNavMeshSurfaces; 
+        InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces);
+        //foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
+        BakeNavMesh(navMeshSurfaces);
         return from;
     }
     private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
