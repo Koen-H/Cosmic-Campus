@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core.CodeAnalysis;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -19,7 +20,7 @@ public abstract class Weapon : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponent<PlayerCharacterController>();
-
+        playerController.gunForward.OnValueChanged += (Vector3 prevValue, Vector3 newValue) => { weaponObj.transform.forward = newValue; };
 
     }
 
@@ -73,6 +74,8 @@ public abstract class Weapon : MonoBehaviour
             Vector3 clickPoint = hit.point;
             Transform playerObj = playerController.playerObj.transform;
             playerObj.LookAt(new Vector3(clickPoint.x, playerObj.position.y, clickPoint.z));
+            weaponObj.transform.LookAt(clickPoint);
+            playerController.gunForward.Value = weaponObj.transform.forward;
         }
     }
 
