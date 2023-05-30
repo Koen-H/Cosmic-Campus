@@ -28,7 +28,9 @@ public class RoomGenerator : MonoBehaviour
     [SerializeField] float splineSharpness;
     [SerializeField] int splineResolution;
 
-    [SerializeField] private Curve curveMesh; 
+    [SerializeField] private Curve curveMesh;
+
+    [SerializeField] private int teacherStudentRatio; 
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
@@ -137,25 +139,68 @@ public class RoomGenerator : MonoBehaviour
         List<Room> allBranches = new List<Room>();
         navMeshSurfaces = new List<NavMeshSurface>();
         branchingPoints.Reverse();
+        int teacherRatio = teacherStudentRatio;
+        bool drawTeacher;
+        List<OnMapNPC> pendingStudnets = new List<OnMapNPC>();
+        List<OnMapNPC> allTeachers = new List<OnMapNPC>();
         for (int i = branchingPoints.Count -1; i >= 0 ; i--)
         {
             Room branchingPoint = branchingPoints[i];
             int rand = maxDepthOfBranch;
             List<Room> branchedPath = BranchOff(branchingPoint, rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
-            Room studentRoom = branchedPath[branchedPath.Count - 1];
-            Room teacherRoom;
-            if (!branchedPath.Contains(branchingPoint.roomA)) teacherRoom = branchingPoint.roomA;
-            else teacherRoom = branchingPoint.roomB;
-            studentRoom.roomNpc = new StudentNPC(studentRoom.GetRoomPosition());
-            teacherRoom.roomNpc = new TeacherNPC(teacherRoom.GetRoomPosition());
-            if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
-            if (teacherRoom.roomNpc != null) VisualiseRoomNPC(teacherRoom);
 
+            if (teacherRatio <= 0)
+            {
+                teacherRatio = teacherStudentRatio;
+                drawTeacher = true;
+            }
+            else {
+                teacherRatio--;
+                drawTeacher = false;
+            }
+            OnMapNPC outTeacher; 
+            OnMapNPC pendingNPC = InitializeNPCs(branchingPoint, branchedPath, drawTeacher, pendingStudnets, out outTeacher);
+            if (outTeacher != null) allTeachers.Add(outTeacher);
+            if (pendingNPC != null) pendingStudnets.Add(pendingNPC);
             VisualisePath(branchedPath, Color.red, out navMeshSurfaces);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
-
+        foreach (var teacher in allTeachers)
+        {
+            foreach (var student in teacher.dependency)
+            {
+                Debug.DrawLine(student.position, teacher.position, new Color(255, 137, 0), drawingDelay * 1.5f);
+            }
+        }
+    }
+    private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher, List<OnMapNPC> pendingStudnets, out OnMapNPC outTeacher)
+    {
+        Room studentRoom = branchedPath[branchedPath.Count - 1];
+        Room teacherRoom;
+        if (!branchedPath.Contains(branchingPoint.roomA)) teacherRoom = branchingPoint.roomA;
+        else teacherRoom = branchingPoint.roomB;
+        OnMapNPC student = new StudentNPC(studentRoom.GetRoomPosition());
+        studentRoom.roomNpc = student;
+        outTeacher = null;
+        if (drawTeacher)
+        {
+            OnMapNPC teacher = new TeacherNPC(teacherRoom.GetRoomPosition());
+            teacherRoom.roomNpc = teacher;
+            student.dependency.Add(teacher);
+            teacher.dependency.Add(student);
+            foreach (var pStudent in pendingStudnets)
+            {
+                pStudent.dependency.Add(teacher);
+                teacher.dependency.Add(pStudent);
+            }
+            outTeacher = teacher;
+            pendingStudnets.Clear();
+        }
+        if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
+        if (teacherRoom.roomNpc != null && drawTeacher) VisualiseRoomNPC(teacherRoom);
+        if (!drawTeacher) return student;
+        return null;
     }
 
     private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
@@ -440,7 +485,8 @@ public class Door
 
 public class OnMapNPC
 {
-    protected Vector3 position;
+    public Vector3 position;
+    public List<OnMapNPC> dependency = new List<OnMapNPC>(); 
 
     public OnMapNPC(Vector3 position)
     {
