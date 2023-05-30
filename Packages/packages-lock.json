@@ -128,6 +128,17 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.probuilder": {
+      "version": "5.0.7",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.3",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.render-pipelines.core": {
       "version": "12.1.11",
       "depth": 1,
@@ -172,7 +183,7 @@
     },
     "com.unity.settings-manager": {
       "version": "1.0.3",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -266,6 +277,13 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.veriorpies.parrelsync": {
+      "version": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "141b4e1e31966242a6fb7c495b52ac3d1221bc75"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
