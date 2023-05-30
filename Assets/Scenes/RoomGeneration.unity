@@ -455,17 +455,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawingDelay: 2
   numberOfPyramids: 1
-  numberOfRooms: 5
+  numberOfRooms: 12
   roomPrefabs:
   - {fileID: 8178778973823242893, guid: 349d365e89453d34197024ffc3d057f8, type: 3}
-  forwardOffset: 4
-  rightOffset: 2
-  randomXOffset: 0
-  numberOfBranches: 1
-  maxDepthOfBranch: 2
+  - {fileID: 4109838769310283684, guid: 92766a586a5f0704694040885e148807, type: 3}
+  forwardOffset: 30
+  rightOffset: 20
+  randomXOffset: 10
+  numberOfBranches: 6
+  maxDepthOfBranch: 3
   ittiriations: 1
   randomError: 0
-  splineSharpness: 2
+  splineSharpness: 20
+  splineResolution: 10
+  curveMesh: {fileID: 8140296913093499467, guid: 52a3b7cc20d57e344a9db382b3837b73,
+    type: 3}
 --- !u!4 &806128546
 Transform:
   m_ObjectHideFlags: 0
