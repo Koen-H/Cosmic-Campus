@@ -152,16 +152,16 @@ public class RoomGenerator : MonoBehaviour
             List<Room> branchedPath = BranchOff(branchingPoint, rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
 
-            OnMapNPC pendingNPC = InitializeNPCs(branchingPoint, branchedPath, drawTeacher, currentTeacher);
+            OnMapNPC newNPC = InitializeNPCs(branchingPoint, branchedPath, drawTeacher); // Draw a student every time
             if (drawTeacher)
             {
-                currentTeacher = pendingNPC;
+                currentTeacher = newNPC;
                 allTeachers.Add(currentTeacher);
             }
             else
             {
-                currentTeacher.dependency.Add(pendingNPC);
-                pendingNPC.dependency.Add(currentTeacher);
+                currentTeacher.dependency.Add(newNPC);
+                newNPC.dependency.Add(currentTeacher);
             }
 
             // Decrease teacher ratio or reset it and prepare to draw a new teacher
@@ -187,27 +187,30 @@ public class RoomGenerator : MonoBehaviour
             }
         }
     }
-    private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher, OnMapNPC currentTeacher)
+    private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher)
     {
         Room studentRoom = branchedPath[branchedPath.Count - 1];
         Room teacherRoom;
         if (!branchedPath.Contains(branchingPoint.roomA)) teacherRoom = branchingPoint.roomA;
         else teacherRoom = branchingPoint.roomB;
 
+        // Draw a student every time
+        OnMapNPC student = new StudentNPC(studentRoom.GetRoomPosition());
+        studentRoom.roomNpc = student;
+        if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
+
         if (drawTeacher)
         {
+            // Draw a teacher and add the student to its dependencies
             OnMapNPC teacher = new TeacherNPC(teacherRoom.GetRoomPosition());
             teacherRoom.roomNpc = teacher;
-            if (teacherRoom.roomNpc != null && drawTeacher) VisualiseRoomNPC(teacherRoom);
+            student.dependency.Add(teacher);
+            teacher.dependency.Add(student);
+            if (teacherRoom.roomNpc != null) VisualiseRoomNPC(teacherRoom);
             return teacher;
         }
-        else
-        {
-            OnMapNPC student = new StudentNPC(studentRoom.GetRoomPosition());
-            studentRoom.roomNpc = student;
-            if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
-            return student;
-        }
+
+        return student;
     }
 
     private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
