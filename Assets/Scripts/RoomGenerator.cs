@@ -139,12 +139,23 @@ public class RoomGenerator : MonoBehaviour
         branchingPoints.Reverse();
         for (int i = branchingPoints.Count -1; i >= 0 ; i--)
         {
+            Room branchingPoint = branchingPoints[i];
             int rand = maxDepthOfBranch;
-            List<Room> branchedPath = BranchOff(branchingPoints[i], rand, correctPath, allBranches);
+            List<Room> branchedPath = BranchOff(branchingPoint, rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
+            Room studentRoom = branchedPath[branchedPath.Count - 1];
+            Room teacherRoom;
+            if (!branchedPath.Contains(branchingPoint.roomA)) teacherRoom = branchingPoint.roomA;
+            else teacherRoom = branchingPoint.roomB;
+            studentRoom.roomNpc = new StudentNPC(studentRoom.GetRoomPosition());
+            teacherRoom.roomNpc = new TeacherNPC(teacherRoom.GetRoomPosition());
+            if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
+            if (teacherRoom.roomNpc != null) VisualiseRoomNPC(teacherRoom);
+
             VisualisePath(branchedPath, Color.red, out navMeshSurfaces);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
+
     }
 
     private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
@@ -227,6 +238,29 @@ public class RoomGenerator : MonoBehaviour
         }
         Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);
     }
+    void VisualiseRoomNPC(Room room, float scale = 0.2f)
+    {
+        float width = forwardOffset * scale;
+        float height = rightOffset * scale;
+        if (room.roomNpc is StudentNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(255, 137, 0)); 
+        if (room.roomNpc is TeacherNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(131, 53, 184),false);
+    }
+
+    void DrawTriangle(Vector3 start, float width, float height, Color color, bool downwards = true, int iterations = 5)
+    {
+        if (iterations <= 0)
+            return;
+        Vector3 p1 = start;
+        Vector3 p2 = new Vector3(start.x + width / 2, 0, (downwards ? start.z - height : start.z + height));
+        Vector3 p3 = new Vector3(start.x + width, start.y, start.z);
+        Debug.DrawLine(p1, p2, color, drawingDelay * 1.5f);
+        Debug.DrawLine(p2, p3, color, drawingDelay * 1.5f);
+        Debug.DrawLine(p3, p1, color, drawingDelay * 1.5f);
+        float newWidth = width * 0.8f;
+        float newHeight = height * 0.8f;
+        DrawTriangle(p1, newWidth, newHeight, color, downwards, iterations - 1);
+    }
+
     private void ResetRooms()
     {
         for (int i = transform.childCount-1; i >= 0 ; i--)
@@ -268,16 +302,8 @@ public class RoomGenerator : MonoBehaviour
 
             foreach (var room in roomsLayer.roomPositions)
             {
-                if (temp == room.roomA)
-                {
-                    roomA = room;
-                    Debug.Log("ROOM A FOUND !"  + " LAYER :  " + roomsLayer.layerIndex);
-                }
-                if (temp == room.roomB)
-                {
-                    roomB = room;
-                    Debug.Log("ROOM B FOUND !" + " LAYER :  " + roomsLayer.layerIndex);
-                }
+                if (temp == room.roomA) roomA = room;
+                if (temp == room.roomB) roomB = room;
                 }
                 int randInt = Random.Range(0, 2);
 
@@ -290,24 +316,6 @@ public class RoomGenerator : MonoBehaviour
             path.Add(temp);
         }
         path.Add(roomLayers[0].roomPositions[0]);
-
-        /*        path.Add(from);
-                for (int i = roomLayers.Count - 2; i >= 0; i--)
-                {
-                    Room closest = new Room(Vector3.zero, Vector3.zero, 0, null, null, null);
-                    float closestFloat = float.MaxValue;
-                    foreach (var room in roomLayers[i].roomPositions)
-                    {
-                        float rand = Random.Range(-randomError, randomError);
-                        float diff = Mathf.Abs(room.GetRoomPosition().x + rand - from.GetRoomPosition().x);
-                        if (diff < closestFloat)
-                        {
-                            closest = room;
-                            closestFloat = diff;
-                        }
-                    }
-                    path.Add(closest);
-                }*/
         return path;
     }
     void AddLayer(List<RoomsLayer> roomLayers)
@@ -338,8 +346,8 @@ public class RoomGenerator : MonoBehaviour
         VisualisePath(correctPath, Color.green, out navMeshSurfaces, true);
         List<NavMeshSurface> newNavMeshSurfaces; 
         InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces);
-        //foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
-        BakeNavMesh(navMeshSurfaces);
+        foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
+        if(Input.GetKey(KeyCode.LeftShift))BakeNavMesh(navMeshSurfaces);
         return from;
     }
     private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
@@ -395,6 +403,7 @@ public class Room {
     public Vector3 variation { private set; get; }
     public Vector3 origin { private set; get; }
     public bool multiplePaths = false;
+    public OnMapNPC roomNpc = null;
 
     public Room roomA;
     public Room roomB;
@@ -428,5 +437,26 @@ public class Door
         normal = Normal;
     }
 }
+
+public class OnMapNPC
+{
+    protected Vector3 position;
+
+    public OnMapNPC(Vector3 position)
+    {
+        this.position = position;
+    }
+}
+public class TeacherNPC : OnMapNPC
+{
+    public TeacherNPC(Vector3 position) : base(position) { }
+}
+public class StudentNPC : OnMapNPC
+{
+    public StudentNPC(Vector3 position) : base(position) { }
+}
+
+
+
 
 

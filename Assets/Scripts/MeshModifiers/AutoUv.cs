@@ -53,6 +53,11 @@ public class AutoUv : MonoBehaviour
 	public void UpdateUvs() {
 		// Clone the shared mesh manually, to prevent the "leaking meshes" error:
 		Mesh origMesh = GetComponent<MeshFilter>().sharedMesh; 
+		if(origMesh == null)
+        {
+			Debug.LogWarning("Skipping UV Updating, cant find MeshFilter. MAKE SURE YOU ENABLE READ AND WRITE ! ");
+			return;
+        }
 		Mesh mesh = (Mesh)Instantiate(origMesh);
 
 		UpdateUVs(mesh);
