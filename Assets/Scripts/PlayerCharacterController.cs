@@ -136,7 +136,8 @@ public class PlayerCharacterController : NetworkBehaviour
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
 
-        Camera.main.GetComponent<CameraFollow>().target = this.transform;
+        Camera.main.GetComponent<CameraManager>().SetFollowTarg(this.transform);
+        Camera.main.GetComponent<CameraManager>().SetLookTarg(this.transform);
     }
 
     void OnHealthChange(float prevHealth, float newHealth)
