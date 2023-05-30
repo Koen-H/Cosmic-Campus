@@ -9,7 +9,10 @@ public class ObjectSlamManager : MonoBehaviour
     private bool hasFallen = false;
     float raycastDistance = 3;
     float damage = 2;
+    float nockback = 1;
     GameObject slamObjVFX;
+    List<Enemy> directHits = new List<Enemy>();
+
 
     private void Awake()
     {
@@ -26,7 +29,12 @@ public class ObjectSlamManager : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (!hasFallen)
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            return;
+        }
+        else if (!hasFallen)
         {
             hasFallen = true;
             GroundSlam();
@@ -57,12 +65,16 @@ public class ObjectSlamManager : MonoBehaviour
                     }
                 }
             }
-
-            foreach (GameObject enemyObj in enemiesHit)
+            foreach (GameObject enemy in enemiesHit)
             {
-                enemyObj.GetComponentInParent<Enemy>().TakeDamage(damage);
-                Debug.Log($"Did {damage} damage!");
+                Vector3 knockbackDirection = enemy.transform.position - transform.position;
+                float knockbackForce = 10f; // Adjust the force to your desired value
+                float knockbackDuration = 0.5f; // Adjust the duration to your desired value
+
+                EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
+                enemyMovement.ApplyKnockback(knockbackDirection, knockbackForce, knockbackDuration);
             }
+
         }
         Destroy(this);
     }

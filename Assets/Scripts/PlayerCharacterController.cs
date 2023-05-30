@@ -193,6 +193,8 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
         Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        Quaternion rotationQuaternion = Quaternion.Euler(0, -45, 0);
+        movementDirection = rotationQuaternion * movementDirection;
         // Check if there is input
         if (movementDirection != Vector3.zero)
         {

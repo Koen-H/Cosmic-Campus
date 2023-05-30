@@ -9,6 +9,8 @@ public class ArtistAbility : Ability
 {
     [SerializeField] GameObject artistDecalPrefab;
     ArtistDecalType type;
+    float ammo = 0;
+    float maxAmmo = 2;
 
     private void Awake()
     {
@@ -36,14 +38,23 @@ public class ArtistAbility : Ability
         GameObject target = null;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) target = hit.collider.gameObject;
         if (target == null) return;
-        if (target.CompareTag("Water")) type = ArtistDecalType.WATER;
-        else if (target.CompareTag("Lava")) type = ArtistDecalType.LAVA;
-        else
+        if (target.CompareTag("Water"))
         {
-            ArtistDecal decal = Instantiate(artistDecalPrefab,hit.point, Quaternion.LookRotation(-hit.normal)).GetComponent<ArtistDecal>();
+            type = ArtistDecalType.WATER;
+            ammo++;
+        }
+        else if (target.CompareTag("Lava"))
+        {
+            type = ArtistDecalType.LAVA;
+            ammo++;
+        }
+        else if(ammo > 0)
+        {
+            ArtistDecal decal = Instantiate(artistDecalPrefab, hit.point, Quaternion.LookRotation(-hit.normal)).GetComponent<ArtistDecal>();
             decal.transform.parent = hit.collider.transform;
             decal.type = type;
+            ammo--;
         }
-
+        if(ammo > maxAmmo) ammo = maxAmmo;
     }
 }
