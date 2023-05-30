@@ -9,6 +9,7 @@ public class WeaponData : ScriptableObject
 {
     public string nickName = "";
     public GameObject weaponPrefab = null;
+    public Vector3 weaponObjOffset = Vector3.zero;
     public WeaponType weaponType = WeaponType.UNSET;
 
     public float damage = 0;
