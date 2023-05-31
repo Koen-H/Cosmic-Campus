@@ -350,7 +350,7 @@ public class RoomGenerator : MonoBehaviour
 
     public void SpawnEnemy(Vector3 position, float hightOffset)
     {
-        NetworkObject enemy = Instantiate(enemyPrefab, position + Vector3.up * hightOffset, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
+        NetworkObject enemy = Instantiate(enemyPrefab, position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
         enemy.Spawn();
         spawnedEnemies.Add(enemy.gameObject);
     }
