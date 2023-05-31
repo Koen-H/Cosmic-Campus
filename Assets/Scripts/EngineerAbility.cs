@@ -8,10 +8,20 @@ public class EngineerAbility : Ability
     {
         base.Activate(origin,  direction);
 
-        GameObject target = GetTarget(origin, direction);
+        Ray ray = new Ray(origin, direction);
+        RaycastHit hit;
+        GameObject target = null;
+        if (Physics.Raycast(ray, out hit))
+        {
+            ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
+        }
 
-        target.transform.forward = player.playerObj.transform.forward;
-        Walker walker = target.AddComponent<Walker>();
-        walker.owner = player;
+        player.LockPlayer(true);//Disable the player interactions.
+
+
+        //GameObject target = GetTarget(origin, direction);
+        //target.transform.forward = player.playerObj.transform.forward;
+        //Walker walker = target.AddComponent<Walker>();
+        //walker.owner = player;
     }
 }

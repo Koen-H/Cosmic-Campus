@@ -32,12 +32,9 @@ public class PlayerCharacterController : NetworkBehaviour
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
-    [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
+    private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
     private Collider col;
-
-    private bool isGrounded;
-
 
     [SerializeField]float accelerationTime = 0.5f;
     [SerializeField]float decelerationTime = 0.5f;
@@ -96,9 +93,14 @@ public class PlayerCharacterController : NetworkBehaviour
         }
 
         if (!IsOwner) return;
-        canMove = !isCurrentlyDead;
-        canAttack = !isCurrentlyDead;
-        canAbility = !isCurrentlyDead;
+        LockPlayer(!isCurrentlyDead);
+    }
+
+    public void LockPlayer(bool isLocked)
+    {
+        canMove = !isLocked;
+        canAttack = !isLocked;
+        canAbility = !isLocked;
     }
 
     /// <summary>
@@ -172,7 +174,6 @@ public class PlayerCharacterController : NetworkBehaviour
             otherReviveArea.OnRevivingServerRpc();
         }
     }
-
 
     void HandleAttackInput()
     {
