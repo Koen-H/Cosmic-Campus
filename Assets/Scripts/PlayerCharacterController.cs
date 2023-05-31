@@ -137,9 +137,8 @@ public class PlayerCharacterController : NetworkBehaviour
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
-
-        Camera.main.GetComponent<CameraManager>().SetFollowTarg(this.transform);
-        Camera.main.GetComponent<CameraManager>().SetLookTarg(this.transform);
+        ClientManager.MyClient.playerCharacter = this;
+        CameraManager.MyCamera.TargetPlayer();
     }
 
     void OnHealthChange(float prevHealth, float newHealth)

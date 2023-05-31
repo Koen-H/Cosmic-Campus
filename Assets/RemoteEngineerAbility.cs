@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 
@@ -14,37 +15,62 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] private float collectRadiusIncreaseIncrement = 0.1f;
 
     [SerializeField] private float sphereRadius = 0.1f;
-    [SerializeField] private float sphereRadiusIncreaseIncrement= 0;
+    [SerializeField] private float sphereRadiusIncreaseIncrement = 0;
 
     [SerializeField] private float accelerationTime = 0.5f;
-    [SerializeField] private float decelerationTime = 0.5f;
     [SerializeField] private float maxSpeed = 10f;
     private float currentSpeed = 5f;
     private Rigidbody rigidbody;
 
     private Vector3 currentDirection = Vector3.zero;
 
+    float t = 0;
+    int attachedObjects = 0;
+    [SerializeField] float timeTillExplosion = 15f;
+    [SerializeField] float explosionDamage = 1f;
+    [SerializeField] float damageIncreasePerObj = 1f;
+    [SerializeField] float explosionRange = 2f;
+    [SerializeField] float rangeIncreasePerObj = 0.2f;
+
+    [SerializeField] GameObject explosionVFX;
+    private bool exploded = false;
+
+
     public override void OnNetworkSpawn()
     {
 
-        //if (IsOwner)
-        //{
-        //}
+        if (IsOwner)
+        {
+            //Get the camera to focus on this object!
+            CameraManager.MyCamera.SetFollowTarg(transform);
+            CameraManager.MyCamera.SetLookTarg(transform);
+        }
     }
 
     private void Start()
     {
-        CollectBuildingPieces();
         rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        CollectBuildingPieces();
+        if (isBuilding.Value)
+        {
+            CollectBuildingPieces();
+            if (Input.GetMouseButtonUp(1))
+            {
+                isBuilding.Value = false;
+                StartCoroutine(ExplosionCountdown());
+            }
+            return;
+        }
+        else if (IsOwner) Control();
+    }
 
-        if (isBuilding.Value) CollectBuildingPieces();
-        else if(IsOwner) Move();
+    public void Control()
+    {
         Move();
+        if(Input.GetMouseButtonDown(0) && !exploded) ExplodeServerRpc();
     }
 
     private void Move()
@@ -66,8 +92,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             Vector2 currentDir = new Vector2(currentDirection.x, currentDirection.z);
             Vector2 movementDir = new Vector2(movementDirection.x, movementDirection.z);
-            Vector2 lerpDir = Vector2.Lerp(movementDir, currentDir, Time.deltaTime * accelerationTime);
-            Debug.Log(lerpDir);
+            t += Time.deltaTime;
+            Vector2 lerpDir = Vector2.Lerp(currentDir, movementDir, t * accelerationTime);
             currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
         }
         rigidbody.velocity = currentDirection * currentSpeed;
@@ -91,11 +117,12 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     public void AttachObject(GameObject debrisObject)
     {
+        attachedObjects++;
         debrisObject.transform.parent = objCollector;
         Vector3 randomPosition = Random.onUnitSphere * sphereRadius;
         Quaternion targetRotation = Random.rotation;
 
-        TransformLerper lerper =  debrisObject.AddComponent<TransformLerper>();
+        TransformLerper lerper = debrisObject.AddComponent<TransformLerper>();
         lerper.targetVector = randomPosition;
         lerper.targetRotation = targetRotation;
 
@@ -104,4 +131,60 @@ public class RemoteEngineerAbility : NetworkBehaviour
         Collider debrisCollider = debrisObject.GetComponent<Collider>();
         if (debrisCollider != null) Destroy(debrisCollider);
     }
+
+
+    [ServerRpc]
+    public void ExplodeServerRpc()
+    {
+        ExplodeClientRpc();
+    }
+
+    [ClientRpc]
+    public void ExplodeClientRpc()
+    {
+        GameObject explosionVFXinstance = Instantiate(explosionVFX, transform.position, Quaternion.identity);
+        explosionVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects/5;
+        if (!IsOwner) return; 
+        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
+        float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Enemy"))
+            {
+                collider.GetComponent<Enemy>().TakeDamage(damage);
+            }
+        }
+        CameraManager.MyCamera.TargetPlayer();
+        ClientManager.MyClient.playerCharacter.LockPlayer(false);
+        DestroyServerRpc();
+    }
+
+    /// <summary>
+    /// Tell the server that the object can be destroyed!
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc()
+    {
+        Destroy(this.gameObject);
+
+    }
+
+    IEnumerator ExplosionCountdown()
+    {
+        while(timeTillExplosion > 0)
+        {
+            Debug.Log(timeTillExplosion);
+            yield return new WaitForSeconds(1);
+            timeTillExplosion--;
+        }
+        if(!exploded) ExplodeServerRpc();
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, collectRadius);
+    }
+
 }
