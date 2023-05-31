@@ -37,6 +37,9 @@ public class RoomGenerator : MonoBehaviour
 
     [SerializeField] GameObject enemyPrefab;
 
+    [SerializeField] private QuestTeacherNPC teacherPrefab;
+    [SerializeField] private QuestStudentNPC studentPrefab;
+
     private List<GameObject> spawnedEnemies = new List<GameObject>(); 
 
     private List<GameObject> spawnedNpcs = new List<GameObject>();
@@ -97,7 +100,7 @@ public class RoomGenerator : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R)) ResetRooms();
-        if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
+       // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
     }
     void BakeNavMesh(List<NavMeshSurface> surfaces)
     {
@@ -207,7 +210,11 @@ public class RoomGenerator : MonoBehaviour
         // Draw a student every time
         OnMapNPC student = new StudentNPC(studentRoom.GetRoomPosition());
         studentRoom.roomNpc = student;
-        if (studentRoom.roomNpc != null) VisualiseRoomNPC(studentRoom);
+        if (studentRoom.roomNpc != null)
+        {
+            VisualiseRoomNPC(studentRoom);
+            if (!Input.GetKey(KeyCode.Space)) SpawnRoomNPC(studentRoom);
+        }
 
         if (drawTeacher)
         {
@@ -216,7 +223,11 @@ public class RoomGenerator : MonoBehaviour
             teacherRoom.roomNpc = teacher;
             student.dependency.Add(teacher);
             teacher.dependency.Add(student);
-            if (teacherRoom.roomNpc != null) VisualiseRoomNPC(teacherRoom);
+            if (teacherRoom.roomNpc != null)
+            {
+                VisualiseRoomNPC(teacherRoom);
+                if (!Input.GetKey(KeyCode.Space)) SpawnRoomNPC(teacherRoom);
+            }
             return teacher;
         }
 
@@ -319,7 +330,7 @@ public class RoomGenerator : MonoBehaviour
         foreach (var enemy in allEnemies)
         {
             DrawTriangle(enemy.position, rightOffset / 10, forwardOffset / 20, Color.red, false, 10);
-            SpawnEnemy(enemy.position);
+            SpawnEnemy(enemy.position, 0.7f);
         }
     }
 
@@ -329,6 +340,7 @@ public class RoomGenerator : MonoBehaviour
         Curve newCurve = Instantiate(curveMesh, this.transform);
         newCurve.points = splinePath;
         newCurve.Apply();
+        newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
         int randomCount = Random.Range(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
@@ -336,19 +348,22 @@ public class RoomGenerator : MonoBehaviour
         Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
     }
 
-    public void SpawnEnemy(Vector3 position)
+    public void SpawnEnemy(Vector3 position, float hightOffset)
     {
-        NetworkObject enemy = Instantiate(enemyPrefab, position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
+        NetworkObject enemy = Instantiate(enemyPrefab, position + Vector3.up * hightOffset, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
         enemy.Spawn();
         spawnedEnemies.Add(enemy.gameObject);
     }
     private List<EnemyNPC> InitiateEnemyOnPath(List<Vector3> path, int count)
     {
         List<EnemyNPC> enemies = new List<EnemyNPC>();
+        List<int> rands = new List<int>();
         for (int i = 0; i < count; i++)
         {
             int randInt = Random.Range((int)(path.Count * 0.2f), (int)((path.Count - 1) * 0.8f));
+            if(rands.Contains(randInt))continue;
             enemies.Add(new EnemyNPC(path[randInt]));
+            rands.Add(randInt);
         }
         return enemies;
     }
@@ -358,6 +373,19 @@ public class RoomGenerator : MonoBehaviour
         float height = rightOffset * scale;
         if (room.roomNpc is StudentNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(255, 137, 0)); 
         if (room.roomNpc is TeacherNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(131, 53, 184),false);
+    }
+    void SpawnRoomNPC(Room room, float hightOffset = 2)
+    {
+        if (room.roomNpc is StudentNPC)
+        {
+            QuestStudentNPC student =  Instantiate(studentPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
+            student.self = room.roomNpc;
+        }
+        if (room.roomNpc is TeacherNPC)
+        {
+            QuestTeacherNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
+            teacher.self = room.roomNpc;
+        }
     }
 
     void DrawTriangle(Vector3 start, float width, float height, Color color, bool downwards = true, int iterations = 5)
