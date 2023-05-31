@@ -8,11 +8,21 @@ public class RemoteEngineerAbility : NetworkBehaviour
 {
     NetworkVariable<bool> isBuilding = new(true, default, NetworkVariableWritePermission.Owner);
 
+    [SerializeField] Transform objCollector;
+
     [SerializeField] private float collectRadius = 1f;
     [SerializeField] private float collectRadiusIncreaseIncrement = 0.1f;
 
-    [SerializeField] float sphereRadius = 0.1f;
-    [SerializeField] float sphereRadiusIncreaseIncrement= 0;
+    [SerializeField] private float sphereRadius = 0.1f;
+    [SerializeField] private float sphereRadiusIncreaseIncrement= 0;
+
+    [SerializeField] private float accelerationTime = 0.5f;
+    [SerializeField] private float decelerationTime = 0.5f;
+    [SerializeField] private float maxSpeed = 10f;
+    private float currentSpeed = 5f;
+    private Rigidbody rigidbody;
+
+    private Vector3 currentDirection = Vector3.zero;
 
     public override void OnNetworkSpawn()
     {
@@ -25,6 +35,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     private void Start()
     {
         CollectBuildingPieces();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -32,9 +43,37 @@ public class RemoteEngineerAbility : NetworkBehaviour
         CollectBuildingPieces();
 
         if (isBuilding.Value) CollectBuildingPieces();
+        else if(IsOwner) Move();
+        Move();
     }
 
-    //Slowly increases the area it can reach. 
+    private void Move()
+    {
+        int horizontalInput = 0;
+        int verticalInput = 0;
+
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1;
+
+
+        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        Quaternion rotationQuaternion = Quaternion.Euler(0, -45, 0);
+        movementDirection = rotationQuaternion * movementDirection;
+
+        if (movementDirection != Vector3.zero)
+        {
+            Vector2 currentDir = new Vector2(currentDirection.x, currentDirection.z);
+            Vector2 movementDir = new Vector2(movementDirection.x, movementDirection.z);
+            Vector2 lerpDir = Vector2.Lerp(movementDir, currentDir, Time.deltaTime * accelerationTime);
+            Debug.Log(lerpDir);
+            currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
+        }
+        rigidbody.velocity = currentDirection * currentSpeed;
+    }
+
+
     public void CollectBuildingPieces()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, collectRadius);
@@ -52,16 +91,17 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     public void AttachObject(GameObject debrisObject)
     {
-        debrisObject.transform.SetParent(transform);
-        Vector3 randomPosition = transform.position + Random.onUnitSphere * sphereRadius;
-        debrisObject.transform.position = randomPosition;
-        Quaternion targetRotation = Quaternion.LookRotation(transform.position - randomPosition);
-        debrisObject.transform.rotation = targetRotation;
+        debrisObject.transform.parent = objCollector;
+        Vector3 randomPosition = Random.onUnitSphere * sphereRadius;
+        Quaternion targetRotation = Random.rotation;
 
-        // Enable Rigidbody component on the debrisObject
+        TransformLerper lerper =  debrisObject.AddComponent<TransformLerper>();
+        lerper.targetVector = randomPosition;
+        lerper.targetRotation = targetRotation;
+
         Rigidbody debrisRigidbody = debrisObject.GetComponent<Rigidbody>();
         if (debrisRigidbody != null) Destroy(debrisRigidbody);
         Collider debrisCollider = debrisObject.GetComponent<Collider>();
-        Destroy(debrisCollider);
+        if (debrisCollider != null) Destroy(debrisCollider);
     }
 }
