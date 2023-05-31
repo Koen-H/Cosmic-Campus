@@ -33,7 +33,7 @@ public class Curve : MonoBehaviour
 			mesh.RecalculateMesh();
 			//GetComponent<AutoUv>().UpdateUvs();
         }
-		Debug.Log("Applying curve");
+		//Debug.Log("Applying curve");
 		if (OnApply != null) OnApply();
 	}
 

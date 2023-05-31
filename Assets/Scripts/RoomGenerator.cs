@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using Random = UnityEngine.Random;
 using UnityEngine.AI;
+using Unity.Netcode;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -30,7 +31,15 @@ public class RoomGenerator : MonoBehaviour
 
     [SerializeField] private Curve curveMesh;
 
-    [SerializeField] private int teacherStudentRatio; 
+    [SerializeField] private int teacherStudentRatio;
+
+    [SerializeField] private int maxEnemiesOnPath;
+
+    [SerializeField] GameObject enemyPrefab;
+
+    private List<GameObject> spawnedEnemies = new List<GameObject>(); 
+
+    private List<GameObject> spawnedNpcs = new List<GameObject>();
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
@@ -42,8 +51,8 @@ public class RoomGenerator : MonoBehaviour
 
     List<Vector3> SplinePath(Door from, Door to)
     {
-        Debug.Log("From : " + from.normal);
-        Debug.Log("To : " + to.normal);
+        //Debug.Log("From : " + from.normal);
+        //Debug.Log("To : " + to.normal);
         int resolution = splineResolution; // Higher numbers make the curve smoother
         Vector3 fromDirection = (from.normal+Vector3.forward).normalized * splineSharpness;
         Vector3 toDirection = (to.normal-Vector3.forward).normalized * splineSharpness;
@@ -76,8 +85,9 @@ public class RoomGenerator : MonoBehaviour
                 float uuu2 = uu2 * u2;
                 float ttt2 = tt2 * t2;
                 Vector3 point2 = uuu2 * p0 + 3 * uu2 * t2 * p1 + 3 * u2 * tt2 * p2 + ttt2 * p3;
-                Debug.DrawLine(point, point2, Color.blue, drawingDelay);
+                //Debug.DrawLine(point, point2, Color.blue, drawingDelay);
             }
+
         }
 
         return pathPoints;
@@ -86,8 +96,8 @@ public class RoomGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.R)) ResetRooms();
-        if (Input.GetKeyUp(KeyCode.S)) SplineDemo();
+        if (Input.GetKeyDown(KeyCode.R)) ResetRooms();
+        if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
     }
     void BakeNavMesh(List<NavMeshSurface> surfaces)
     {
@@ -175,7 +185,7 @@ public class RoomGenerator : MonoBehaviour
                 drawTeacher = false;
             }
 
-            VisualisePath(branchedPath, Color.red, out navMeshSurfaces);
+            GeneratePath(branchedPath, Color.red, out navMeshSurfaces);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
 
@@ -215,13 +225,13 @@ public class RoomGenerator : MonoBehaviour
 
     private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
     {
-        Debug.Log("Ittiration attempt");
+        //Debug.Log("Ittiration attempt");
         if (maxDepthOfBranch == 0)
         {
-            Debug.LogWarning("Generation finished, depth = " + maxDepthOfBranch);
+            //Debug.LogWarning("Generation finished, depth = " + maxDepthOfBranch);
             return null;
         }
-            if (correctPath == null) Debug.LogError("correctPath was NULL");
+        if (correctPath == null) Debug.LogError("correctPath was NULL");
         if (from == null) Debug.LogError("from was NULL");
         if (from.layerNumber > correctPath.Count - 2){
             Debug.LogWarning("FROM LAYER WAS MORE THAN CORRECT PATH DOT COUNT");
@@ -274,24 +284,73 @@ public class RoomGenerator : MonoBehaviour
         return branchedPath;
     }
 
-    private void VisualisePath(List<Room> path, Color color, out List<NavMeshSurface> navMeshSurfaces, bool reverse = false)
+    private void VisualisePath(List<Room> path, Color color)
     {
-        if(reverse) path.Reverse();
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
+        }
+    }
+    private void VisualisePath(List<Vector3> path, Color color)
+    {
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            Debug.DrawLine(path[i], path[i + 1], color, drawingDelay);
+        }
+    }
+    private void GeneratePath(List<Room> path, Color color, out List<NavMeshSurface> navMeshSurfaces, bool reverse = false)
+    {
+        if (reverse) path.Reverse();
         navMeshSurfaces = new List<NavMeshSurface>();
+        List<EnemyNPC> allEnemies = new List<EnemyNPC>();
         for (int i = 0; i < path.Count - 1; i++)
         {
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
             List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
-            splinePath.Add(splinePath[splinePath.Count - 1] + (splinePath[splinePath.Count - 1] - splinePath[splinePath.Count - 2]));
-            Curve newCurve = Instantiate(curveMesh, this.transform);
-            newCurve.points = splinePath;
-            newCurve.Apply();
-
-            navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
-
-            Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+            VisualisePath(splinePath, Color.blue);
+            if(!Input.GetKey(KeyCode.Space))GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
         }
-        Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);
+        if (!Input.GetKey(KeyCode.Space)) Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);// generates Last room
+        if (!Input.GetKey(KeyCode.Space)) SpawnEnemies(allEnemies);
+    }
+
+    private void SpawnEnemies(List<EnemyNPC> allEnemies)
+    {
+        foreach (var enemy in allEnemies)
+        {
+            DrawTriangle(enemy.position, rightOffset / 10, forwardOffset / 20, Color.red, false, 10);
+            SpawnEnemy(enemy.position);
+        }
+    }
+
+    private void GenerateGeometry(List<Room> path, List<NavMeshSurface> navMeshSurfaces, List<EnemyNPC> allEnemies, int i, List<Vector3> splinePath)
+    {
+        splinePath.Add(splinePath[splinePath.Count - 1] + (splinePath[splinePath.Count - 1] - splinePath[splinePath.Count - 2]));
+        Curve newCurve = Instantiate(curveMesh, this.transform);
+        newCurve.points = splinePath;
+        newCurve.Apply();
+        navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
+        int randomCount = Random.Range(0, maxEnemiesOnPath + 1);
+        List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
+        foreach (var enemy in newEnemies) allEnemies.Add(enemy);
+        Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+    }
+
+    public void SpawnEnemy(Vector3 position)
+    {
+        NetworkObject enemy = Instantiate(enemyPrefab, position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
+        enemy.Spawn();
+        spawnedEnemies.Add(enemy.gameObject);
+    }
+    private List<EnemyNPC> InitiateEnemyOnPath(List<Vector3> path, int count)
+    {
+        List<EnemyNPC> enemies = new List<EnemyNPC>();
+        for (int i = 0; i < count; i++)
+        {
+            int randInt = Random.Range((int)(path.Count * 0.2f), (int)((path.Count - 1) * 0.8f));
+            enemies.Add(new EnemyNPC(path[randInt]));
+        }
+        return enemies;
     }
     void VisualiseRoomNPC(Room room, float scale = 0.2f)
     {
@@ -322,6 +381,11 @@ public class RoomGenerator : MonoBehaviour
         {
             Destroy(transform.GetChild(i).gameObject);
         }
+        for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
+        {
+            Destroy(spawnedEnemies[i]);
+        }
+        spawnedEnemies.Clear();
         generation.Clear();
 
         StartCoroutine(GenerateNextFrame());
@@ -398,7 +462,7 @@ public class RoomGenerator : MonoBehaviour
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to,roomLayers);
         List<NavMeshSurface> navMeshSurfaces; 
-        VisualisePath(correctPath, Color.green, out navMeshSurfaces, true);
+        GeneratePath(correctPath, Color.green, out navMeshSurfaces, true);
         List<NavMeshSurface> newNavMeshSurfaces; 
         InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces);
         foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
@@ -412,7 +476,7 @@ public class RoomGenerator : MonoBehaviour
         RoomInfo roomInfo = roomPrefabs[randInt];
         initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0,new Door(roomInfo.GetEntrancePosition()+ origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition()+ origin, roomInfo.normalExit),roomInfo) };
         roomLayers.Add(initialLayer);
-        Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
+        //Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
         return initialLayer;
     }
 
@@ -510,6 +574,11 @@ public class TeacherNPC : OnMapNPC
 public class StudentNPC : OnMapNPC
 {
     public StudentNPC(Vector3 position) : base(position) { }
+}
+
+public class EnemyNPC : OnMapNPC
+{
+    public EnemyNPC(Vector3 position) : base(position) { }
 }
 
 

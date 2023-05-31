@@ -17,7 +17,7 @@ public class WarpMeshAlongSpline : MeshCreator
 			return;
 		List<Vector3> points = curve.points;
 
-		Debug.Log("Recalculating spline mesh");
+		//Debug.Log("Recalculating spline mesh");
 
 		MeshBuilder builder = new MeshBuilder();
 		if (points.Count<2) {

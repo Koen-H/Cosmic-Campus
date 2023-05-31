@@ -18,7 +18,7 @@ public class AutoUv : MonoBehaviour
     }
 
 	public void UpdateUVs(Mesh mesh) {
-		Debug.Log("Updating UVs");
+
 
 		Vector2[] uv = mesh.uv;
 		int[] tris = mesh.triangles;
