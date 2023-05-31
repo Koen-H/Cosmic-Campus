@@ -11,14 +11,14 @@ public class ArtistDecal : MonoBehaviour
     public ArtistDecalType type = ArtistDecalType.WATER;
 
     DecalProjector projector;
-    private float lifespawn = 5;
+    private float lifespan = 5;
 
     private void Start()
     {
         projector = GetComponent<DecalProjector>();
         if (type == ArtistDecalType.WATER) projector.material = waterMat;
         else projector.material = lavaMat;
-        StartCoroutine(FadeOutOfExistence(5));
+        StartCoroutine(FadeOutOfExistence(lifespan));
     }
 
     private void OnTriggerEnter(Collider other)

@@ -65,6 +65,7 @@ public class DesignerAbility : Ability
         Debug.Log("put down");
         // Place target on the ground
         target.transform.parent = null;
+        target.transform.position = new Vector3(clickPoint.x, target.transform.position.y, clickPoint.z);
         //target.transform.position = new Vector3(
         //    target.transform.position.x,
         //    target.transform.localScale.y / 2,

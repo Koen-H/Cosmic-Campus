@@ -14,19 +14,27 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
+    NetworkVariable<float> maxHealth = new(10);
     NetworkVariable<float> health = new(10);
+    NetworkVariable<bool> isDead = new(false);
+    [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
     public float moveSpeed = 5f;
     public bool canMove = true;
+    public bool canAttack = true;
+    public bool canAbility = true;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
+    [SerializeField] ReviveAreaManager myReviveArea;
+    public ReviveAreaManager otherReviveArea;
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
     [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
+    private Collider col;
 
     private bool isGrounded;
 
@@ -47,11 +55,76 @@ public class PlayerCharacterController : NetworkBehaviour
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
     }
+
+    /// <summary>
+    /// Heal the player based on percentage of max health.
+    /// </summary>
+    public void Heal(float percentage)
+    {
+        float addedHealth = maxHealth.Value * (percentage / 100);
+        if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
+        else health.Value += addedHealth;
+    }
+
     public void TakeDamage(float damage)
     {
+        if (isDead.Value) return;
+        if (damage >= health.Value) damage = health.Value;
         if (damage > 0) health.Value -= damage;
-        if (health.Value <= 0) Debug.Log("Player Died");
+        if (health.Value <= 0) isDead.Value = true;
+    }
+
+    void InjurePlayer(bool prevVal, bool isCurrentlyDead)
+    {
+        if (isCurrentlyDead)
+        {
+            //Tell the gamemanager that this player is dead, if all other players are dead it's a game over!
+            //Gamemanager.player died!
+            weaponBehaviour.CancelAttack();
+            //col.enabled= false;//Disable collider to make the enemy target a different player.
+            playerObj.gameObject.SetActive(false);
+            myReviveArea.gameObject.SetActive(true);
+        }
+        else
+        {
+            myReviveArea.gameObject.SetActive(false);
+            //col.enabled = true;//Enable collider to allow it to be targeted and attacked again.
+            //Resurrected animation here!
+            playerObj.gameObject.SetActive(true);
+        }
+
+        if (!IsOwner) return;
+        canMove = !isCurrentlyDead;
+        canAttack = !isCurrentlyDead;
+        canAbility = !isCurrentlyDead;
+    }
+
+    /// <summary>
+    /// Revive the player
+    /// </summary>
+    [ServerRpc(RequireOwnership=false)]
+    public void ReviveServerRpc()
+    {
+        isDead.Value = false;
+        health.Value = maxHealth.Value * 0.25f;
+    }
+
+    /// <summary>
+    /// Set the revive area that the player ented. Let the player know that he can heal his teammate by holding E!
+    /// </summary>
+    public void SetReviveArea(ReviveAreaManager reviveArea)
+    {
+        otherReviveArea = reviveArea;
+        if(otherReviveArea != null)
+        {
+            //TODO: show option for revive
+        }
+        else
+        {
+            //TODO: Hide that option for revive
+        }
     }
 
 
@@ -59,9 +132,12 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
+        isDead.OnValueChanged += InjurePlayer;
+        myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
 
-        Camera.main.GetComponent<CameraFollow>().target = this.transform;
+        Camera.main.GetComponent<CameraManager>().SetFollowTarg(this.transform);
+        Camera.main.GetComponent<CameraManager>().SetLookTarg(this.transform);
     }
 
     void OnHealthChange(float prevHealth, float newHealth)
@@ -82,8 +158,24 @@ public class PlayerCharacterController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
+        if(canMove) Move();
+        if (canAttack) HandleAttackInput();
+        if (canAbility) HandleAbilityInput();
+        if (otherReviveArea != null) TryRevive();
+        
+    }
 
-        Move();
+    void TryRevive()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            otherReviveArea.OnRevivingServerRpc();
+        }
+    }
+
+
+    void HandleAttackInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             weaponBehaviour.OnAttackInputStart();
@@ -96,6 +188,11 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             weaponBehaviour.OnAttackInputHold();
         }
+    }
+
+    void HandleAbilityInput()
+    {
+        ability.AbilityInput();
     }
 
 
@@ -114,6 +211,8 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
         Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        Quaternion rotationQuaternion = Quaternion.Euler(0, -45, 0);
+        movementDirection = rotationQuaternion * movementDirection;
         // Check if there is input
         if (movementDirection != Vector3.zero)
         {
@@ -131,7 +230,7 @@ public class PlayerCharacterController : NetworkBehaviour
         rigidbody.velocity = movementDirection * currentSpeed;
 
         if (movementDirection.magnitude == 0) return;
-        transform.forward = movementDirection; 
+        playerObj.transform.forward = movementDirection; 
     }
 
 
@@ -161,6 +260,7 @@ public class PlayerCharacterController : NetworkBehaviour
         GetAbilityBehaviour();
         GetWeaponBehaviour(newWeapon.weaponType);
         weaponBehaviour.weaponObj = Instantiate(newWeapon.weaponPrefab, playerWeapon.transform);
+        weaponBehaviour.weaponObj.transform.localPosition = newWeapon.weaponObjOffset;
         weaponBehaviour.weaponData = newWeapon;
     }
 
