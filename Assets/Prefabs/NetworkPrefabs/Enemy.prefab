@@ -233,8 +233,6 @@ GameObject:
   - component: {fileID: 6880509872615113900}
   - component: {fileID: 6880509872615113901}
   - component: {fileID: 6880509872615113902}
-  - component: {fileID: -1339722917386174271}
-  - component: {fileID: 400694342688182288}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -354,34 +352,6 @@ MonoBehaviour:
   healthText: {fileID: 6880509872380289768}
   health:
     m_InternalValue: 10
---- !u!54 &-1339722917386174271
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880509872615113898}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &400694342688182288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880509872615113898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6880509873163893433
 GameObject:
   m_ObjectHideFlags: 0

@@ -615,7 +615,6 @@ MonoBehaviour:
   otherReviveArea: {fileID: 0}
   damage: 2
   playerWeapon: {fileID: 5890912343632651228}
-  weaponBehaviour: {fileID: 0}
   accelerationTime: 0.5
   decelerationTime: 0.5
   maxSpeed: 5
@@ -707,6 +706,10 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
