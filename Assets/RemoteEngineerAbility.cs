@@ -151,7 +151,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             if (collider.CompareTag("Enemy"))
             {
-                collider.GetComponent<Enemy>().TakeDamage(damage);
+                collider.GetComponentInParent<Enemy>().TakeDamage(damage);
             }
         }
         CameraManager.MyCamera.TargetPlayer();

@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class Staff : Weapon
 {
-
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -174,10 +173,10 @@ public class Staff : Weapon
         lineRenderer.SetPosition(1, p2.position);
     }
 
-    float  DealDamage(Enemy enemy,float prevDam)
+    float DealDamage(Enemy enemy,float prevDam)
     {
+        enemy.TakeDamage(prevDam);
         float damage = prevDam * 0.7f; 
-        enemy.TakeDamage(damage);
         base.Attack();//Handle cooldown?
         return damage;
     }
