@@ -44,8 +44,8 @@ public class ObjectSlamManager : MonoBehaviour
     {
         rb.isKinematic = true;
         //Do fancy particle stuff
-        slamObjVFX = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
-        slamObjVFX.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
+        GameObject slamObjVFXinstance = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
+        slamObjVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         //If the current client is the owner, we deal the damage
         if (owner.IsOwner)
         {

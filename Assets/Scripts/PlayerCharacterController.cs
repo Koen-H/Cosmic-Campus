@@ -32,12 +32,9 @@ public class PlayerCharacterController : NetworkBehaviour
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
-    [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
+    private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
     private Collider col;
-
-    private bool isGrounded;
-
 
     [SerializeField]float accelerationTime = 0.5f;
     [SerializeField]float decelerationTime = 0.5f;
@@ -99,9 +96,14 @@ public class PlayerCharacterController : NetworkBehaviour
         }
 
         if (!IsOwner) return;
-        canMove = !isCurrentlyDead;
-        canAttack = !isCurrentlyDead;
-        canAbility = !isCurrentlyDead;
+        LockPlayer(!isCurrentlyDead);
+    }
+
+    public void LockPlayer(bool isLocked)
+    {
+        canMove = !isLocked;
+        canAttack = !isLocked;
+        canAbility = !isLocked;
     }
 
     /// <summary>
@@ -139,9 +141,8 @@ public class PlayerCharacterController : NetworkBehaviour
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
-
-        Camera.main.GetComponent<CameraManager>().SetFollowTarg(this.transform);
-        Camera.main.GetComponent<CameraManager>().SetLookTarg(this.transform);
+        ClientManager.MyClient.playerCharacter = this;
+        CameraManager.MyCamera.TargetPlayer();
     }
 
     void OnHealthChange(float prevHealth, float newHealth)
@@ -194,7 +195,6 @@ public class PlayerCharacterController : NetworkBehaviour
             otherReviveArea.OnRevivingServerRpc();
         }
     }
-
 
     void HandleAttackInput()
     {
