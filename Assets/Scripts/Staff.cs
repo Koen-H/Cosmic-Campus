@@ -84,7 +84,7 @@ public class Staff : Weapon
         float damage = weaponData.damage; 
         foreach (Enemy enemy in orderedEnemies)
         {
-            lineRenderer.SetPosition(i, enemy.transform.position);
+            lineRenderer.SetPosition(i, enemy.avatar.transform.position);
             if (doDamage) damage = DealDamage(enemy, damage);
             i++;
         }
