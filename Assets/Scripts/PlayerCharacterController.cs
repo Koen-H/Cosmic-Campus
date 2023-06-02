@@ -42,6 +42,9 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float currentSpeed = 0f;
 
 
+    private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
+    private QuestNPC interactingNPC; 
+
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
 
@@ -130,6 +133,7 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+
     public override void OnNetworkSpawn()
     {
         InitCharacter(OwnerClientId);
@@ -154,7 +158,16 @@ public class PlayerCharacterController : NetworkBehaviour
         }
         else { Debug.LogError("Networking error?"); }
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc) interactingNPC = npc;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc) interactingNPC = null;
+    }
 
     void Update()
     {
@@ -163,8 +176,17 @@ public class PlayerCharacterController : NetworkBehaviour
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
+        if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
         
     }
+    void CheckNPCInteraction()
+    {
+        if (!interactingNPC) return;
+
+        OnMapNPC student = interactingNPC.Interact(colllectedStudents);
+        if (student != null) colllectedStudents.Add(student);
+    }
+
 
     void TryRevive()
     {
