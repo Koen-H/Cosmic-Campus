@@ -35,8 +35,8 @@ namespace UnityEngine.AI
         Vector3 m_Center = new Vector3(0, 2.0f, 0);
         public Vector3 center { get { return m_Center; } set { m_Center = value; } }
 
-        [SerializeField]
-        LayerMask m_LayerMask = ~0;
+        
+        LayerMask m_LayerMask = 1 << 6; // This will include only layer 6
         public LayerMask layerMask { get { return m_LayerMask; } set { m_LayerMask = value; } }
 
         [SerializeField]

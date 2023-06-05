@@ -106,8 +106,10 @@ public class RoomGenerator : MonoBehaviour
     {
         for (int i = 0; i < surfaces.Count; i++)
         {
+            if (surfaces[i].gameObject.layer != 6) continue;
             surfaces[i].BuildNavMesh();
         }
+        // set to ture 
     }
     void SplineDemo()
     {
@@ -116,11 +118,14 @@ public class RoomGenerator : MonoBehaviour
         List<Vector3> splinePath = SplinePath(from, to);
         Curve newCurve = Instantiate(curveMesh, this.transform);
         newCurve.points = splinePath;
+        newCurve.gameObject.layer = 6;
         newCurve.Apply();
     }
-    private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches, out List<NavMeshSurface> navMeshSurfaces)
+    private void InitializeBranches(List<Room> path, int numberOfBranches, int depthOfBranches, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
     {
         navMeshSurfaces = new List<NavMeshSurface>();
+        allEnemies = new List<EnemyNPC>();
+        outQuestNPC = new List<Room>();
         int totalRooms = path.Count;
         if (numberOfBranches*2 >= totalRooms)
         {
@@ -142,15 +147,17 @@ public class RoomGenerator : MonoBehaviour
             Room point = branchingPoints[i];
             Debug.DrawLine(point.GetRoomPosition(), point.GetRoomPosition() + Vector3.right, Color.white, drawingDelay);
         }
-        GenerateBranches(branchingPoints, path, out navMeshSurfaces);
+        GenerateBranches(branchingPoints, path, out navMeshSurfaces, out allEnemies, out outQuestNPC);
     }
 
 
 
-    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath, out List<NavMeshSurface> navMeshSurfaces)
+    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
     {
         List<Room> allBranches = new List<Room>();
         navMeshSurfaces = new List<NavMeshSurface>();
+        allEnemies = new List<EnemyNPC>();
+        outQuestNPC = new List<Room>();
         branchingPoints.Reverse();
 
         int teacherRatio = teacherStudentRatio;
@@ -164,8 +171,9 @@ public class RoomGenerator : MonoBehaviour
             int rand = maxDepthOfBranch;
             List<Room> branchedPath = BranchOff(branchingPoint, rand, correctPath, allBranches);
             if (branchedPath == null) Debug.LogError("branched path Was NULL");
-
-            OnMapNPC newNPC = InitializeNPCs(branchingPoint, branchedPath, drawTeacher); // Draw a student every time
+            List<Room> tempOut; 
+            OnMapNPC newNPC = InitializeNPCs(branchingPoint, branchedPath, drawTeacher, out tempOut); // Draw a student every time
+            foreach (var item in tempOut) { outQuestNPC.Add(item); }
             if (drawTeacher)
             {
                 currentTeacher = newNPC;
@@ -188,7 +196,7 @@ public class RoomGenerator : MonoBehaviour
                 drawTeacher = false;
             }
 
-            GeneratePath(branchedPath, Color.red, out navMeshSurfaces);
+            GeneratePath(branchedPath, Color.red, out navMeshSurfaces, out allEnemies);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
 
@@ -200,10 +208,12 @@ public class RoomGenerator : MonoBehaviour
             }
         }
     }
-    private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher)
+    private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher, out List<Room> outQuestNPC)
     {
         Room studentRoom = branchedPath[branchedPath.Count - 1];
         Room teacherRoom;
+        outQuestNPC = new List<Room>();
+
         if (!branchedPath.Contains(branchingPoint.roomA)) teacherRoom = branchingPoint.roomA;
         else teacherRoom = branchingPoint.roomB;
 
@@ -213,7 +223,8 @@ public class RoomGenerator : MonoBehaviour
         if (studentRoom.roomNpc != null)
         {
             VisualiseRoomNPC(studentRoom);
-            if (!Input.GetKey(KeyCode.Space)) SpawnRoomNPC(studentRoom);
+            outQuestNPC.Add(studentRoom);
+           // if (!Input.GetKey(KeyCode.Space)) questStudent = SpawnRoomNPC(studentRoom);
         }
 
         if (drawTeacher)
@@ -226,7 +237,8 @@ public class RoomGenerator : MonoBehaviour
             if (teacherRoom.roomNpc != null)
             {
                 VisualiseRoomNPC(teacherRoom);
-                if (!Input.GetKey(KeyCode.Space)) SpawnRoomNPC(teacherRoom);
+                outQuestNPC.Add(teacherRoom);
+                // if (!Input.GetKey(KeyCode.Space)) questTeacher = SpawnRoomNPC(teacherRoom);
             }
             return teacher;
         }
@@ -309,11 +321,11 @@ public class RoomGenerator : MonoBehaviour
             Debug.DrawLine(path[i], path[i + 1], color, drawingDelay);
         }
     }
-    private void GeneratePath(List<Room> path, Color color, out List<NavMeshSurface> navMeshSurfaces, bool reverse = false)
+    private void GeneratePath(List<Room> path, Color color, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, bool reverse = false)
     {
         if (reverse) path.Reverse();
         navMeshSurfaces = new List<NavMeshSurface>();
-        List<EnemyNPC> allEnemies = new List<EnemyNPC>();
+        allEnemies = new List<EnemyNPC>();
         for (int i = 0; i < path.Count - 1; i++)
         {
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
@@ -321,8 +333,8 @@ public class RoomGenerator : MonoBehaviour
             VisualisePath(splinePath, Color.blue);
             if(!Input.GetKey(KeyCode.Space))GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
         }
-        if (!Input.GetKey(KeyCode.Space)) Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);// generates Last room
-        if (!Input.GetKey(KeyCode.Space)) SpawnEnemies(allEnemies);
+        if (!Input.GetKey(KeyCode.Space)) Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform).gameObject.layer = 6;// generates Last room
+        //if (!Input.GetKey(KeyCode.Space)) SpawnEnemies(allEnemies);
     }
 
     private void SpawnEnemies(List<EnemyNPC> allEnemies)
@@ -340,12 +352,13 @@ public class RoomGenerator : MonoBehaviour
         Curve newCurve = Instantiate(curveMesh, this.transform);
         newCurve.points = splinePath;
         newCurve.Apply();
+        newCurve.gameObject.layer = 6;
         newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
         int randomCount = Random.Range(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
-        Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+        Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform).gameObject.layer = 6;
     }
 
     public void SpawnEnemy(Vector3 position, float hightOffset)
@@ -374,11 +387,11 @@ public class RoomGenerator : MonoBehaviour
         if (room.roomNpc is StudentNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(255, 137, 0)); 
         if (room.roomNpc is TeacherNPC) DrawTriangle(room.GetRoomPosition(), width, height, new Color(131, 53, 184),false);
     }
-    void SpawnRoomNPC(Room room, float hightOffset = 2)
+    void  SpawnRoomNPC(Room room, float hightOffset = 2)
     {
         if (room.roomNpc is StudentNPC)
         {
-            QuestStudentNPC student =  Instantiate(studentPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
+            QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
             student.self = room.roomNpc;
         }
         if (room.roomNpc is TeacherNPC)
@@ -479,6 +492,9 @@ public class RoomGenerator : MonoBehaviour
 
     Room GeneratePyramid(Vector3 origin, List<RoomsLayer> roomLayers)
     {
+        List<EnemyNPC> mainPathEnemies = new List<EnemyNPC>();
+        List<EnemyNPC> branchedPathEnemies = new List<EnemyNPC>();
+        List<Room> outQuestNPC = new List<Room>();
         Multiply(AddInitialRoom(origin,roomLayers),roomLayers);
         for (int i = 0; i < numberOfRooms; i++)
         {
@@ -490,11 +506,14 @@ public class RoomGenerator : MonoBehaviour
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to,roomLayers);
         List<NavMeshSurface> navMeshSurfaces; 
-        GeneratePath(correctPath, Color.green, out navMeshSurfaces, true);
+        GeneratePath(correctPath, Color.green, out navMeshSurfaces, out mainPathEnemies, true);
         List<NavMeshSurface> newNavMeshSurfaces; 
-        InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces);
+        InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces, out branchedPathEnemies, out outQuestNPC);
         foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
         if(Input.GetKey(KeyCode.LeftShift))BakeNavMesh(navMeshSurfaces);
+        SpawnEnemies(mainPathEnemies);
+        SpawnEnemies(branchedPathEnemies);
+        foreach (var questNPC in outQuestNPC) SpawnRoomNPC(questNPC);
         return from;
     }
     private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
