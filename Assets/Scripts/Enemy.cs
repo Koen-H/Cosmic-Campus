@@ -12,6 +12,8 @@ public class Enemy : NetworkBehaviour
     //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
 
+    [SerializeField] HealthBar healthBar;
+
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
@@ -25,6 +27,7 @@ public class Enemy : NetworkBehaviour
     protected float attackCooldown;
     private float projectileSpeed;
 
+    Quaternion healthBarOriginalRotation; 
 
     protected bool canAttack = true;
 
@@ -60,12 +63,17 @@ public class Enemy : NetworkBehaviour
         attackBehaviour = GetComponent<EnemyAttackBehaviour>();
     }
 
+    private void Start()
+    {
+        healthBarOriginalRotation = healthBar.transform.rotation; 
+    }
+
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
-
         SetSOData();
         SetNavMeshData();
+        healthBar.SetMaxValue(health.Value);
     }
 
     public override void OnNetworkDespawn()
@@ -126,6 +134,7 @@ public class Enemy : NetworkBehaviour
     void OnHealthChange(float prevHealth, float newHealth)
     {
         healthText.text = health.Value.ToString();
+        healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
             if (health.Value <= 0) Die();
@@ -156,7 +165,8 @@ public class Enemy : NetworkBehaviour
     void FixHealthBar()
     {
         //TODO: Fix.
-        healthText.transform.rotation = Quaternion.Euler(0,-transform.rotation.eulerAngles.y,0);
+        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
+        healthBar.transform.Rotate(Vector3.right, -90);
     }
 
     public virtual void Update()
