@@ -752,7 +752,7 @@ MonoBehaviour:
   canWander: 1
   wanderDistance: 5
   wanderDelay:
-    min: 1
+    min: 6
     max: 21
   canBeNockedBack: 1
 --- !u!114 &755956838789123095
@@ -783,7 +783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canMoveDuringAttack: 0
-  damage: 1
+  damage: 5
   attackRange: 2
   attackColliders:
   - {fileID: 2695768153316934875}

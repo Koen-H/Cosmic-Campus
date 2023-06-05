@@ -81,7 +81,7 @@ public class Staff : Weapon
         lineRenderer.SetPosition(0, weaponObj.transform.position);
         bool doDamage = false;
         if (playerController.IsOwner && weaponState == WeaponState.READY) doDamage = true;
-        float damage = weaponData.damage; 
+        float damage = weaponData.damage.GetRandomValue(); 
         foreach (Enemy enemy in orderedEnemies)
         {
             lineRenderer.SetPosition(i, enemy.avatar.transform.position);

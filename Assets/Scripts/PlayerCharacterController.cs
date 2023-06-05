@@ -14,8 +14,8 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
-    NetworkVariable<float> maxHealth = new(10);
-    NetworkVariable<float> health = new(10);
+    NetworkVariable<float> maxHealth = new(20);
+    NetworkVariable<float> health = new(20);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
