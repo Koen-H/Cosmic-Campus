@@ -46,10 +46,11 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.SetLookTarg(transform);
         }
     }
-
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        rigidbody.isKinematic = true;
+
     }
 
     private void Update()
@@ -60,6 +61,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             if (Input.GetMouseButtonUp(1))
             {
                 isBuilding.Value = false;
+                rigidbody.isKinematic = false;
                 StartCoroutine(ExplosionCountdown());
             }
             return;
