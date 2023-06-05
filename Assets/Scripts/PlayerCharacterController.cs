@@ -14,8 +14,8 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
-    NetworkVariable<float> maxHealth = new(10);
-    NetworkVariable<float> health = new(10);
+    NetworkVariable<float> maxHealth = new(20);
+    NetworkVariable<float> health = new(20);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -32,18 +32,18 @@ public class PlayerCharacterController : NetworkBehaviour
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
-    [SerializeField] private Weapon weaponBehaviour;//The weapon behaviour
+    private Weapon weaponBehaviour;//The weapon behaviour
     private Ability ability;
     private Collider col;
-
-    private bool isGrounded;
-
 
     [SerializeField]float accelerationTime = 0.5f;
     [SerializeField]float decelerationTime = 0.5f;
     [SerializeField]float maxSpeed = 10f;
     [SerializeField]float currentSpeed = 0f;
 
+
+    private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
+    private QuestNPC interactingNPC; 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -96,9 +96,14 @@ public class PlayerCharacterController : NetworkBehaviour
         }
 
         if (!IsOwner) return;
-        canMove = !isCurrentlyDead;
-        canAttack = !isCurrentlyDead;
-        canAbility = !isCurrentlyDead;
+        LockPlayer(!isCurrentlyDead);
+    }
+
+    public void LockPlayer(bool isLocked)
+    {
+        canMove = !isLocked;
+        canAttack = !isLocked;
+        canAbility = !isLocked;
     }
 
     /// <summary>
@@ -128,6 +133,7 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+
     public override void OnNetworkSpawn()
     {
         InitCharacter(OwnerClientId);
@@ -135,8 +141,8 @@ public class PlayerCharacterController : NetworkBehaviour
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
-
-        Camera.main.GetComponent<CameraFollow>().target = this.transform;
+        ClientManager.MyClient.playerCharacter = this;
+        CameraManager.MyCamera.TargetPlayer();
     }
 
     void OnHealthChange(float prevHealth, float newHealth)
@@ -152,7 +158,16 @@ public class PlayerCharacterController : NetworkBehaviour
         }
         else { Debug.LogError("Networking error?"); }
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc) interactingNPC = npc;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc) interactingNPC = null;
+    }
 
     void Update()
     {
@@ -161,8 +176,17 @@ public class PlayerCharacterController : NetworkBehaviour
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
+        if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
         
     }
+    void CheckNPCInteraction()
+    {
+        if (!interactingNPC) return;
+
+        OnMapNPC student = interactingNPC.Interact(colllectedStudents);
+        if (student != null) colllectedStudents.Add(student);
+    }
+
 
     void TryRevive()
     {
@@ -171,7 +195,6 @@ public class PlayerCharacterController : NetworkBehaviour
             otherReviveArea.OnRevivingServerRpc();
         }
     }
-
 
     void HandleAttackInput()
     {

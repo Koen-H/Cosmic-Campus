@@ -14,7 +14,7 @@ public class ClientManager : NetworkBehaviour
     public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [SerializeField] public PlayerData playerData = null;
 
-    public GameObject playerCharacter = null;
+    public PlayerCharacterController playerCharacter = null;
 
     //Get the clientManager, that belongs to you, the client.
     private static ClientManager _myClient;

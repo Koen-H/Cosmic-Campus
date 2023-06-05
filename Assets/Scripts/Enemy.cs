@@ -7,13 +7,15 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyMovement))]
 public class Enemy : NetworkBehaviour
 {
-    private EnemyMovement enemyMovement;
-    protected Transform currentTarget; // Add this line
-    [SerializeField] private Transform enemyEyes;
-    [SerializeField] EnemySO enemySO;
-    [SerializeField] private GameObject avatar;
+    [Header("Global Enemy Variables")]
+    [SerializeField] public GameObject avatar;
+    //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
 
+    [SerializeField] EnemySO enemySO;
+    public EnemyState enemyState = EnemyState.IDLING;
+
+    [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
     private float moveSpeed;
     protected float detectionRange;
@@ -21,15 +23,43 @@ public class Enemy : NetworkBehaviour
     private float damage;
     private float meleeRange;
     protected float attackCooldown;
+    private float projectileSpeed;
+
 
     protected bool canAttack = true;
 
-    private float projectileSpeed;
+    [Header("Movement")]
+    private EnemyMovement enemyMovement;
 
+    [Header("Targetting")]
+    private EnemyTargettingBehaviour targetBehaviour;
+    public event System.Action<Transform> OnTargetChange;
+    private Transform currentTarget;
+    public Transform CurrentTarget
+    {
+        get { return currentTarget; }
+        set
+        {
+            if (currentTarget == value) return;
+            currentTarget = value;
+            OnTargetChange?.Invoke(currentTarget);
+        }
+    }
+
+    [Header("Attacking")]
+    private EnemyAttackBehaviour attackBehaviour;
+
+
+
+
+    #region Initialization methods
     private void Awake()
     {
         enemyMovement = GetComponent<EnemyMovement>();
+        targetBehaviour = GetComponent<EnemyTargettingBehaviour>();
+        attackBehaviour = GetComponent<EnemyAttackBehaviour>();
     }
+
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
@@ -42,31 +72,99 @@ public class Enemy : NetworkBehaviour
     {
         health.OnValueChanged -= OnHealthChange;
     }
+    void SetSOData()
+    {
+        health.Value = enemySO.health;
+
+        if (!IsServer) return;//Everything below this line is handled on the server only!
+        moveSpeed = enemySO.moveSpeed;
+        detectionRange = enemySO.detectionRange;
+        trackingRange = enemySO.trackingRange;
+        damage = enemySO.damage;
+        attackCooldown = enemySO.attackCooldown;
+
+        if (enemySO.enemyType == EnemySO.EnemyType.Melee)
+        {
+            meleeRange = enemySO.meleeRange;
+        }
+        if (enemySO.enemyType == EnemySO.EnemyType.Range)
+        {
+            projectileSpeed = enemySO.projectileSpeed;
+        }
+    }
+
+    #endregion
+
+    #region Health related methods
+
+    /// <summary>
+    /// Deal damage to the enemy.
+    /// </summary>
+    /// <param name="damageInc">The amount of damage</param>
+    public void TakeDamage(float damageInc)
+    {
+        TakeDamgeServerRpc(damageInc);
+
+    }
+
+    /// <summary>
+    /// The enemy only takes damage on the server side because the server owns the enemy.
+    /// </summary>
+    /// <param name="damageInc">The damage received</param>
+    [ServerRpc(RequireOwnership = false)]
+    void TakeDamgeServerRpc(float damageInc)
+    {
+        health.Value -= damageInc;
+    }
+
+    /// <summary>
+    /// Whenever the enemy heals or take damage, the value is changed. This code happens on all the clients!
+    /// This is where some sound effect should be played or a attack/heal vfx/animation.
+    /// </summary>
+    /// <param name="prevHealth"></param>
+    /// <param name="newHealth"></param>
+    void OnHealthChange(float prevHealth, float newHealth)
+    {
+        healthText.text = health.Value.ToString();
+        if (prevHealth > newHealth)//Do thing where the enemy takes damage!
+        {
+            if (health.Value <= 0) Die();
+        }
+        else if (prevHealth < newHealth)//Do things where the enemy gained health!
+        {
+
+        }
+        else { Debug.LogError("Networking error?"); }
+    }
+
+    /// <summary>
+    /// When the enemy dies
+    /// </summary>
+    private void Die()
+    {
+        //TODO: Drop debris and invoke the death animation.
+        if (IsOwner) Destroy(gameObject);
+    }
+
+    #endregion
+
+
+
+    /// <summary>
+    /// Because we use a navmesh agent and it rotates the whole gameobject, we need to counter rotate the healtbar each frame.
+    /// </summary>
+    void FixHealthBar()
+    {
+        //TODO: Fix.
+        healthText.transform.rotation = Quaternion.Euler(0,-transform.rotation.eulerAngles.y,0);
+    }
 
     public virtual void Update()
     {
-        // Check if the current target is still within the tracking range
-        if (currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) <= trackingRange)
-        {
-            // Visualization
-            Debug.DrawLine(transform.position, currentTarget.position, Color.green, 0.01f);
-
-            enemyMovement.SetTarget(currentTarget);
-            AttackLogic(currentTarget);
-        }
-        else
-        {
-            currentTarget = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
-            if (currentTarget != null)
-            {
-                enemyMovement.SetTarget(currentTarget);
-                AttackLogic(currentTarget);
-            }
-            else
-            {
-                enemyMovement.RemoveTarget();
-            }
-        }
+        FixHealthBar();
+        if (enemyState == EnemyState.ATTACKING) return;
+        targetBehaviour.FindTarget();
+        attackBehaviour.TryAttack();
     }
 
     public virtual void AttackLogic(Transform target)
@@ -89,108 +187,14 @@ public class Enemy : NetworkBehaviour
         to.TakeDamage(damage);
     }
 
-    public void TakeDamage(float damageInc)
-    {
-        TakeDamgeServerRpc(damageInc);
-       
-    }
 
-    [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc(float damageInc)
-    {
-        health.Value -= damageInc;
-    }
-
-
-    void OnHealthChange(float prevHealth, float newHealth)
-    {
-        healthText.text = health.Value.ToString();
-        if (prevHealth > newHealth)//Do thing where the player takes damage!
-        {
-            if (health.Value <= 0) Die();
-        }
-        else if (prevHealth < newHealth)//Do things where the player gained health!
-        {
-            Debug.Log("Gained healht!");
-        }
-        else { Debug.LogError("Networking error?"); }
-    }
-
-
-    private void Die()
-    {
-        //do dead things, such as body falling apart
-        Debug.Log("EnemyDied");
-        if (IsOwner) Destroy(gameObject);
-    }
-
-    void SetSOData()
-    {
-        health.Value = enemySO.health;
-        
-        if (!IsServer) return;//Everything below this line is handled on the server only!
-        moveSpeed = enemySO.moveSpeed;
-        detectionRange = enemySO.detectionRange;
-        trackingRange = enemySO.trackingRange;
-        damage = enemySO.damage;
-        attackCooldown = enemySO.attackCooldown;
-
-        if (enemySO.enemyType == EnemySO.EnemyType.Melee)
-        {
-            meleeRange = enemySO.meleeRange;
-        }
-        if (enemySO.enemyType == EnemySO.EnemyType.Range)
-        {
-            projectileSpeed = enemySO.projectileSpeed;
-        }
-    }
 
     void SetNavMeshData()
     {
         enemyMovement.SetSpeed(moveSpeed);
     }
 
-    Transform FindClosestPlayer(float angle, float range, int amount, Transform transform)
-    {
-        Transform closest = null;
-        float closestDistance = range;
 
-        // The step size between each raycast
-        float stepSize = angle / (amount - 1);
-
-        for (int i = 0; i < amount; i++)
-        {
-            // The current angle of the raycast
-            float currentAngle = -angle / 2 + stepSize * i;
-
-            // Rotate the forward direction by the current angle around the up axis
-            Vector3 raycastDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
-
-            // Visualize the raycast direction
-            Debug.DrawRay(transform.position, raycastDirection * range, Color.red, 0.01f);
-
-            // Shoot the raycast
-            Ray ray = new Ray(transform.position, raycastDirection);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, range))
-            {
-
-                // Check if the hit object is a player
-                if (hit.collider.tag == "Player")
-                {
-                    // Check if this player is closer than the previous closest player
-                    if (hit.distance < closestDistance)
-                    {
-                        closest = hit.collider.transform;
-                        closestDistance = hit.distance;
-                    }
-                }
-            }
-        }
-
-        // Return the closest player found, or null if no player was found
-        return closest;
-    }
 
     protected IEnumerator AttackCoolDown(float cooldown)
     {
@@ -198,3 +202,4 @@ public class Enemy : NetworkBehaviour
         canAttack = true;
     }
 }
+public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }

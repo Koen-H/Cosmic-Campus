@@ -12,7 +12,7 @@ public class WeaponData : ScriptableObject
     public Vector3 weaponObjOffset = Vector3.zero;
     public WeaponType weaponType = WeaponType.UNSET;
 
-    public float damage = 0;
+    public Range damage = new Range(0,1);
     [Tooltip("How long does the attack take?")]
     public float speed = 0;
     [Tooltip("How long till the attack can happen again?")]
