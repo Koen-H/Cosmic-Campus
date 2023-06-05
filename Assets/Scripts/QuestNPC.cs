@@ -4,15 +4,32 @@ using UnityEngine;
 
 public class QuestNPC : MonoBehaviour
 {
-    public OnMapNPC self; 
+    public OnMapNPC self;
 
+    public event System.Action<Transform> OnTargetChange;
+    private Transform currentTarget;
+    public Transform CurrentTarget
+    {
+        get { return currentTarget; }
+        set
+        {
+            if (currentTarget == value) return;
+            currentTarget = value;
+            OnTargetChange?.Invoke(currentTarget);
+        }
+    }
 
-    public virtual OnMapNPC Interact(List<OnMapNPC> students)
+    public QuestNPCState enemyState = QuestNPCState.WAITING;
+
+    public virtual OnMapNPC Interact(List<OnMapNPC> students, Transform player)
     {
         if(self is StudentNPC)
         {
             Debug.Log("Hey i am a student, please take me to my teacher UwU");
-            this.gameObject.SetActive(false);
+            //this.gameObject.SetActive(false);
+            CurrentTarget = player;
+            enemyState = QuestNPCState.FOLLOWING;
+            Destroy(this.GetComponent<CapsuleCollider>());
             return self;
         }
         else if (self is TeacherNPC)
@@ -26,8 +43,11 @@ public class QuestNPC : MonoBehaviour
                 }
             }
             Debug.Log("Thank you for bringing my students, You may continue");
-            students.Clear(); 
+            students.Clear();
+            return self; 
         }
         return null;
     }    
 }
+
+public enum QuestNPCState { WAITING, FOLLOWING, BORED}

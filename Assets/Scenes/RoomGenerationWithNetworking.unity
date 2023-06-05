@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2161.8018, g: 2265.7695, b: 3288.9727, a: 1}
+  m_IndirectSpecularColor: {r: 2164.7012, g: 2273.8242, b: 3314.1602, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6179,33 +6179,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: studentPrefab
-      value: 
-      objectReference: {fileID: 5372416715083914912, guid: d6c2f0300f950594cba4d980bad07043,
-        type: 3}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: teacherPrefab
-      value: 
-      objectReference: {fileID: -3905282409277695776, guid: 7117023e2182c074fb79282d76951ea0,
-        type: 3}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: maxDepthOfBranch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: maxEnemiesOnPath
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: teacherStudentRatio
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466505, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: m_Name

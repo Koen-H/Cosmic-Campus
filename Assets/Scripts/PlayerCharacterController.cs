@@ -43,7 +43,8 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
-    private QuestNPC interactingNPC; 
+    private QuestNPC interactingNPC;
+    private List<GameObject> collectedStudents = new List<GameObject>(); 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -183,7 +184,17 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!interactingNPC) return;
 
-        OnMapNPC student = interactingNPC.Interact(colllectedStudents);
+        OnMapNPC student = interactingNPC.Interact(colllectedStudents, this.transform);
+        if(student is StudentNPC)
+        {
+            collectedStudents.Add(interactingNPC.gameObject);
+        }
+        if(student is TeacherNPC)
+        {
+            foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
+            collectedStudents.Clear();
+        }
+        interactingNPC = null;
         if (student != null) colllectedStudents.Add(student);
     }
 
