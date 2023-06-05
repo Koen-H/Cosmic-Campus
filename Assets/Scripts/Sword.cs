@@ -89,7 +89,7 @@ public class Sword : Weapon
         {
             Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
             if (enemy == null) return;
-            enemy.TakeDamage(weaponData.damage);
+            enemy.TakeDamage(weaponData.damage.GetRandomValue());
         }
     }
 

@@ -92,11 +92,11 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             Vector2 currentDir = new Vector2(currentDirection.x, currentDirection.z);
             Vector2 movementDir = new Vector2(movementDirection.x, movementDirection.z);
-            t += Time.deltaTime;
+            t = Time.deltaTime;
             Vector2 lerpDir = Vector2.Lerp(currentDir, movementDir, t * accelerationTime);
             currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
         }
-        rigidbody.velocity = currentDirection * currentSpeed;
+        rigidbody.velocity = currentDirection * maxSpeed;
     }
 
 
@@ -151,7 +151,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             if (collider.CompareTag("Enemy"))
             {
-                collider.GetComponent<Enemy>().TakeDamage(damage);
+                collider.GetComponentInParent<Enemy>().TakeDamage(damage);
             }
         }
         CameraManager.MyCamera.TargetPlayer();

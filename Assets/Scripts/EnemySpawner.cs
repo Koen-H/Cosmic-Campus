@@ -13,6 +13,14 @@ public class EnemySpawner : MonoBehaviour
     //    Destroy(this.gameObject);
     //}
 
+    private void Update()
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            if(Input.GetKeyDown(KeyCode.P)) SpawnEnemy();
+        }
+    }
+
     public void SpawnEnemy()
     {
         NetworkObject enemy = Instantiate(enemyPrefab,transform.position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();

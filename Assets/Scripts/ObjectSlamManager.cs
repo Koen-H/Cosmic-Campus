@@ -8,8 +8,8 @@ public class ObjectSlamManager : MonoBehaviour
     Rigidbody rb;
     private bool hasFallen = false;
     float raycastDistance = 3;
-    float damage = 2;
-    float nockback = 1;
+    float damage = 60;
+    float nockback = 5;
     GameObject slamObjVFX;
     List<Enemy> directHits = new List<Enemy>();
 
@@ -31,7 +31,7 @@ public class ObjectSlamManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage);
             return;
         }
         else if (!hasFallen)
@@ -68,7 +68,7 @@ public class ObjectSlamManager : MonoBehaviour
             foreach (GameObject enemy in enemiesHit)
             {
                 Vector3 knockbackDirection = enemy.transform.position - transform.position;
-                float knockbackForce = 10f; // Adjust the force to your desired value
+                float knockbackForce = nockback; // Adjust the force to your desired value
                 float knockbackDuration = 0.5f; // Adjust the duration to your desired value
 
                 EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
