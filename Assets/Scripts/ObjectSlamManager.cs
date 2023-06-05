@@ -31,7 +31,7 @@ public class ObjectSlamManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage);
             return;
         }
         else if (!hasFallen)
