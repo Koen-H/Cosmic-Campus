@@ -166,7 +166,6 @@ public class Enemy : NetworkBehaviour
     {
         //TODO: Fix.
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
-        healthBar.transform.Rotate(Vector3.right, -90);
     }
 
     public virtual void Update()
