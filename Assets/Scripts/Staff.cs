@@ -94,7 +94,7 @@ public class Staff : Weapon
         }
         while (beams.Count > orderedEnemies.Count)
         {
-            Destroy(beams[0]);
+            Destroy(beams[0].gameObject);
             beams.RemoveAt(0);
         }
 
