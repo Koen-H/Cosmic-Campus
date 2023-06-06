@@ -32,9 +32,12 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] float explosionRange = 2f;
     [SerializeField] float rangeIncreasePerObj = 0.2f;
 
-    [SerializeField] GameObject explosionVFX, electricityVFX;
+    [SerializeField] GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
+
+    ParticleSystem.ShapeModule shape;
     private bool exploded = false;
 
+    
 
     public override void OnNetworkSpawn()
     {
@@ -46,20 +49,24 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.SetLookTarg(transform);
         }
     }
-    private void Start()
+    public void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.isKinematic = true;
-
+        chargingVFX.GetComponent<ParticleSystem>();
+        shape = chargingVFX.GetComponent<ParticleSystem>().shape;
     }
 
-    private void Update()
+    public void Update()
     {
         if (isBuilding.Value)
         {
+            
             CollectBuildingPieces();
             if (Input.GetMouseButtonUp(1))
             {
+                Destroy(chargingVFX);
+                boilingVFX.GetComponent<ParticleSystem>().Play();
                 isBuilding.Value = false;
                 rigidbody.isKinematic = false;
                 StartCoroutine(ExplosionCountdown());
@@ -125,7 +132,10 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
             }
         }
+        
         collectRadius += collectRadiusIncreaseIncrement * Time.deltaTime;
+        shape.radius = collectRadius;
+
     }
 
     public void AttachObject(GameObject debrisObject)
