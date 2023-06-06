@@ -4,13 +4,16 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyMovement))]
+[RequireComponent(typeof(EnemyMovement), typeof(EffectManager))]
 public class Enemy : NetworkBehaviour
 {
     [Header("Global Enemy Variables")]
     [SerializeField] public GameObject avatar;
+    [SerializeField] public Transform centerPoint;
     //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
+
+    [SerializeField] HealthBar healthBar;
 
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
@@ -25,6 +28,8 @@ public class Enemy : NetworkBehaviour
     protected float attackCooldown;
     private float projectileSpeed;
 
+    Quaternion healthBarOriginalRotation; 
+    public event System.Action OnReceivedDamage;
 
     protected bool canAttack = true;
 
@@ -49,6 +54,7 @@ public class Enemy : NetworkBehaviour
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
 
+    public EffectManager effectManager;
 
 
 
@@ -58,14 +64,21 @@ public class Enemy : NetworkBehaviour
         enemyMovement = GetComponent<EnemyMovement>();
         targetBehaviour = GetComponent<EnemyTargettingBehaviour>();
         attackBehaviour = GetComponent<EnemyAttackBehaviour>();
+        effectManager = GetComponent<EffectManager>();
+    }
+
+    private void Start()
+    {
+        healthBarOriginalRotation = healthBar.transform.rotation; 
     }
 
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
-
+        effectManager.OnEffectChange += HandleEffectChange;
         SetSOData();
         SetNavMeshData();
+        healthBar.SetMaxValue(health.Value);
     }
 
     public override void OnNetworkDespawn()
@@ -126,8 +139,10 @@ public class Enemy : NetworkBehaviour
     void OnHealthChange(float prevHealth, float newHealth)
     {
         healthText.text = health.Value.ToString();
+        healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
+            if (OnReceivedDamage != null) OnReceivedDamage.Invoke();
             if (health.Value <= 0) Die();
         }
         else if (prevHealth < newHealth)//Do things where the enemy gained health!
@@ -143,11 +158,45 @@ public class Enemy : NetworkBehaviour
     private void Die()
     {
         //TODO: Drop debris and invoke the death animation.
+
+
+        FallApart(); 
+
+
         if (IsOwner) Destroy(gameObject);
+    }
+    void FallApart()
+    {
+        List<Transform> bodyParts = GetChildren(avatar.transform);
+
+        foreach (var bodyPart in bodyParts)
+        {
+            bodyPart.parent = null;
+            bodyPart.gameObject.AddComponent<BoxCollider>(); 
+            bodyPart.gameObject.AddComponent<Rigidbody>();
+            bodyPart.tag = "Debris";
+        }
+    }
+    List<Transform> GetChildren(Transform parent)
+    {
+        int childCount = parent.transform.childCount;
+        List<Transform> children = new List<Transform>(); 
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform temp = parent.transform.GetChild(i);
+            if (temp.name == "Weapon") continue;
+            if (temp.GetComponent<MeshRenderer>()) children.Add(temp);
+            if (temp.transform.childCount > 0)
+            {
+                List<Transform> childrenOfChild = GetChildren(temp);
+                foreach (var child in childrenOfChild) { children.Add(child); }
+            }
+
+        }
+        return children; 
     }
 
     #endregion
-
 
 
     /// <summary>
@@ -156,7 +205,7 @@ public class Enemy : NetworkBehaviour
     void FixHealthBar()
     {
         //TODO: Fix.
-        healthText.transform.rotation = Quaternion.Euler(0,-transform.rotation.eulerAngles.y,0);
+        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 
     public virtual void Update()
@@ -187,19 +236,22 @@ public class Enemy : NetworkBehaviour
         to.TakeDamage(damage);
     }
 
-
-
     void SetNavMeshData()
     {
         enemyMovement.SetSpeed(moveSpeed);
     }
-
-
 
     protected IEnumerator AttackCoolDown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAttack = true;
     }
+
+
+    void HandleEffectChange()
+    {
+        enemyMovement.SetSpeed(effectManager.ApplyMovementEffect(moveSpeed));
+    }
+
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }

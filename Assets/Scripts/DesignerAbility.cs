@@ -29,34 +29,11 @@ public class DesignerAbility : Ability
         if (target.TryGetComponent(out Rigidbody rb)) rb.isKinematic = true;
     }
 
+    private void Update()
+    {
+        // Leave Empty
+    }
 
-    //private void Update()
-    //{
-    //    //bool noTarget = target;
-    //    //base.Update();
-
-    //    //if (target != noTarget) return; 
-    //    //if (target == null) return;
-
-    //   // PickedUp(target);
-    //}
-
-    //void PickedUp(GameObject target)
-    //{
-    //    // Calculate the direction towards the mouse cursor on the ground plane
-    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //    RaycastHit hit;
-    //    if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer)) // Added groundLayer here
-    //    {
-    //        // Calculate the target position by offsetting from the player/camera position
-    //        // in the direction towards the mouse
-    //        Vector3 targetPosition = transform.position + playerObject.transform.forward * offset + new Vector3(0, distFromGround, 0);
-    //        target.transform.position = targetPosition;
-
-    //        // Calculate rotation towards the mouse and add it to the initial rotation
-    //        target.transform.rotation = Quaternion.Euler(Mathf.Rad2Deg * target.transform.rotation.x, Mathf.Rad2Deg * playerObject.transform.rotation.y, Mathf.Rad2Deg * target.transform.rotation.z);
-    //    }
-    //}
     public void PutDown(Vector3 clickPoint)
     {
         player.playerObj.transform.LookAt(new Vector3(clickPoint.x,transform.position.y , clickPoint.z));

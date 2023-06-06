@@ -41,9 +41,11 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float maxSpeed = 10f;
     [SerializeField]float currentSpeed = 0f;
 
+    [SerializeField] EffectManager effectManager;
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
-    private QuestNPC interactingNPC; 
+    private QuestNPC interactingNPC;
+    private List<GameObject> collectedStudents = new List<GameObject>(); 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -56,6 +58,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
+        effectManager = GetComponent<EffectManager>();
     }
 
     /// <summary>
@@ -86,6 +89,7 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
+            
         }
         else
         {
@@ -96,7 +100,7 @@ public class PlayerCharacterController : NetworkBehaviour
         }
 
         if (!IsOwner) return;
-        LockPlayer(!isCurrentlyDead);
+        LockPlayer(isCurrentlyDead);
     }
 
     public void LockPlayer(bool isLocked)
@@ -124,7 +128,7 @@ public class PlayerCharacterController : NetworkBehaviour
         otherReviveArea = reviveArea;
         if(otherReviveArea != null)
         {
-            //TODO: show option for revive
+            //TODO: show ui option for revive
         }
         else
         {
@@ -183,7 +187,17 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!interactingNPC) return;
 
-        OnMapNPC student = interactingNPC.Interact(colllectedStudents);
+        OnMapNPC student = interactingNPC.Interact(colllectedStudents, this.transform);
+        if(student is StudentNPC)
+        {
+            collectedStudents.Add(interactingNPC.gameObject);
+        }
+        if(student is TeacherNPC)
+        {
+            foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
+            collectedStudents.Clear();
+        }
+        interactingNPC = null;
         if (student != null) colllectedStudents.Add(student);
     }
 
@@ -215,6 +229,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void HandleAbilityInput()
     {
         ability.AbilityInput();
+        
     }
 
 
@@ -247,9 +262,8 @@ public class PlayerCharacterController : NetworkBehaviour
             currentSpeed = 0;
             //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
         }
-
         // Apply the calculated speed to the Rigidbody
-        rigidbody.velocity = movementDirection * currentSpeed;
+        rigidbody.velocity = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
 
         if (movementDirection.magnitude == 0) return;
         playerObj.transform.forward = movementDirection; 
@@ -331,9 +345,11 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+
     [ServerRpc(RequireOwnership = false)]
     public void ActivateServerRpc(Vector3 origin, Vector3 direction, ServerRpcParams serverRpcParams = default)
     {
+        weaponBehaviour.CancelAttack();
         AbilityClientRpc(origin, direction, serverRpcParams.Receive.SenderClientId);
     }
     [ClientRpc]

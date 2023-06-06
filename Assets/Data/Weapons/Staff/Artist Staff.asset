@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 966e83fea776ddd4ca69e5949a479e6b, type: 3}
+  m_Name: Artist Staff
+  m_EditorClassIdentifier: 
+  nickName: USES MODEL OF BOW
+  weaponPrefab: {fileID: 657664714682973619, guid: e183f1b3370825944950309e0ccc3446,
+    type: 3}
+  weaponObjOffset: {x: 0.531, y: 0.984, z: 0.103}
+  weaponType: 3
+  damage:
+    min: 5
+    max: 10
+  speed: 1
+  cooldown: 1
+  range: 100
+  projectilePrefab: {fileID: 0}
+  minProjectileSpeed: 500
+  maxProjectileSpeed: 1500
+  accuracy: 15
+  beamVfx: {fileID: 1631846081717661570, guid: be9dc2de9d958be4ea8d7ab3a1178edc, type: 3}

@@ -2,12 +2,13 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
-using Random = UnityEngine.Random;
+using Random = System.Random;
 using UnityEngine.AI;
 using Unity.Netcode;
 
 public class RoomGenerator : MonoBehaviour
 {
+    [SerializeField] private int seed;
     [SerializeField] private float drawingDelay;
     [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
@@ -45,6 +46,8 @@ public class RoomGenerator : MonoBehaviour
     private List<GameObject> spawnedNpcs = new List<GameObject>();
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
+
+    Random systemRand = new Random();
 
 
     private void Start()
@@ -137,8 +140,10 @@ public class RoomGenerator : MonoBehaviour
         for (int i = numberOfBranches-1; i >= 0; i--)
         {
             int upperBound = (int)((totalRooms-1) / numberOfBranches) * (i);
-            int rand = Random.Range(lowerBound, upperBound);
-            Room point = path[rand];
+            int randNumber; 
+            if (lowerBound > upperBound) randNumber = systemRand.Next(upperBound, lowerBound);
+            else randNumber = systemRand.Next(lowerBound, upperBound);
+            Room point = path[randNumber];
             branchingPoints.Add(point);
             lowerBound = upperBound-1;
         }
@@ -265,7 +270,7 @@ public class RoomGenerator : MonoBehaviour
 
         Room tempA;
         Room tempB;
-        int randInt = Random.Range(0, 2);
+        int randInt = systemRand.Next(0, 2);
         if(randInt == 0)
         {
             tempA = from.roomA;
@@ -355,7 +360,7 @@ public class RoomGenerator : MonoBehaviour
         newCurve.gameObject.layer = 6;
         newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
-        int randomCount = Random.Range(0, maxEnemiesOnPath + 1);
+        int randomCount = systemRand.Next(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
         Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform).gameObject.layer = 6;
@@ -373,7 +378,7 @@ public class RoomGenerator : MonoBehaviour
         List<int> rands = new List<int>();
         for (int i = 0; i < count; i++)
         {
-            int randInt = Random.Range((int)(path.Count * 0.2f), (int)((path.Count - 1) * 0.8f));
+            int randInt = systemRand.Next((int)(path.Count * 0.2f), (int)((path.Count - 1) * 0.8f));
             if(rands.Contains(randInt))continue;
             enemies.Add(new EnemyNPC(path[randInt]));
             rands.Add(randInt);
@@ -418,6 +423,7 @@ public class RoomGenerator : MonoBehaviour
 
     private void ResetRooms()
     {
+        systemRand = new Random(seed);
         for (int i = transform.childCount-1; i >= 0 ; i--)
         {
             Destroy(transform.GetChild(i).gameObject);
@@ -465,7 +471,7 @@ public class RoomGenerator : MonoBehaviour
                 if (temp == room.roomA) roomA = room;
                 if (temp == room.roomB) roomB = room;
                 }
-                int randInt = Random.Range(0, 2);
+                int randInt = systemRand.Next(0, 2);
 
             if (roomA == null) roomA = roomB; 
             if (roomB == null) roomB = roomA;
@@ -501,7 +507,7 @@ public class RoomGenerator : MonoBehaviour
             AddLayer(roomLayers);
         }
         VisualiseRooms(roomLayers);
-        int rand = Random.Range(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
+        int rand = systemRand.Next(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to,roomLayers);
@@ -519,7 +525,7 @@ public class RoomGenerator : MonoBehaviour
     private RoomsLayer AddInitialRoom(Vector3 origin, List<RoomsLayer> roomLayers)
     {
         RoomsLayer initialLayer = new RoomsLayer(0);
-        int randInt = Random.Range(0, roomPrefabs.Count);
+        int randInt = systemRand.Next(0, roomPrefabs.Count);
         RoomInfo roomInfo = roomPrefabs[randInt];
         initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0,new Door(roomInfo.GetEntrancePosition()+ origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition()+ origin, roomInfo.normalExit),roomInfo) };
         roomLayers.Add(initialLayer);
@@ -533,11 +539,14 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 0; i < layer.roomPositions.Count; i++)
         {
             Room room = layer.roomPositions[i];
-            float rand1 = Random.Range(-randomXOffset, randomXOffset);
-            float rand2 = Random.Range(-randomXOffset, randomXOffset);
+            double randDouble1 = systemRand.NextDouble(); 
+            float rand1 = (float)(randDouble1 * 2 * randomXOffset - randomXOffset);
+
+            double randDouble2 = systemRand.NextDouble(); 
+            float rand2 = (float)(randDouble2 * 2 * randomXOffset - randomXOffset); 
             Vector3 variation1 = new Vector3(rand1, 0, 0);
             Vector3 variation2 = new Vector3(rand2, 0, 0);
-            int randInt = Random.Range(0, roomPrefabs.Count);
+            int randInt = systemRand.Next(0, roomPrefabs.Count);
             RoomInfo roomInfo = roomPrefabs[randInt];
             Room firstBranch = new Room(variation1, room.origin + new Vector3(rightOffset, 0, forwardOffset), newLayer.layerIndex,null,null, roomInfo);
             Room secondBranch = new Room(variation2, room.origin + new Vector3(-rightOffset, 0, forwardOffset), newLayer.layerIndex,null,null, roomInfo);
