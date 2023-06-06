@@ -229,7 +229,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void HandleAbilityInput()
     {
         ability.AbilityInput();
-        weaponBehaviour.CancelAttack();
+        
     }
 
 
@@ -345,9 +345,11 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+
     [ServerRpc(RequireOwnership = false)]
     public void ActivateServerRpc(Vector3 origin, Vector3 direction, ServerRpcParams serverRpcParams = default)
     {
+        weaponBehaviour.CancelAttack();
         AbilityClientRpc(origin, direction, serverRpcParams.Receive.SenderClientId);
     }
     [ClientRpc]
