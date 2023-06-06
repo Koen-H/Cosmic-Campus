@@ -4,11 +4,12 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyMovement))]
+[RequireComponent(typeof(EnemyMovement), typeof(EffectManager))]
 public class Enemy : NetworkBehaviour
 {
     [Header("Global Enemy Variables")]
     [SerializeField] public GameObject avatar;
+    [SerializeField] public Transform centerPoint;
     //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
 
@@ -25,6 +26,7 @@ public class Enemy : NetworkBehaviour
     protected float attackCooldown;
     private float projectileSpeed;
 
+    public event System.Action OnReceivedDamage;
 
     protected bool canAttack = true;
 
@@ -49,6 +51,7 @@ public class Enemy : NetworkBehaviour
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
 
+    public EffectManager effectManager;
 
 
 
@@ -58,12 +61,13 @@ public class Enemy : NetworkBehaviour
         enemyMovement = GetComponent<EnemyMovement>();
         targetBehaviour = GetComponent<EnemyTargettingBehaviour>();
         attackBehaviour = GetComponent<EnemyAttackBehaviour>();
+        effectManager = GetComponent<EffectManager>();
     }
 
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
-
+        effectManager.OnEffectChange += HandleEffectChange;
         SetSOData();
         SetNavMeshData();
     }
@@ -128,6 +132,7 @@ public class Enemy : NetworkBehaviour
         healthText.text = health.Value.ToString();
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
+            if (OnReceivedDamage != null) OnReceivedDamage.Invoke();
             if (health.Value <= 0) Die();
         }
         else if (prevHealth < newHealth)//Do things where the enemy gained health!
@@ -147,7 +152,6 @@ public class Enemy : NetworkBehaviour
     }
 
     #endregion
-
 
 
     /// <summary>
@@ -187,19 +191,22 @@ public class Enemy : NetworkBehaviour
         to.TakeDamage(damage);
     }
 
-
-
     void SetNavMeshData()
     {
         enemyMovement.SetSpeed(moveSpeed);
     }
-
-
 
     protected IEnumerator AttackCoolDown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAttack = true;
     }
+
+
+    void HandleEffectChange()
+    {
+        enemyMovement.SetSpeed(effectManager.ApplyMovementEffect(moveSpeed));
+    }
+
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }

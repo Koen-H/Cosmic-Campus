@@ -26,4 +26,5 @@ public class WeaponData : ScriptableObject
 
     public float accuracy = 0;
 
+    public GameObject beamVfx = null;
 }
