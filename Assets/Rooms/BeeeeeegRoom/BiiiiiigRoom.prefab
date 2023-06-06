@@ -4497,8 +4497,8 @@ Transform:
   m_GameObject: {fileID: 6452377994647458904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6452377994690305975}
   - {fileID: 8813804653254948103}
@@ -4519,8 +4519,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorEntrance: {fileID: 6452377995253759095}
   doorExit: {fileID: 6452377994604312965}
-  normalEntrance: {x: 1, y: 0, z: 0}
-  normalExit: {x: -1, y: 0, z: 0}
+  normalEntrance: {x: 0, y: 0, z: -1}
+  normalExit: {x: 0, y: 0, z: 1}
 --- !u!1 &6452377994685696166
 GameObject:
   m_ObjectHideFlags: 0
@@ -4580,8 +4580,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6452377994690305961}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 200.5, y: -3.2, z: 0}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 4.2, y: -3.2, z: -199.3}
   m_LocalScale: {x: 0.93813, y: 0.93813, z: 0.7674185}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4704,7 +4704,7 @@ Transform:
   - {fileID: 8097614338878855688}
   m_Father: {fileID: 6452377994647458907}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &6452377994690305972
 MonoBehaviour:
   m_ObjectHideFlags: 0
