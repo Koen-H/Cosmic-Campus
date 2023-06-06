@@ -152,7 +152,41 @@ public class Enemy : NetworkBehaviour
     private void Die()
     {
         //TODO: Drop debris and invoke the death animation.
+
+
+        FallApart(); 
+
+
         if (IsOwner) Destroy(gameObject);
+    }
+    void FallApart()
+    {
+        List<Transform> bodyParts = GetChildren(this.transform);
+
+        foreach (var bodyPart in bodyParts)
+        {
+            bodyPart.parent = null;
+            bodyPart.gameObject.AddComponent<BoxCollider>(); 
+            bodyPart.gameObject.AddComponent<Rigidbody>();
+            bodyPart.tag = "Debris";
+        }
+    }
+    List<Transform> GetChildren(Transform parent)
+    {
+        int childCount = parent.transform.childCount;
+        List<Transform> children = new List<Transform>(); 
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform temp = parent.transform.GetChild(i);
+            children.Add(temp);
+            if (temp.transform.childCount > 0)
+            {
+                List<Transform> childrenOfChild = GetChildren(temp);
+                foreach (var child in childrenOfChild) { children.Add(child); }
+            }
+
+        }
+        return children; 
     }
 
     #endregion
