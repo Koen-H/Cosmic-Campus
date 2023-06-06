@@ -1445,7 +1445,7 @@ Transform:
   - {fileID: 3898522497383054431}
   - {fileID: 2412897245649332649}
   m_Father: {fileID: 6880509872615113897}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &6913687221059783418
 MeshCollider:
@@ -1649,6 +1649,7 @@ GameObject:
   - component: {fileID: 6880509872615113903}
   - component: {fileID: 6880509872615113896}
   - component: {fileID: 173293622072896792}
+  - component: {fileID: 2709977735729543836}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -1671,7 +1672,7 @@ Transform:
   - {fileID: 1392423765371875825}
   - {fileID: 6880509872380289769}
   - {fileID: 1255730161906014976}
-  - {fileID: 6565485376307997007}
+  - {fileID: 9051757472967971321}
   - {fileID: 6880509871702667902}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1806,12 +1807,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   avatar: {fileID: 6880509871702667903}
+  centerPoint: {fileID: 9051757472967971321}
   healthText: {fileID: 6880509872380289768}
   healthBar: {fileID: 4700184518596695144}
   enemySO: {fileID: 11400000, guid: 1718a9f973b1f6441bb0b596bb92ec63, type: 2}
   enemyState: 0
   health:
     m_InternalValue: 10
+  effectManager: {fileID: 0}
+--- !u!114 &2709977735729543836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880509872615113898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ff675e340b771140b5980f1af2dcfdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allEffects: []
+  attackEffects: []
+  movementEffects: []
+  resistanceEffects: []
 --- !u!1 &6880509873163893433
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,6 +2080,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7803635885138145477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9051757472967971321}
+  m_Layer: 0
+  m_Name: CenterPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9051757472967971321
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7803635885138145477}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6880509872615113897}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7852787350692575621
 GameObject:
   m_ObjectHideFlags: 0
