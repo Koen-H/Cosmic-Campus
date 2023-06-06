@@ -110,8 +110,15 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             if (collider.CompareTag("Debris"))
             {
-                AttachObject(collider.gameObject);
-                sphereRadius += sphereRadiusIncreaseIncrement;
+
+                Vector3 diff = (collider.transform.position - transform.position);
+                RaycastHit hit;
+                Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
+                if (hit.transform.CompareTag("Debris"))
+                {
+                    AttachObject(collider.gameObject);
+                    sphereRadius += sphereRadiusIncreaseIncrement;
+                }
             }
         }
         collectRadius += collectRadiusIncreaseIncrement * Time.deltaTime;
