@@ -18,18 +18,6 @@ public class ArtistAbility : Ability
         artistDecalPrefab = Resources.Load<GameObject>("Artist Decal");
     }
 
-
-    public void Update()
-    {
-        if (!player.IsOwner) return;
-        if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            player.ActivateServerRpc(ray.origin, ray.direction);
-            Activate(ray.origin, ray.direction);
-        }
-    }
-
     public override void Activate(Vector3 origin, Vector3 direction)
     {
         Ray ray = new Ray(origin, direction);

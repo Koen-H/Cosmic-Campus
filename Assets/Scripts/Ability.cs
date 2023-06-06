@@ -17,6 +17,16 @@ public class Ability : MonoBehaviour
     {
         player = GetComponent<PlayerCharacterController>();
     }
+    private void Update()
+    {
+        if (!player.IsOwner) return;
+        if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            player.ActivateServerRpc(ray.origin, ray.direction);
+            Activate(ray.origin, ray.direction);
+        }
+    }
 
     public void AbilityInput()
     {
