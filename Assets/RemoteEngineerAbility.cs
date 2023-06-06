@@ -112,15 +112,15 @@ public class RemoteEngineerAbility : NetworkBehaviour
             {
 
                 Vector3 diff = (collider.transform.position - transform.position);
-                RaycastHit hit;
-                Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
+               // RaycastHit hit;
+              //  Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
 
-                if (hit.transform == null) continue;
-                if (hit.transform.CompareTag("Debris"))
-                {
+               // if (hit.transform == null) continue;
+               // if (hit.transform.CompareTag("Debris"))
+               // {
                     AttachObject(collider.gameObject);
                     sphereRadius += sphereRadiusIncreaseIncrement;
-                }
+               // }
 
 
             }
