@@ -1,4 +1,4 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
@@ -23,13 +23,17 @@ public class ArtistDecal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (type == ArtistDecalType.WATER)
+        if (other.CompareTag("Enemy") || other.CompareTag("Player"))
         {
-            Debug.Log("WALKING IN WATER!");
-        }
-        else if (type == ArtistDecalType.LAVA)
-        {
-            Debug.Log("WALKING IN LAVA");
+            if (type == ArtistDecalType.WATER)
+            {
+                Debug.Log("WALKING IN WATER!");
+                other.gameObject.GetComponentInParent<EffectManager>().AddEffect(this.GetComponent<Effect>());
+            }
+            else if (type == ArtistDecalType.LAVA)
+            {
+                Debug.Log("WALKING IN LAVA");
+            }
         }
     }
 

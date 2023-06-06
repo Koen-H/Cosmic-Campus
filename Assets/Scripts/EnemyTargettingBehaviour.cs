@@ -12,9 +12,17 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
 
     [SerializeField] protected Transform enemyEyes;
 
+    [SerializeField, Tooltip("Does it gain agro from being attacked?")]
+    protected bool hasThirdEye;
+    [SerializeField]
+    protected float thirdEyeRange;
+    [SerializeField, Tooltip("Change aggro to nearest enemy when it takes damage?")]
+    protected bool useThirdEyeOnDamage;
+
     private void Awake()
     {
         enemy = GetComponent<Enemy>();
+        enemy.OnReceivedDamage += OnTakeDamage;
     }
     
     public virtual void FindTarget()
@@ -27,4 +35,36 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
     {
         enemy.CurrentTarget= target;
     }
+
+    protected virtual void OnTakeDamage()
+    {
+        if(hasThirdEye && (target == null || useThirdEyeOnDamage)) GetClosestPlayer();
+    }
+
+    protected void GetClosestPlayer()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, thirdEyeRange);
+        Collider closestPlayerCollider = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Player"))
+            {
+                float distance = Vector3.Distance(transform.position, collider.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPlayerCollider = collider;
+                }
+            }
+        }
+
+        if (closestPlayerCollider != null)
+        {
+            target = closestPlayerCollider.transform;
+            SetEnemyTarget();
+        }
+    }
+    
 }

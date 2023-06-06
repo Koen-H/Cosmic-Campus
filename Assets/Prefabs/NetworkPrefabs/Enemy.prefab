@@ -1671,6 +1671,7 @@ Transform:
   - {fileID: 1392423765371875825}
   - {fileID: 6880509872380289769}
   - {fileID: 1255730161906014976}
+  - {fileID: 6565485376307997007}
   - {fileID: 6880509871702667902}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1708,6 +1709,9 @@ MonoBehaviour:
   detectionRange: 5
   trackingRange: 10
   enemyEyes: {fileID: 1255730161906014976}
+  hasThirdEye: 1
+  thirdEyeRange: 10
+  useThirdEyeOnDamage: 0
 --- !u!114 &429127547035457455
 MonoBehaviour:
   m_ObjectHideFlags: 0

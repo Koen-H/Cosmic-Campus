@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class Staff : Weapon
 {
+    List<ParticleTravelDistance> beams = new List<ParticleTravelDistance>();
+
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -32,6 +34,7 @@ public class Staff : Weapon
     {
         Aim();
         playerController.ToggleMovement(true);
+        DestoryAllBeams();
     }
 
     /// <summary>
@@ -39,7 +42,16 @@ public class Staff : Weapon
     /// </summary>
     public override void CancelAttack()
     {
+        DestoryAllBeams();
+    }
 
+    void DestoryAllBeams()
+    {
+        while(beams.Count > 0)
+        {
+            Destroy(beams[0].gameObject);
+            beams.Remove(beams[0]);
+        }
     }
 
     public override void Attack()
@@ -76,29 +88,34 @@ public class Staff : Weapon
             unorderedEnemies.Remove(closestEnemy);
         }
 
-        int i = 1;
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, weaponObj.transform.position);
+        while(beams.Count < orderedEnemies.Count)
+        {
+            beams.Add(Instantiate(weaponData.beamVfx).GetComponent<ParticleTravelDistance>());
+        }
+        while (beams.Count > orderedEnemies.Count)
+        {
+            beams.RemoveAt(0);
+        }
+
+
         bool doDamage = false;
         if (playerController.IsOwner && weaponState == WeaponState.READY) doDamage = true;
-        float damage = weaponData.damage.GetRandomValue(); 
+        AttachBeam(beams[0], weaponObj.transform, orderedEnemies[0].centerPoint);
+        float damage = weaponData.damage.GetRandomValue();
+        int i = 1;
         foreach (Enemy enemy in orderedEnemies)
         {
-            lineRenderer.SetPosition(i, enemy.avatar.transform.position);
+            if (i < beams.Count)
+            {
+                AttachBeam(beams[i], enemy.centerPoint.transform, orderedEnemies[i].centerPoint);
+            }
             if (doDamage) damage = DealDamage(enemy, damage);
             i++;
         }
 
+
+
         //orderedEnemies;
-
-
-
-
-
-
-
-
-
 
 
         //int numRaycasts = 5;
@@ -145,6 +162,13 @@ public class Staff : Weapon
 
     }
 
+    void AttachBeam(ParticleTravelDistance beam, Transform pointA, Transform pointB)
+    {
+        beam.transform.position = pointA.position;
+        beam.distance = (pointB.position - pointA.position).magnitude;
+        beam.transform.LookAt(pointB);
+    }
+
     Enemy GetClosestEnemy(Vector3 position, List<Enemy> enemies)
     {
         if (enemies.Count == 1) return enemies.First();
@@ -163,14 +187,6 @@ public class Staff : Weapon
         }
 
         return closestEnemy;
-    }
-
-    void ShowStaffBeam(Transform p1, Transform p2)
-    {
-        //TEMPORARY AWFULL
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, p1.position);
-        lineRenderer.SetPosition(1, p2.position);
     }
 
     float DealDamage(Enemy enemy,float prevDam)
