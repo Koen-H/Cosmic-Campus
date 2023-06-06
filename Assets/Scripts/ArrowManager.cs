@@ -33,6 +33,13 @@ public class ArrowManager : MonoBehaviour
         this.transform.parent = attachedObject;
         GetComponent<Rigidbody>().isKinematic = true;
         Destroy(GetComponent<Collider>());
+        StartCoroutine(KillAfterDuration(10)); 
+    }
+
+    IEnumerator KillAfterDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject); 
     }
 
 

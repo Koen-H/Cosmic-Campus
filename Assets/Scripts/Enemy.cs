@@ -161,7 +161,7 @@ public class Enemy : NetworkBehaviour
     }
     void FallApart()
     {
-        List<Transform> bodyParts = GetChildren(this.transform);
+        List<Transform> bodyParts = GetChildren(avatar.transform);
 
         foreach (var bodyPart in bodyParts)
         {
@@ -178,7 +178,8 @@ public class Enemy : NetworkBehaviour
         for (int i = 0; i < childCount; i++)
         {
             Transform temp = parent.transform.GetChild(i);
-            children.Add(temp);
+            if (temp.name == "Weapon") continue;
+            if (temp.GetComponent<MeshRenderer>()) children.Add(temp);
             if (temp.transform.childCount > 0)
             {
                 List<Transform> childrenOfChild = GetChildren(temp);

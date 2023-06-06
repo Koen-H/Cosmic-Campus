@@ -114,11 +114,15 @@ public class RemoteEngineerAbility : NetworkBehaviour
                 Vector3 diff = (collider.transform.position - transform.position);
                 RaycastHit hit;
                 Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
+
+                if (hit.transform == null) continue;
                 if (hit.transform.CompareTag("Debris"))
                 {
                     AttachObject(collider.gameObject);
                     sphereRadius += sphereRadiusIncreaseIncrement;
                 }
+
+
             }
         }
         collectRadius += collectRadiusIncreaseIncrement * Time.deltaTime;
@@ -155,7 +159,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;
         GameObject electricityVFXinstance = Instantiate(electricityVFX, transform.position, Quaternion.identity);
         electricityVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects / 5;
-        if (!IsOwner) return; 
+        if (!IsOwner) return;
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
         foreach (Collider collider in colliders)
@@ -165,9 +169,17 @@ public class RemoteEngineerAbility : NetworkBehaviour
                 collider.GetComponentInParent<Enemy>().TakeDamage(damage);
             }
         }
-        CameraManager.MyCamera.TargetPlayer();
-        ClientManager.MyClient.playerCharacter.LockPlayer(false);
-        DestroyServerRpc();
+        StartCoroutine(LateCameraMoveBack(1));
+
+        IEnumerator LateCameraMoveBack(float duration)
+        {
+            rigidbody.isKinematic = true;
+
+            yield return new WaitForSeconds(duration);
+            CameraManager.MyCamera.TargetPlayer();
+            ClientManager.MyClient.playerCharacter.LockPlayer(false);
+            DestroyServerRpc();
+        }
     }
 
     /// <summary>
