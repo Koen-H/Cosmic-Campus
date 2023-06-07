@@ -31,6 +31,7 @@ public abstract class Weapon : MonoBehaviour
     public virtual void OnAttackInputStart()
     {
         if (weaponState != WeaponState.READY) return;
+        playerController.AttackStartServerRpc();
         Aim();
     }
     /// <summary>

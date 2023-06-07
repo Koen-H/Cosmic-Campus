@@ -16,8 +16,8 @@ public class Bow : Weapon
     public override void OnAttackInputStart()
     {
         if (weaponState != WeaponState.READY) return;
+        base.OnAttackInputStart();
         playerController.ToggleMovement(false);
-        playerController.AttackStartServerRpc();
         AttackStart();
     }
     /// <summary>
@@ -28,7 +28,7 @@ public class Bow : Weapon
         if (weaponState == WeaponState.READY)
         {
             playerController.ToggleMovement(false);
-            playerController.AttackStartServerRpc();
+            base.OnAttackInputStart();
             AttackStart();
         }
         if (weaponState != WeaponState.HOLD) return;
@@ -45,7 +45,8 @@ public class Bow : Weapon
         if (isCharging)
         {
             playerController.AttackServerRpc();
-            Attack();
+            ShootArrow();
+            base.Attack();
         }
         playerController.ToggleMovement(true);
     }
@@ -53,8 +54,7 @@ public class Bow : Weapon
     public override void Attack()
     {
         
-        ShootArrow();
-        base.Attack();
+        
     }
     
     public override void AttackStart()
