@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyMovement), typeof(EffectManager))]
 public class Enemy : NetworkBehaviour

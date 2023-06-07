@@ -8,6 +8,7 @@ using UnityEngine;
 public class Staff : Weapon
 {
     List<ParticleTravelDistance> beams = new List<ParticleTravelDistance>();
+    bool isBeaming = false;
 
     /// <summary>
     /// When the player starts with the input
@@ -16,7 +17,6 @@ public class Staff : Weapon
     {
         Aim();
         Attack();
-        base.Attack();
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -26,7 +26,6 @@ public class Staff : Weapon
     {
         Aim();
         Attack();
-        base.Attack();
     }
     /// <summary>
     /// When the player lets go of the input
@@ -45,10 +44,18 @@ public class Staff : Weapon
     {
         DestoryAllBeams();
     }
+    private void Update()
+    {
+        if (isBeaming)
+        {
+            FindClosestEnemy();
+        }
+    }
 
     void DestoryAllBeams()
     {
-        while(beams.Count > 0)
+        isBeaming = false;
+        while (beams.Count > 0)
         {
             Destroy(beams[0].gameObject);
             beams.Remove(beams[0]);
@@ -58,6 +65,7 @@ public class Staff : Weapon
 
     public override void Attack()
     {
+        isBeaming = true;
         FindClosestEnemy();
     }
 
@@ -109,6 +117,7 @@ public class Staff : Weapon
         bool doDamage = false;
         if (playerController.IsOwner && weaponState == WeaponState.READY) doDamage = true;
         AttachBeam(beams[0], weaponObj.transform, orderedEnemies[0].centerPoint);
+
         float damage = weaponData.damage.GetRandomValue();
         int i = 1;
         foreach (Enemy enemy in orderedEnemies)
