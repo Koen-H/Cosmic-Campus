@@ -10,7 +10,7 @@ public class ObjectSlamManager : MonoBehaviour
     float raycastDistance = 3;
     float damage = 60;
     float nockback = 5;
-    GameObject slamObjVFX;
+    GameObject slamObjVFX, slamExtraVFX;
     List<Enemy> directHits = new List<Enemy>();
 
 
@@ -22,6 +22,7 @@ public class ObjectSlamManager : MonoBehaviour
         //TODO: Make damage better/correct?
         damage += transform.lossyScale.z;
         slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
+        slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
     }
     private void Update()
     {
@@ -46,6 +47,8 @@ public class ObjectSlamManager : MonoBehaviour
         //Do fancy particle stuff
         GameObject slamObjVFXinstance = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
         slamObjVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
+        GameObject slamExtraVFXinstance = Instantiate(slamExtraVFX, transform.position, Quaternion.identity);
+        //slamExtraVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         //If the current client is the owner, we deal the damage
         if (owner.IsOwner)
         {
