@@ -44,7 +44,6 @@ public class Bow : Weapon
         Aim();
         if (isCharging)
         {
-            playerController.AttackServerRpc();
             ShootArrow();
             base.Attack();
         }

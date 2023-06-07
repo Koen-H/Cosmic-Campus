@@ -177,6 +177,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;
         GameObject electricityVFXinstance = Instantiate(electricityVFX, transform.position, Quaternion.identity);
         electricityVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects / 5;
+        objCollector.gameObject.SetActive(false);
         if (!IsOwner) return;
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;

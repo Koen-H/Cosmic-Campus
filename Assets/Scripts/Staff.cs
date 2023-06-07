@@ -16,6 +16,7 @@ public class Staff : Weapon
     {
         Aim();
         Attack();
+        base.Attack();
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -25,6 +26,7 @@ public class Staff : Weapon
     {
         Aim();
         Attack();
+        base.Attack();
     }
     /// <summary>
     /// When the player lets go of the input
@@ -51,6 +53,7 @@ public class Staff : Weapon
             Destroy(beams[0].gameObject);
             beams.Remove(beams[0]);
         }
+        Debug.Log("Beams destroyed");
     }
 
     public override void Attack()
