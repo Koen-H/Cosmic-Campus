@@ -189,7 +189,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             if (collider.CompareTag("Enemy"))
             {
-                collider.GetComponentInParent<Enemy>().TakeDamage(damage);
+                collider.GetComponentInParent<Enemy>().TakeDamage(damage, (collider.transform.position - transform.position).normalized * attachedObjects);
             }
         }
         StartCoroutine(LateCameraMoveBack(1));

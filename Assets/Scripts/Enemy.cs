@@ -20,6 +20,7 @@ public class Enemy : NetworkBehaviour
 
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
+    [SerializeField] NetworkVariable<Vector3> deathForce = new NetworkVariable<Vector3>(); 
     private float moveSpeed;
     protected float detectionRange;
     private float trackingRange;
@@ -114,10 +115,9 @@ public class Enemy : NetworkBehaviour
     /// Deal damage to the enemy.
     /// </summary>
     /// <param name="damageInc">The amount of damage</param>
-    public void TakeDamage(float damageInc)
+    public void TakeDamage(float damageInc , Vector3 DeathForce)
     {
-        TakeDamgeServerRpc(damageInc);
-
+        TakeDamgeServerRpc(damageInc, DeathForce);
     }
 
     /// <summary>
@@ -125,9 +125,10 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc(float damageInc)
+    void TakeDamgeServerRpc(float damageInc , Vector3 DeathForce)
     {
         health.Value -= damageInc;
+        deathForce.Value = DeathForce;
     }
 
     /// <summary>
@@ -143,7 +144,7 @@ public class Enemy : NetworkBehaviour
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
             if (OnReceivedDamage != null) OnReceivedDamage.Invoke();
-            if (health.Value <= 0) Die();
+            if (health.Value <= 0) Die(deathForce.Value);
         }
         else if (prevHealth < newHealth)//Do things where the enemy gained health!
         {
@@ -155,14 +156,14 @@ public class Enemy : NetworkBehaviour
     /// <summary>
     /// When the enemy dies
     /// </summary>
-    private void Die()
+    private void Die(Vector3 DeathForce)
     {
 
-        FallApart(); 
+        FallApart(DeathForce); 
         if (IsOwner) StartCoroutine(LateDestroy());
         gameObject.SetActive(false);
     }
-    void FallApart()
+    void FallApart(Vector3 DeathForce)
     {
         List<Transform> bodyParts = GetChildren(avatar.transform);
 
@@ -170,7 +171,7 @@ public class Enemy : NetworkBehaviour
         {
             bodyPart.parent = null;
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
-            bodyPart.gameObject.AddComponent<Rigidbody>();
+            bodyPart.gameObject.AddComponent<Rigidbody>().AddForce(DeathForce *10,ForceMode.VelocityChange);
             bodyPart.tag = "Debris";
         }
     }
