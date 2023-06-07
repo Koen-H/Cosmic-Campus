@@ -24,7 +24,6 @@ public class Staff : Weapon
     public override void OnAttackInputHold()
     {
         Aim();
-        playerController.AttackServerRpc();//Tell the server, that we are attacking!
         Attack();
     }
     /// <summary>
@@ -75,27 +74,32 @@ public class Staff : Weapon
             }
         }
         if (enemies.Count == 0) return;
-        List<Enemy> unorderedEnemies = new List<Enemy>(enemies);
+        orderedEnemies = GetEnemyDominos(playerController.transform, enemies);
+        if (orderedEnemies.Count == 0) return; //If we are unable to hit any of the enemies found.
+        
+        
+        //List<Enemy> unorderedEnemies = new List<Enemy>(enemies);
 
-        Enemy closestEnemy = GetClosestEnemy(playerPosition, unorderedEnemies);
-        orderedEnemies.Add(closestEnemy);
-        unorderedEnemies.Remove(closestEnemy);
+        //Enemy closestEnemy = GetClosestEnemy(playerPosition, unorderedEnemies);
+        //orderedEnemies.Add(closestEnemy);
+        //unorderedEnemies.Remove(closestEnemy);
 
-        while (orderedEnemies.Count < enemies.Count)
-        {
-            closestEnemy = GetClosestEnemy(orderedEnemies.Last().transform.position, unorderedEnemies);
-            orderedEnemies.Add(closestEnemy);
-            unorderedEnemies.Remove(closestEnemy);
-        }
+        //while (orderedEnemies.Count < enemies.Count)
+        //{
+        //    closestEnemy = GetClosestEnemy(orderedEnemies.Last().transform.position, unorderedEnemies);
+        //    orderedEnemies.Add(closestEnemy);
+        //    unorderedEnemies.Remove(closestEnemy);
+        //}
 
-        while(beams.Count < orderedEnemies.Count)
+        while (beams.Count < orderedEnemies.Count)
         {
             beams.Add(Instantiate(weaponData.beamVfx).GetComponent<ParticleTravelDistance>());
         }
         while (beams.Count > orderedEnemies.Count)
         {
-            Destroy(beams[0].gameObject);
-            beams.RemoveAt(0);
+            int index = beams.Count - 1;
+            Destroy(beams[index].gameObject);
+            beams.RemoveAt(index);
         }
 
 
@@ -188,6 +192,52 @@ public class Staff : Weapon
         }
 
         return closestEnemy;
+    }
+
+    List<Enemy> GetEnemyDominos(Transform from, List<Enemy> allEnemies)
+    {
+        if (allEnemies.Count <= 1) return allEnemies;
+        Enemy closestEnemy = null;
+        List<Enemy> orderedList = new List<Enemy>();
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < allEnemies.Count; i++)
+        {
+            Enemy enemy = allEnemies[i];
+            float distance = (from.position - enemy.centerPoint.position).magnitude;
+            if (distance < closestDistance)
+            {
+                Vector3 diff = (enemy.centerPoint.position - from.position);
+                RaycastHit hit;
+                Debug.DrawRay(from.position, diff, Color.red, 10f);
+
+                int originalLayer = from.gameObject.layer; // Save the original layer
+                if (from.gameObject.layer != 3) from.parent.gameObject.layer = 2; // Assign the object to the "IgnoreRaycast" layer
+
+                // Create a LayerMask for the "IgnoreRaycast" layer (2) and player layer (assume player is on layer 3, change it according to your game settings)
+                int layerMask = 1 << 2 | 1 << 3;
+                layerMask = ~layerMask; // Invert the mask to ignore the "IgnoreRaycast" and player layer
+
+                if (Physics.Raycast(from.position, diff.normalized, out hit, diff.magnitude, layerMask)) // Pass the layerMask as a parameter to the Raycast method
+                {
+                    if (!hit.transform.CompareTag("Enemy"))
+                    {
+                        from.gameObject.layer = originalLayer; // Reset the object's layer
+                        continue;
+                    }
+                }
+                closestDistance = distance;
+                closestEnemy = enemy;
+                from.gameObject.layer = originalLayer; // Reset the object's layer
+            }
+        }
+
+        if (closestEnemy == null) return new List<Enemy>();
+        orderedList.Add(closestEnemy);
+        allEnemies.Remove(closestEnemy);
+        List<Enemy> tempList = GetEnemyDominos(closestEnemy.centerPoint, allEnemies);
+        foreach (var enemy in tempList) { orderedList.Add(enemy); }
+        return orderedList;
     }
 
     float DealDamage(Enemy enemy,float prevDam)

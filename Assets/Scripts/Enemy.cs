@@ -157,13 +157,10 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     private void Die()
     {
-        //TODO: Drop debris and invoke the death animation.
-
 
         FallApart(); 
-
-
-        if (IsOwner) Destroy(gameObject);
+        if (IsOwner) StartCoroutine(LateDestroy());
+        gameObject.SetActive(false);
     }
     void FallApart()
     {
@@ -194,6 +191,15 @@ public class Enemy : NetworkBehaviour
 
         }
         return children; 
+    }
+
+    /// <summary>
+    /// Destroy the enemy later, so it can sync up with the other clients.
+    /// </summary>
+    IEnumerator LateDestroy()
+    {
+        yield return new WaitForSeconds(5);
+        Destroy(gameObject);
     }
 
     #endregion

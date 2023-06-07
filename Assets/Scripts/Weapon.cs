@@ -67,6 +67,7 @@ public abstract class Weapon : MonoBehaviour
     /// </summary>
     internal void Aim()
     {
+        if (!playerController.IsOwner) return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))

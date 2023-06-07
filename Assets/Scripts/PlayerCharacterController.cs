@@ -215,10 +215,12 @@ public class PlayerCharacterController : NetworkBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             weaponBehaviour.OnAttackInputStart();
+            AttackServerRpc();//Tell the server, that we are attacking!
         }
         else if (Input.GetMouseButtonUp(0))
         {
             weaponBehaviour.OnAttackInputStop();
+            AttackStopServerRpc();
         }
         if (Input.GetMouseButton(0))
         {
@@ -415,4 +417,22 @@ public class PlayerCharacterController : NetworkBehaviour
         weaponBehaviour.AttackStart();
     }
 
+    /// <summary>
+    /// Tell the server we stopped the attack
+    /// </summary>
+    [ServerRpc]
+    public void AttackStopServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        AttackStopClientRpc(serverRpcParams.Receive.SenderClientId);
+    }
+
+    /// <summary>
+    /// Stop the attack
+    /// </summary>
+    [ClientRpc]
+    private void AttackStopClientRpc(ulong receivedClientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        weaponBehaviour.OnAttackInputStop();
+    }
 }
