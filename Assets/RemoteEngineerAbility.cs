@@ -41,7 +41,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-
+        isBuilding.OnValueChanged += BuildingStopped;
         if (IsOwner)
         {
             //Get the camera to focus on this object!
@@ -49,6 +49,18 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.SetLookTarg(transform);
         }
     }
+
+    public void BuildingStopped(bool oldValue, bool newValue)
+    {
+        if (!newValue)//IF Stopped building
+        {
+            Destroy(chargingVFX);
+            boilingVFX.GetComponent<ParticleSystem>().Play();
+            rigidbody.isKinematic = false;
+            StartCoroutine(ExplosionCountdown());
+        }
+    }
+
     public void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -65,11 +77,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CollectBuildingPieces();
             if (Input.GetMouseButtonUp(1))
             {
-                Destroy(chargingVFX);
-                boilingVFX.GetComponent<ParticleSystem>().Play();
                 isBuilding.Value = false;
-                rigidbody.isKinematic = false;
-                StartCoroutine(ExplosionCountdown());
             }
             return;
         }
@@ -141,7 +149,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void AttachObject(GameObject debrisObject)
     {
         attachedObjects++;
-        debrisObject.transform.parent = objCollector;
+        debrisObject.transform.parent.parent = objCollector;
         Vector3 randomPosition = Random.onUnitSphere * sphereRadius;
         Quaternion targetRotation = Random.rotation;
 

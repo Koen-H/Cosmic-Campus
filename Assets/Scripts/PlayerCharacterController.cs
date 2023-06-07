@@ -288,6 +288,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void ToggleMovement(bool toggle)
     {
+        if (isDead.Value) return;
         canMove = toggle;
     }
 
