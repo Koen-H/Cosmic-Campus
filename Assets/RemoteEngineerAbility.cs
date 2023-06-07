@@ -21,6 +21,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] private float maxSpeed = 10f;
     private float currentSpeed = 5f;
     private Rigidbody rigidbody;
+    private SphereCollider sphereCollider;
 
     private Vector3 currentDirection = Vector3.zero;
 
@@ -67,6 +68,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         rigidbody.isKinematic = true;
         chargingVFX.GetComponent<ParticleSystem>();
         shape = chargingVFX.GetComponent<ParticleSystem>().shape;
+        sphereCollider = GetComponent<SphereCollider>();
     }
 
     public void Update()
@@ -121,25 +123,27 @@ public class RemoteEngineerAbility : NetworkBehaviour
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, collectRadius);
 
-        foreach (Collider collider in colliders)
+        for (int i = 0; i < colliders.Length; i++)
         {
+            Collider collider = colliders[i];
             if (collider.CompareTag("Debris"))
             {
 
                 Vector3 diff = (collider.transform.position - transform.position);
-               // RaycastHit hit;
-              //  Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
 
-               // if (hit.transform == null) continue;
-               // if (hit.transform.CompareTag("Debris"))
-               // {
-                    AttachObject(collider.gameObject);
-                    sphereRadius += sphereRadiusIncreaseIncrement;
-               // }
+                AttachObject(collider.gameObject);
 
+                float d = 2 * Mathf.Pow((Mathf.Pow(sphereRadius, 3) + Mathf.Pow(sphereRadiusIncreaseIncrement, 3)), (1 / 3f));
 
+                sphereRadius = d / 2;
+                sphereCollider.radius = sphereRadius;
+                transform.position = new Vector3(transform.position.x, sphereRadius, transform.position.z);
             }
         }
+/*        foreach (Collider collider in colliders)
+        {
+
+        }*/
         
         collectRadius += collectRadiusIncreaseIncrement * Time.deltaTime;
         shape.radius = collectRadius;
