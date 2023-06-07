@@ -149,7 +149,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void AttachObject(GameObject debrisObject)
     {
         attachedObjects++;
-        debrisObject.transform.parent.parent = objCollector;
+        debrisObject.transform.parent = objCollector;
         Vector3 randomPosition = Random.onUnitSphere * sphereRadius;
         Quaternion targetRotation = Random.rotation;
 
