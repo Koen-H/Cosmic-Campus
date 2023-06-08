@@ -816,6 +816,11 @@ MonoBehaviour:
   healthBar: {fileID: 4700184518596695144}
   enemySO: {fileID: 11400000, guid: 1718a9f973b1f6441bb0b596bb92ec63, type: 2}
   enemyState: 0
+  enemyType:
+    m_InternalValue: 1
+  typeMatchDamageIncrease: 1.5
+  typeMatchDamagePenalty: 1
+  forceTypeMatch: 0
   health:
     m_InternalValue: 10
   effectManager: {fileID: 0}

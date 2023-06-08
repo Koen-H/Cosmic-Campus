@@ -20,7 +20,7 @@ public class Enemy : NetworkBehaviour
     public EnemyState enemyState = EnemyState.IDLING;
 
     [Header("Enemy type variables")]
-    public NetworkVariable<EnemyType> enemyType = new(EnemyType.NONE);
+    public NetworkVariable<EnemyType> enemyType = new(0);
     public float typeMatchDamageIncrease = 1.5f;//
     public float typeMatchDamagePenalty = 1;//Default is none
     public bool forceTypeMatch = false;
