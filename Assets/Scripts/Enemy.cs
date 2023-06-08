@@ -86,6 +86,7 @@ public class Enemy : NetworkBehaviour
         if(IsOwner) enemyType.Value = enemyTypeInsp;
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
+        enemyType.OnValueChanged+= OnEnemyTypeChange;
         SetSOData();
         SetNavMeshData();
         healthBar.SetMaxValue(health.Value);
@@ -94,6 +95,8 @@ public class Enemy : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         health.OnValueChanged -= OnHealthChange;
+        effectManager.OnEffectChange -= HandleEffectChange;
+        enemyType.OnValueChanged -= OnEnemyTypeChange;
     }
     void SetSOData()
     {
@@ -287,6 +290,15 @@ public class Enemy : NetworkBehaviour
     void HandleEffectChange()
     {
         enemyMovement.SetSpeed(effectManager.ApplyMovementEffect(moveSpeed));
+    }
+
+
+
+
+    void OnEnemyTypeChange(EnemyType prevType, EnemyType newType)
+    {
+        MatChanger[] matChangers = GetComponentsInChildren<MatChanger>();
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(newType);
     }
 
 }

@@ -1,31 +1,49 @@
 using System.Collections;
 using UnityEngine;
+using static PlayerSO;
 
 public class MatChanger : MonoBehaviour
 {
-    public Material originalMaterial;
-    public Material changedMaterial;
+    Material currentMaterial;
 
-    private bool isChanged = false;
+    [SerializeField] private float time = 1.0f;
+    [SerializeField] private Material defaultMat;
+    [SerializeField] private Material artistMat;
+    [SerializeField] private Material designerMat;
+    [SerializeField] private Material engineerMat;
     private Coroutine coroutine;
 
-    private void Update()
+
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Tab)) ToggleMaterialChange(1);
+        currentMaterial = GetComponent<Material>();
     }
 
     /// <summary>
     /// Tell the MatChanger to change the material to the other.
     /// </summary>
-    public void ToggleMaterialChange(float time = 1.0f)
+    public void ChangeMaterial(EnemyType enemyType)
     {
         if (coroutine != null) StopCoroutine(coroutine);
-        if (isChanged) coroutine = StartCoroutine(ChangeMaterialOverTime(changedMaterial, originalMaterial, time));
-        else coroutine = StartCoroutine(ChangeMaterialOverTime(originalMaterial, changedMaterial, time));
-        isChanged = !isChanged;
+        coroutine = StartCoroutine(ChangeMaterialOverTime(currentMaterial, SelectTargetMat(enemyType), time));
     }
 
-    IEnumerator ChangeMaterialOverTime(Material startMaterial, Material endMaterial, float duration)
+    private Material SelectTargetMat(EnemyType enemyType)
+    {
+        switch (enemyType)
+        {
+            case EnemyType.ARTIST:
+                return artistMat;
+            case EnemyType.DESIGNER:
+                return designerMat;
+            case EnemyType.ENGINEER:
+                return engineerMat;
+            default:
+                return defaultMat;
+        }
+    }
+
+    private IEnumerator ChangeMaterialOverTime(Material startMaterial, Material targetMaterial, float duration)
     {
         float time = 0;
         Material mat = GetComponent<Renderer>().material;
@@ -33,8 +51,9 @@ public class MatChanger : MonoBehaviour
         {
             time += Time.deltaTime;
             float t = time / duration;
-            mat.Lerp(startMaterial, endMaterial, t);
+            mat.Lerp(startMaterial, targetMaterial, t);
             yield return null;
         }
+        currentMaterial = targetMaterial;
     }
 }
