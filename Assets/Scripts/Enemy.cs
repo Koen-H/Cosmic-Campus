@@ -211,7 +211,6 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     void FixHealthBar()
     {
-        //TODO: Fix.
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 
