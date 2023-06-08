@@ -1,22 +1,25 @@
-using System.Collections;
 using UnityEngine;
-using static PlayerSO;
+using System.Collections;
 
 public class MatChanger : MonoBehaviour
 {
-    Material currentMaterial;
+    private Material[] currentMaterials;
 
-    [SerializeField] private float time = 1.0f;
-    [SerializeField] private Material defaultMat;
-    [SerializeField] private Material artistMat;
-    [SerializeField] private Material designerMat;
-    [SerializeField] private Material engineerMat;
+    [SerializeField] private float time = 2f;
+    [SerializeField] private Material[] defaultMat;
+    [SerializeField] private Material[] artistMat;
+    [SerializeField] private Material[] designerMat;
+    [SerializeField] private Material[] engineerMat;
     private Coroutine coroutine;
-
 
     private void Awake()
     {
-        currentMaterial = GetComponent<Material>();
+        Renderer renderer = GetComponent<Renderer>();
+        currentMaterials = new Material[renderer.sharedMaterials.Length];
+        for (int i = 0; i < currentMaterials.Length; i++)
+        {
+            currentMaterials[i] = renderer.sharedMaterials[i];
+        }
     }
 
     /// <summary>
@@ -25,10 +28,10 @@ public class MatChanger : MonoBehaviour
     public void ChangeMaterial(EnemyType enemyType)
     {
         if (coroutine != null) StopCoroutine(coroutine);
-        coroutine = StartCoroutine(ChangeMaterialOverTime(currentMaterial, SelectTargetMat(enemyType), time));
+        coroutine = StartCoroutine(ChangeMaterialOverTime(currentMaterials, SelectTargetMat(enemyType), time));
     }
 
-    private Material SelectTargetMat(EnemyType enemyType)
+    private Material[] SelectTargetMat(EnemyType enemyType)
     {
         switch (enemyType)
         {
@@ -43,17 +46,27 @@ public class MatChanger : MonoBehaviour
         }
     }
 
-    private IEnumerator ChangeMaterialOverTime(Material startMaterial, Material targetMaterial, float duration)
+    private IEnumerator ChangeMaterialOverTime(Material[] startMaterials, Material[] targetMaterials, float duration)
     {
         float time = 0;
-        Material mat = GetComponent<Renderer>().material;
-        while (time < duration)
+        Renderer renderer = GetComponent<Renderer>();
+        int numMaterials = Mathf.Min(startMaterials.Length, targetMaterials.Length);
+
+        for (int i = 0; i < numMaterials; i++)
         {
-            time += Time.deltaTime;
-            float t = time / duration;
-            mat.Lerp(startMaterial, targetMaterial, t);
-            yield return null;
+            Material startMat = startMaterials[i];
+            Material targetMat = targetMaterials[i];
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = time / duration;
+                renderer.sharedMaterials[i].Lerp(startMat, targetMat, t);
+                yield return null;
+            }
+
+            currentMaterials[i] = targetMat;
+            time = 0;
         }
-        currentMaterial = targetMaterial;
     }
 }
