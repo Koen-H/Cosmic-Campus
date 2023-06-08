@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2191158424249565987}
   - component: {fileID: 2191158424249565986}
   - component: {fileID: 2509317120946354050}
+  - component: {fileID: -6110672079437327547}
   m_Layer: 10
   m_Name: Artist Decal
   m_TagString: Untagged
@@ -28,14 +29,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191158424249565990}
-  m_LocalRotation: {x: 0.6634807, y: -0.24071257, z: -0.24160519, w: 0.6659413}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 9.41, y: 0.431, z: 48.057}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50.118, y: -89.669, z: -89.746}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &2191158424249565989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,3 +125,16 @@ MonoBehaviour:
   effectTypes: 2
   manager: {fileID: 0}
   slowness: 0.7
+--- !u!114 &-6110672079437327547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191158424249565990}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50f4ac430c809d47bc47c12cf3df820, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 20
