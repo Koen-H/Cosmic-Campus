@@ -20,7 +20,8 @@ public class Enemy : NetworkBehaviour
     public EnemyState enemyState = EnemyState.IDLING;
 
     [Header("Enemy type variables")]
-    public NetworkVariable<EnemyType> enemyType = new(0);
+    public EnemyType enemyTypeInsp = EnemyType.NONE;
+    [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
     public float typeMatchDamageIncrease = 1.5f;//
     public float typeMatchDamagePenalty = 1;//Default is none
     public bool forceTypeMatch = false;
@@ -68,6 +69,7 @@ public class Enemy : NetworkBehaviour
     #region Initialization methods
     private void Awake()
     {
+
         enemyMovement = GetComponent<EnemyMovement>();
         targetBehaviour = GetComponent<EnemyTargettingBehaviour>();
         attackBehaviour = GetComponent<EnemyAttackBehaviour>();
@@ -81,6 +83,7 @@ public class Enemy : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if(IsOwner) enemyType.Value = enemyTypeInsp;
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
         SetSOData();
