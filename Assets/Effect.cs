@@ -5,6 +5,8 @@ using UnityEngine;
 public abstract class Effect : MonoBehaviour
 {
 
+    public GameObject vfx;
+    protected GameObject vfxInstance;
 
     public float duration = 1f;
     public float strength = 1f;
@@ -49,6 +51,8 @@ public abstract class Effect : MonoBehaviour
     /// </summary>
     public virtual void ApplyEffect()
     {
+        if (vfx != null) vfxInstance = Instantiate(vfx, transform);
+        vfxInstance.transform.localPosition = new Vector3(0, 2, 0);//Todo: Temporary
         StartCoroutine(EffectCountdown());
     }
 
@@ -57,13 +61,14 @@ public abstract class Effect : MonoBehaviour
     /// </summary>
     public virtual void RemoveEffect()
     {
-       
+        if (vfxInstance != null) Destroy(vfxInstance);
     }
 
     public virtual void CopyFrom(Effect original)
     {
         duration = original.duration;
         strength = original.strength;
+        vfx = original.vfx;
     }
 
     /// <summary>
