@@ -38,7 +38,7 @@ public class DesignerAbility : Ability
     {
         player.playerObj.transform.LookAt(new Vector3(clickPoint.x,transform.position.y , clickPoint.z));
         ObjectSlamManager objectSlamManager = target.AddComponent<ObjectSlamManager>();
-        objectSlamManager.owner = player;
+        objectSlamManager.playerController = player;
         Debug.Log("put down");
         // Place target on the ground
         target.transform.parent = null;

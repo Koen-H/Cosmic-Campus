@@ -52,6 +52,7 @@ public class HealthBar : MonoBehaviour
 
     IEnumerator FadeInOut(Image image, float duration, bool fadeIn = false)
     {
+        yield return new WaitForSeconds(5);//Go away after 5 seconds
         if (fadeIn)
         {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / duration)

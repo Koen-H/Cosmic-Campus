@@ -24,6 +24,9 @@ public class PlayerCharacterController : NetworkBehaviour
     public bool canAttack = true;
     public bool canAbility = true;
 
+    [Tooltip("What enemytype will take critical damage?")]
+    public EnemyType damageType = EnemyType.NONE;
+
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
@@ -89,7 +92,6 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
-            
         }
         else
         {
@@ -282,9 +284,11 @@ public class PlayerCharacterController : NetworkBehaviour
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
         healthText.text = health.Value.ToString();
-
+        damageType = (EnemyType)playerData.playerRole.Value;
         InitWeapon();
     }
+
+
 
     public void ToggleMovement(bool toggle)
     {

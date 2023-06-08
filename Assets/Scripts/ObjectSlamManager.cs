@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectSlamManager : MonoBehaviour
 {
-    public PlayerCharacterController owner;
+    public PlayerCharacterController playerController;
     Rigidbody rb;
     private bool hasFallen = false;
     float raycastDistance = 3;
@@ -32,7 +32,7 @@ public class ObjectSlamManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage);
+            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage, playerController.damageType);
             return;
         }
         else if (!hasFallen)
@@ -50,7 +50,7 @@ public class ObjectSlamManager : MonoBehaviour
         GameObject slamExtraVFXinstance = Instantiate(slamExtraVFX, transform.position, Quaternion.identity);
         //slamExtraVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         //If the current client is the owner, we deal the damage
-        if (owner.IsOwner)
+        if (playerController.IsOwner)
         {
             List<GameObject> enemiesHit = new List<GameObject>();
             for (int i = 0; i < 360; i += 10)

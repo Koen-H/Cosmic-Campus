@@ -254,7 +254,7 @@ public class Staff : Weapon
 
     float DealDamage(Enemy enemy,float prevDam)
     {
-        enemy.TakeDamage(prevDam);
+        enemy.TakeDamage(prevDam, playerController.damageType);
         float damage = prevDam * 0.7f; 
         base.Attack();//Handle cooldown?
         return damage;

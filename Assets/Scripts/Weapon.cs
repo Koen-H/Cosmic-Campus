@@ -24,7 +24,6 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
-
     /// <summary>
     /// When the player starts with the input
     /// </summary>

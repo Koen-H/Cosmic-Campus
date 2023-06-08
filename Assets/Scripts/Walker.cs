@@ -69,7 +69,7 @@ public class Walker : MonoBehaviour
 
             foreach (GameObject enemyObj in enemiesHit)
             {
-                enemyObj.GetComponentInParent<Enemy>().TakeDamage(damage);
+                enemyObj.GetComponentInParent<Enemy>().TakeDamage(damage, EnemyType.ENGINEER);
                 Debug.Log($"Did {damage} damage!");
             }
         }

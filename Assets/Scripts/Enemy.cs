@@ -19,6 +19,12 @@ public class Enemy : NetworkBehaviour
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
+    [Header("Enemy type variables")]
+    public NetworkVariable<EnemyType> enemyType = new(EnemyType.NONE);
+    public float typeMatchDamageIncrease = 1.5f;//
+    public float typeMatchDamagePenalty = 1;//Default is none
+    public bool forceTypeMatch = false;
+
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
     private float moveSpeed;
@@ -115,10 +121,9 @@ public class Enemy : NetworkBehaviour
     /// Deal damage to the enemy.
     /// </summary>
     /// <param name="damageInc">The amount of damage</param>
-    public void TakeDamage(float damageInc)
+    public void TakeDamage(float damageInc, EnemyType damageType)
     {
-        TakeDamgeServerRpc(damageInc);
-
+        TakeDamageServerRpc(damageInc, damageType);
     }
 
     /// <summary>
@@ -126,9 +131,30 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc(float damageInc)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType)
     {
-        health.Value -= damageInc;
+        float totalDamage = damageInc;
+        if (enemyType.Value != EnemyType.NONE)
+        {
+            bool typeMatch = damageType == enemyType.Value;
+            if (!typeMatch && forceTypeMatch)
+            {
+                //We don't deal damage, we are forcing matchin enemy!
+                return;
+            }
+            else if (typeMatch)
+            {
+                //The match fits! Apply the bonus damage!
+                totalDamage *= typeMatchDamageIncrease;
+            }
+            else
+            {
+                //The match doesn't fit! Decrease the damage!
+                totalDamage *= typeMatchDamagePenalty;
+            }
+        }
+        totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
+        health.Value -= totalDamage;
     }
 
     /// <summary>
@@ -262,3 +288,4 @@ public class Enemy : NetworkBehaviour
 
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
+public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER }
