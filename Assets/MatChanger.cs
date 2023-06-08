@@ -65,7 +65,6 @@ public class MatChanger : MonoBehaviour
                 yield return null;
             }
 
-            currentMaterials[i] = targetMat;
             time = 0;
         }
     }

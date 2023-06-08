@@ -254,10 +254,10 @@ public class Enemy : NetworkBehaviour
         targetBehaviour.FindTarget();
         attackBehaviour.TryAttack();
 
-        if (Input.GetKeyDown(KeyCode.Keypad1)) enemyType.Value = EnemyType.NONE;
-        if (Input.GetKeyDown(KeyCode.Keypad2)) enemyType.Value = EnemyType.ARTIST;
-        if (Input.GetKeyDown(KeyCode.Keypad3)) enemyType.Value = EnemyType.DESIGNER;
-        if (Input.GetKeyDown(KeyCode.Keypad4)) enemyType.Value = EnemyType.ENGINEER;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
 
     public virtual void AttackLogic(Transform target)
