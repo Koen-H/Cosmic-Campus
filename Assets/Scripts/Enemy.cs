@@ -31,6 +31,7 @@ public class Enemy : NetworkBehaviour
 
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
+    private float maxHealth;
     private float moveSpeed;
     protected float detectionRange;
     private float trackingRange;
@@ -92,7 +93,8 @@ public class Enemy : NetworkBehaviour
         enemyType.OnValueChanged+= OnEnemyTypeChange;
         SetSOData();
         SetNavMeshData();
-        healthBar.SetMaxValue(health.Value);
+        maxHealth = health.Value;
+        healthBar.SetMaxValue(maxHealth);
         if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
     }
     //TODO: Don't put it in here.
@@ -134,12 +136,24 @@ public class Enemy : NetworkBehaviour
     #region Health related methods
 
     /// <summary>
+    /// Heal the player based on percentage of max health.
+    /// </summary>
+    public void Heal(float percentage)
+    {
+        if (!IsOwner) return;
+        float addedHealth = maxHealth * (percentage / 100);
+        if (health.Value + addedHealth > maxHealth) health.Value = maxHealth;
+        else health.Value += addedHealth;
+    }
+
+
+    /// <summary>
     /// Deal damage to the enemy.
     /// </summary>
     /// <param name="damageInc">The amount of damage</param>
-    public void TakeDamage(float damageInc, EnemyType damageType)
+    public void TakeDamage(float damageInc, EnemyType damageType, bool inPercentage = false)
     {
-        TakeDamageServerRpc(damageInc, damageType);
+        TakeDamageServerRpc(damageInc, damageType, inPercentage);
     }
 
     /// <summary>
@@ -147,9 +161,9 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damageInc, EnemyType damageType)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false)
     {
-        float totalDamage = damageInc;
+        float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
         if (enemyType.Value != EnemyType.NONE)
         {
             bool typeMatch = damageType == enemyType.Value;

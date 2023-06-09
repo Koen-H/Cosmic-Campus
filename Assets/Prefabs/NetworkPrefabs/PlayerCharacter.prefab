@@ -559,7 +559,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4730861770734180504}
   - component: {fileID: 4730861770734180507}
-  - component: {fileID: 4957040325640177731}
+  - component: {fileID: 8066588647814255692}
   - component: {fileID: 4730861770734180506}
   - component: {fileID: 4730861770734180505}
   - component: {fileID: 667747077447552527}
@@ -608,6 +608,7 @@ MonoBehaviour:
   canMove: 1
   canAttack: 1
   canAbility: 1
+  damageType: 0
   playerAvatar: {fileID: 4730861772226633752}
   playerObj: {fileID: 4593242323635163358}
   healthText: {fileID: 3350172605391908658}
@@ -622,7 +623,7 @@ MonoBehaviour:
   effectManager: {fileID: 0}
   attackRange: 10
   grav: 0
---- !u!114 &4957040325640177731
+--- !u!114 &8066588647814255692
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -631,7 +632,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4730861770734180509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ff675e340b771140b5980f1af2dcfdc, type: 3}
+  m_Script: {fileID: 11500000, guid: 87e50ac8593d37d418f226018ea74c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   allEffects: []

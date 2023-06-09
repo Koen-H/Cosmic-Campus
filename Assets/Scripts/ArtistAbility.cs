@@ -37,6 +37,9 @@ public class ArtistAbility : Ability
             CrystalManager crystalManager = target.GetComponent<CrystalManager>();
             ArtistPaintColor color = crystalManager.GetColor();
             paintBucket.Add(color);
+
+            ///Spawn a object at the place that floats towards the player! Obj should change based on color.
+
             if (color == ArtistPaintColor.NONE) return;
         }
         else if(paintBucket.Count > 0)
@@ -48,4 +51,4 @@ public class ArtistAbility : Ability
         }
     }
 }
-public enum ArtistPaintColor { NONE, WHITE, BLUE, YELLOW, ORANGE, RED, GREEN, PURPLE }
+public enum ArtistPaintColor { NONE, WHITE, BLUE, YELLOW, ORANGE, RED, GREEN, PURPLE, PINK }

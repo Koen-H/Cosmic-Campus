@@ -4,12 +4,13 @@ using UnityEngine;
 
 public abstract class Effect : MonoBehaviour
 {
+    [SerializeField] public string effectName = "";
+    public float duration = 1f;
+    public float strength = 1f;
 
     public GameObject vfx;
     protected GameObject vfxInstance;
 
-    public float duration = 1f;
-    public float strength = 1f;
     [SerializeField, Tooltip("If it's a reference it will be used for applying and not doing anything by iteself.")] 
     bool isReference = false;
 
@@ -24,13 +25,26 @@ public abstract class Effect : MonoBehaviour
     /// <returns></returns>
     private IEnumerator EffectCountdown()
     {
+        float oneSec = 0;
         while (duration > 0)
         {
             duration -= 0.1f;
+            oneSec += 0.1f;
             yield return new WaitForSeconds(0.1f);
+            if (oneSec >= 1)
+            {
+                oneSec = 0;
+                EverySecond();
+            }
+
         }
         manager.RemoveEffect(this);
     }
+
+    /// <summary>
+    /// Everysecond, this will be run. Usefull for burning or healing over time!
+    /// </summary>
+    public virtual void EverySecond() { }
 
     /// <summary>
     /// Reset the effect if the duration is longer
@@ -51,8 +65,11 @@ public abstract class Effect : MonoBehaviour
     /// </summary>
     public virtual void ApplyEffect()
     {
-        if (vfx != null) vfxInstance = Instantiate(vfx, transform);
-        vfxInstance.transform.localPosition = new Vector3(0, 2, 0);//Todo: Temporary
+        if (vfx != null)
+        {
+            vfxInstance = Instantiate(vfx, transform);
+            vfxInstance.transform.localPosition = new Vector3(0, 2, 0);//Todo: Temporary
+        }
         StartCoroutine(EffectCountdown());
     }
 

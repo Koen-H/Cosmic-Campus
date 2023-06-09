@@ -70,7 +70,7 @@ public abstract class Weapon : MonoBehaviour
         if (!playerController.IsOwner) return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("UI") | LayerMask.GetMask("Area"))))
         {
             Vector3 clickPoint = hit.point;
             Transform playerObj = playerController.playerObj.transform;
