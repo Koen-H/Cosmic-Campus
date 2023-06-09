@@ -5,35 +5,24 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class ArtistDecal : MonoBehaviour
 {
-    [SerializeField] Material waterMat;
-    [SerializeField] Material lavaMat;
-
-    public ArtistDecalType type = ArtistDecalType.WATER;
-
-    DecalProjector projector;
+    private DecalProjector projector;
+    [SerializeField, Tooltip("How long should this decal stay?")]
     private float lifespan = 5;
+    private Effect effect;
 
     private void Start()
     {
+        effect = GetComponent<Effect>();
         projector = GetComponent<DecalProjector>();
-        if (type == ArtistDecalType.WATER) projector.material = waterMat;
-        else projector.material = lavaMat;
         StartCoroutine(FadeOutOfExistence(lifespan));
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy") || other.CompareTag("Player"))
         {
-            if (type == ArtistDecalType.WATER)
-            {
-                Debug.Log("WALKING IN WATER!");
-                other.gameObject.GetComponentInParent<EffectManager>().AddEffect(this.GetComponent<Effect>());
-            }
-            else if (type == ArtistDecalType.LAVA)
-            {
-                Debug.Log("WALKING IN LAVA");
-            }
+            other.GetComponentInParent<EffectManager>().AddEffect(effect);
         }
     }
 
@@ -57,4 +46,3 @@ public class ArtistDecal : MonoBehaviour
         Destroy(gameObject);
     }
 }
-public enum ArtistDecalType { WATER, LAVA }

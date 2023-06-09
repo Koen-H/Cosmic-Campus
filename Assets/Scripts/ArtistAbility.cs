@@ -1,4 +1,7 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,15 +10,17 @@ using static UnityEngine.UI.Image;
 
 public class ArtistAbility : Ability
 {
-    [SerializeField] GameObject artistDecalPrefab;
-    ArtistDecalType type;
-    float ammo = 0;
-    float maxAmmo = 2;
+    //The colors stored in order as collected
+    private List<ArtistPaintColor> paintBucket;
+    private int paintBucketCapacity = 5;
+    private ServerSpawner serverSpawner;
+
 
     private void Awake()
     {
+        paintBucket = new();
         base.Awake();
-        artistDecalPrefab = Resources.Load<GameObject>("Artist Decal");
+        if(player.IsOwner) serverSpawner = ServerSpawner.Instance;
     }
 
     public override void Activate(Vector3 origin, Vector3 direction)
@@ -26,23 +31,21 @@ public class ArtistAbility : Ability
         GameObject target = null;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) target = hit.collider.gameObject;
         if (target == null) return;
-        if (target.CompareTag("Water"))
+        if (target.CompareTag("Crystal"))
         {
-            type = ArtistDecalType.WATER;
-            ammo++;
+            if (paintBucketCapacity == paintBucket.Count) return;//Bucket full!
+            CrystalManager crystalManager = target.GetComponent<CrystalManager>();
+            ArtistPaintColor color = crystalManager.GetColor();
+            paintBucket.Add(color);
+            if (color == ArtistPaintColor.NONE) return;
         }
-        else if (target.CompareTag("Lava"))
+        else if(paintBucket.Count > 0)
         {
-            type = ArtistDecalType.LAVA;
-            ammo++;
+            ArtistPaintColor firstColor = paintBucket[0];
+            if (player.IsOwner) serverSpawner.SpawnArtistDecalPrefabServerRpc(hit.point, firstColor);//Spawn the decal!
+            paintBucket.RemoveAt(0);
+            Debug.Log(paintBucket.Count);
         }
-        else if(ammo > 0)
-        {
-            ArtistDecal decal = Instantiate(artistDecalPrefab, hit.point, Quaternion.LookRotation(-hit.normal)).GetComponent<ArtistDecal>();
-            decal.transform.parent = hit.collider.transform;
-            decal.type = type;
-            ammo--;
-        }
-        if(ammo > maxAmmo) ammo = maxAmmo;
     }
 }
+public enum ArtistPaintColor { NONE, WHITE, BLUE, YELLOW, ORANGE, RED, GREEN, PURPLE }

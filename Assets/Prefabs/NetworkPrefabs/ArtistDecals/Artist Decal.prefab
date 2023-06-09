@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 5115033115882006655}
   - component: {fileID: 2191158424249565987}
   - component: {fileID: 2191158424249565986}
-  - component: {fileID: 2509317120946354050}
+  - component: {fileID: 6327184376116042133}
+  - component: {fileID: 1738527458406544842}
   m_Layer: 10
   m_Name: Artist Decal
   m_TagString: Untagged
@@ -57,9 +58,9 @@ MonoBehaviour:
   m_UVBias: {x: 0, y: 0}
   m_AffectsTransparency: 0
   m_DecalLayerMask: 1
-  m_ScaleMode: 0
+  m_ScaleMode: 1
   m_Offset: {x: 0, y: 0, z: 0}
-  m_Size: {x: 5, y: 5, z: 1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_FadeFactor: 1
   m_Version: 2
 --- !u!54 &5115033115882006655
@@ -103,10 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5121646bb569694d87a4f95b1926b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterMat: {fileID: 2100000, guid: 51a0dd723e45af344958211400ef3a60, type: 2}
-  lavaMat: {fileID: 2100000, guid: 375875bf3fad01140b758f38c8da6a1d, type: 2}
-  type: 0
---- !u!114 &2509317120946354050
+  lifespan: 5
+--- !u!114 &6327184376116042133
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,13 +114,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 2191158424249565990}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5016675f4db281a4e9195657c4c81bc6, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vfx: {fileID: 8495363394330816454, guid: b69b0a1d127a950488e61863d1969155, type: 3}
-  duration: 10
-  strength: 1
-  isReference: 1
-  effectTypes: 2
-  manager: {fileID: 0}
-  slowness: 0.7
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &1738527458406544842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191158424249565990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1

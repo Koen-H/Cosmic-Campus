@@ -13,6 +13,15 @@ public class ServerSpawner : NetworkBehaviour
     [SerializeField] GameObject remoteEngineerPrefab;
 
 
+    [Header("Artist decals")]
+    [SerializeField] GameObject whiteDecal;
+    [SerializeField] GameObject blueDecal;
+    [SerializeField] GameObject yellowDecal;
+    [SerializeField] GameObject orangeDecal;
+    [SerializeField] GameObject redDecal;
+    [SerializeField] GameObject greenDecal;
+    [SerializeField] GameObject purpleDecal;
+
     private static ServerSpawner _instance;
     public static ServerSpawner Instance
     {
@@ -37,6 +46,40 @@ public class ServerSpawner : NetworkBehaviour
     public void SpawnRemoteEngineerPrefabServerRpc(Vector3 instanceLocation, ServerRpcParams serverRpcParams = default)
     {
         GameObject instance = Instantiate(remoteEngineerPrefab,instanceLocation, Quaternion.identity);
+        instance.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnArtistDecalPrefabServerRpc(Vector3 instanceLocation, ArtistPaintColor color, ServerRpcParams serverRpcParams = default)
+    {
+        GameObject instance = null;
+
+        switch (color)
+        {
+            case ArtistPaintColor.WHITE:
+                instance = Instantiate(whiteDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.BLUE:
+                instance = Instantiate(blueDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.YELLOW:
+                instance = Instantiate(yellowDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.ORANGE:
+                instance = Instantiate(orangeDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.RED:
+                instance = Instantiate(redDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.GREEN:
+                instance = Instantiate(greenDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.PURPLE:
+                instance = Instantiate(purpleDecal, instanceLocation, Quaternion.identity);
+                break;
+        }
+        if (instance == null) return;
         instance.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
     }
 }

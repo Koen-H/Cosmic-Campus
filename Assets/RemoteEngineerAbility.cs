@@ -38,7 +38,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     ParticleSystem.ShapeModule shape;
     private bool exploded = false;
 
-    
+    Vector3 startPos;
 
     public override void OnNetworkSpawn()
     {
@@ -69,6 +69,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         chargingVFX.GetComponent<ParticleSystem>();
         shape = chargingVFX.GetComponent<ParticleSystem>().shape;
         sphereCollider = GetComponent<SphereCollider>();
+        startPos = transform.position;
     }
 
     public void Update()
@@ -129,15 +130,13 @@ public class RemoteEngineerAbility : NetworkBehaviour
             if (collider.CompareTag("Debris"))
             {
 
-                Vector3 diff = (collider.transform.position - transform.position);
-
                 AttachObject(collider.gameObject);
 
                 float d = 2 * Mathf.Pow((Mathf.Pow(sphereRadius, 3) + Mathf.Pow(sphereRadiusIncreaseIncrement, 3)), (1 / 3f));
 
                 sphereRadius = d / 2;
                 sphereCollider.radius = sphereRadius;
-                transform.position = new Vector3(transform.position.x, sphereRadius, transform.position.z);
+                transform.position = new Vector3(transform.position.x, startPos.y + sphereRadius, transform.position.z);
             }
         }
 /*        foreach (Collider collider in colliders)

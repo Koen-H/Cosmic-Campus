@@ -6,11 +6,13 @@ public class Range
 {
     public float min;
     public float max;
+    public float diff;
 
     public Range(float min, float max)
     {
         this.min = min;
         this.max = max;
+        diff = max - min;
     }
 
     public float GetValueInRange(float value)
