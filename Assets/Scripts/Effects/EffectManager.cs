@@ -12,6 +12,17 @@ public class EffectManager : MonoBehaviour
 
     public event System.Action OnEffectChange;
 
+    public PlayerCharacterController player;
+    public Enemy enemy;
+    public bool isEnemy;
+
+    private void Awake()
+    {
+        player = GetComponent<PlayerCharacterController>();
+        enemy = GetComponent<Enemy>();
+        if(enemy != null) isEnemy= true;
+    }
+
     //Improvements:
     //Store last recoreded value alongside a boolean which tracks if it has been changed or not.
 

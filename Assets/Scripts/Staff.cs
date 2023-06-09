@@ -119,6 +119,7 @@ public class Staff : Weapon
         AttachBeam(beams[0], weaponObj.transform, orderedEnemies[0].centerPoint);
 
         float damage = weaponData.damage.GetRandomValue();
+        damage = playerController.effectManager.ApplyAttackEffect(damage);
         int i = 1;
         foreach (Enemy enemy in orderedEnemies)
         {

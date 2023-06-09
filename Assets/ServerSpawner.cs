@@ -21,6 +21,7 @@ public class ServerSpawner : NetworkBehaviour
     [SerializeField] GameObject redDecal;
     [SerializeField] GameObject greenDecal;
     [SerializeField] GameObject purpleDecal;
+    [SerializeField] GameObject pinkDecal;
 
     private static ServerSpawner _instance;
     public static ServerSpawner Instance
@@ -77,6 +78,9 @@ public class ServerSpawner : NetworkBehaviour
                 break;
             case ArtistPaintColor.PURPLE:
                 instance = Instantiate(purpleDecal, instanceLocation, Quaternion.identity);
+                break;
+            case ArtistPaintColor.PINK:
+                instance = Instantiate(pinkDecal, instanceLocation, Quaternion.identity);
                 break;
         }
         if (instance == null) return;

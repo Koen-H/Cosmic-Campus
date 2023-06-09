@@ -14,8 +14,8 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
-    NetworkVariable<float> maxHealth = new(20);
-    NetworkVariable<float> health = new(20);
+    NetworkVariable<float> maxHealth = new(50);
+    NetworkVariable<float> health = new(25);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -44,7 +44,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float maxSpeed = 10f;
     [SerializeField]float currentSpeed = 0f;
 
-    [SerializeField] EffectManager effectManager;
+    public EffectManager effectManager;
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
@@ -69,14 +69,17 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     public void Heal(float percentage)
     {
+        if (!IsOwner) return;
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool inPercentage = false)
     {
         if (isDead.Value) return;
+        if (inPercentage) damage = maxHealth.Value * (damage / 100);
+        damage = effectManager.ApplyResistanceEffect(damage);
         if (damage >= health.Value) damage = health.Value;
         if (damage > 0) health.Value -= damage;
         if (health.Value <= 0) isDead.Value = true;

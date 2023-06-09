@@ -77,7 +77,7 @@ public class Bow : Weapon
         GameObject arrow = Instantiate(weaponData.projectilePrefab, weaponObj.transform.position, weaponObj.transform.rotation);
         arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
         ArrowManager arrowManager = arrow.GetComponent<ArrowManager>();
-        arrowManager.damage = weaponData.damage.GetRandomValue();
+        arrowManager.damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
         arrowManager.playerController = playerController;
     }
 }

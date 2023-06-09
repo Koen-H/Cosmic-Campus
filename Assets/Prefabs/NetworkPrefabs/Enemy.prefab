@@ -655,6 +655,7 @@ GameObject:
   - component: {fileID: 6880509872615113896}
   - component: {fileID: 173293622072896792}
   - component: {fileID: 2709977735729543836}
+  - component: {fileID: 6751595306529879877}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -837,7 +838,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 6880509872615113898}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ff675e340b771140b5980f1af2dcfdc, type: 3}
+  m_Script: {fileID: 11500000, guid: 87e50ac8593d37d418f226018ea74c63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allEffects: []
+  attackEffects: []
+  movementEffects: []
+  resistanceEffects: []
+--- !u!114 &6751595306529879877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880509872615113898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e50ac8593d37d418f226018ea74c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   allEffects: []
