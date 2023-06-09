@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,6 +24,7 @@ public class Enemy : NetworkBehaviour
     [Header("Enemy type variables")]
     public EnemyType enemyTypeInsp = EnemyType.NONE;
     [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
+    [SerializeField] private bool startWithRandomType = false;
     public float typeMatchDamageIncrease = 1.5f;//
     public float typeMatchDamagePenalty = 1;//Default is none
     public bool forceTypeMatch = false;
@@ -90,6 +93,13 @@ public class Enemy : NetworkBehaviour
         SetSOData();
         SetNavMeshData();
         healthBar.SetMaxValue(health.Value);
+        if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
+    }
+    //TODO: Don't put it in here.
+    private T GetRandomEnumValue<T>() where T : Enum
+    {
+        Array enumValues = Enum.GetValues(typeof(T));
+        return (T)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
     }
 
     public override void OnNetworkDespawn()

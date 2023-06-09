@@ -821,6 +821,7 @@ MonoBehaviour:
   enemyTypeInsp: 0
   enemyType:
     m_InternalValue: 1
+  startWithRandomType: 1
   typeMatchDamageIncrease: 1.5
   typeMatchDamagePenalty: 1
   forceTypeMatch: 0
@@ -1090,7 +1091,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: f4715a130c33f434394046ea446be0be, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!4 &5904400114516973077 stripped
@@ -1333,7 +1334,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &558654263532346466 stripped
@@ -1368,7 +1369,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &814680216640926459 stripped
@@ -1399,7 +1400,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!4 &1065307472883408494 stripped
@@ -1440,7 +1441,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &2128003653638598649 stripped
@@ -1471,7 +1472,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &2567193805690582240 stripped
@@ -1506,7 +1507,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &3497944379339128396 stripped
@@ -1537,7 +1538,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &4127670613610349229 stripped
@@ -1568,7 +1569,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &4878700202287188163 stripped
@@ -1603,7 +1604,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &6389612556437603038 stripped
@@ -1638,7 +1639,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &6682414681656645138 stripped
@@ -1669,7 +1670,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &6791741702198112104 stripped
@@ -1700,7 +1701,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &7753642067125332164 stripped
@@ -1731,7 +1732,7 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &8263224824020320440 stripped
@@ -1766,7 +1767,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   - {fileID: 2100000, guid: df186f80cf29c064d815c378cf1a3dde, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
 --- !u!1 &9047130116319556710 stripped
@@ -1797,6 +1798,6 @@ MonoBehaviour:
   engineerMat:
   - {fileID: 2100000, guid: 4701195dcbfee9945a3533c53ebb960d, type: 2}
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
-  artistCol: {r: 1, g: 0.121, b: 0, a: 1}
+  artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
   engineerCol2: {r: 0, g: 0.647, b: 1, a: 1}
