@@ -1,5 +1,74 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &410648280995504278
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5834912043270402633}
+    m_Modifications:
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072313367790083128, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7367850953228101163, guid: abd3670e21de8f24493e26d30783b479,
+        type: 3}
+      propertyPath: m_Name
+      value: BurningFX
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: abd3670e21de8f24493e26d30783b479, type: 3}
 --- !u!1001 &5661389137950273901
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15,52 +84,52 @@ PrefabInstance:
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.41
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.431
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 48.057
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6659413
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.6634807
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.24071257
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.24160519
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 50.118
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -89.669
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -89.746
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2191158424249565989, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
@@ -72,6 +141,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Artist Decal (Orange) Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 2191158424249565990, guid: 912a6786997bfb446a00d518214a7690,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6327184376116042133, guid: 912a6786997bfb446a00d518214a7690,
         type: 3}
       propertyPath: GlobalObjectIdHash
@@ -79,6 +153,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 912a6786997bfb446a00d518214a7690, type: 3}
+--- !u!4 &5834912043270402633 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2191158424249565988, guid: 912a6786997bfb446a00d518214a7690,
+    type: 3}
+  m_PrefabInstance: {fileID: 5661389137950273901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5834912043270402635 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2191158424249565990, guid: 912a6786997bfb446a00d518214a7690,
@@ -100,7 +180,7 @@ MonoBehaviour:
   effectName: 
   duration: 5
   strength: 1
-  vfx: {fileID: 0}
+  vfx: {fileID: 2432857966505440594, guid: a509159908c18594c9249ea64dfe4a78, type: 3}
   isReference: 1
   effectTypes: 0
   manager: {fileID: 0}
