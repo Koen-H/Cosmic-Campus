@@ -16,8 +16,8 @@ public class Bow : Weapon
     public override void OnAttackInputStart()
     {
         if (weaponState != WeaponState.READY) return;
+        base.OnAttackInputStart();
         playerController.ToggleMovement(false);
-        playerController.AttackStartServerRpc();
         AttackStart();
     }
     /// <summary>
@@ -28,7 +28,7 @@ public class Bow : Weapon
         if (weaponState == WeaponState.READY)
         {
             playerController.ToggleMovement(false);
-            playerController.AttackStartServerRpc();
+            base.OnAttackInputStart();
             AttackStart();
         }
         if (weaponState != WeaponState.HOLD) return;
@@ -44,8 +44,8 @@ public class Bow : Weapon
         Aim();
         if (isCharging)
         {
-            playerController.AttackServerRpc();
-            Attack();
+            ShootArrow();
+            base.Attack();
         }
         playerController.ToggleMovement(true);
     }
@@ -53,8 +53,7 @@ public class Bow : Weapon
     public override void Attack()
     {
         
-        ShootArrow();
-        base.Attack();
+        
     }
     
     public override void AttackStart()
@@ -78,7 +77,7 @@ public class Bow : Weapon
         GameObject arrow = Instantiate(weaponData.projectilePrefab, weaponObj.transform.position, weaponObj.transform.rotation);
         arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
         ArrowManager arrowManager = arrow.GetComponent<ArrowManager>();
-        arrowManager.damage = weaponData.damage.GetRandomValue();
+        arrowManager.damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
         arrowManager.playerController = playerController;
     }
 }

@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(EnemyMovement), typeof(EffectManager))]
 public class Enemy : NetworkBehaviour
@@ -18,8 +21,17 @@ public class Enemy : NetworkBehaviour
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
+    [Header("Enemy type variables")]
+    public EnemyType enemyTypeInsp = EnemyType.NONE;
+    [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
+    [SerializeField] private bool startWithRandomType = false;
+    public float typeMatchDamageIncrease = 1.5f;//
+    public float typeMatchDamagePenalty = 1;//Default is none
+    public bool forceTypeMatch = false;
+
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
+    private float maxHealth;
     private float moveSpeed;
     protected float detectionRange;
     private float trackingRange;
@@ -61,6 +73,7 @@ public class Enemy : NetworkBehaviour
     #region Initialization methods
     private void Awake()
     {
+
         enemyMovement = GetComponent<EnemyMovement>();
         targetBehaviour = GetComponent<EnemyTargettingBehaviour>();
         attackBehaviour = GetComponent<EnemyAttackBehaviour>();
@@ -74,16 +87,28 @@ public class Enemy : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if(IsOwner) enemyType.Value = enemyTypeInsp;
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
+        enemyType.OnValueChanged+= OnEnemyTypeChange;
         SetSOData();
         SetNavMeshData();
-        healthBar.SetMaxValue(health.Value);
+        maxHealth = health.Value;
+        healthBar.SetMaxValue(maxHealth);
+        if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
+    }
+    //TODO: Don't put it in here.
+    private T GetRandomEnumValue<T>() where T : Enum
+    {
+        Array enumValues = Enum.GetValues(typeof(T));
+        return (T)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
     }
 
     public override void OnNetworkDespawn()
     {
         health.OnValueChanged -= OnHealthChange;
+        effectManager.OnEffectChange -= HandleEffectChange;
+        enemyType.OnValueChanged -= OnEnemyTypeChange;
     }
     void SetSOData()
     {
@@ -111,13 +136,24 @@ public class Enemy : NetworkBehaviour
     #region Health related methods
 
     /// <summary>
+    /// Heal the player based on percentage of max health.
+    /// </summary>
+    public void Heal(float percentage)
+    {
+        if (!IsOwner) return;
+        float addedHealth = maxHealth * (percentage / 100);
+        if (health.Value + addedHealth > maxHealth) health.Value = maxHealth;
+        else health.Value += addedHealth;
+    }
+
+
+    /// <summary>
     /// Deal damage to the enemy.
     /// </summary>
     /// <param name="damageInc">The amount of damage</param>
-    public void TakeDamage(float damageInc)
+    public void TakeDamage(float damageInc, EnemyType damageType, bool inPercentage = false)
     {
-        TakeDamgeServerRpc(damageInc);
-
+        TakeDamageServerRpc(damageInc, damageType, inPercentage);
     }
 
     /// <summary>
@@ -125,9 +161,30 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamgeServerRpc(float damageInc)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false)
     {
-        health.Value -= damageInc;
+        float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
+        if (enemyType.Value != EnemyType.NONE)
+        {
+            bool typeMatch = damageType == enemyType.Value;
+            if (!typeMatch && forceTypeMatch)
+            {
+                //We don't deal damage, we are forcing matchin enemy!
+                return;
+            }
+            else if (typeMatch)
+            {
+                //The match fits! Apply the bonus damage!
+                totalDamage *= typeMatchDamageIncrease;
+            }
+            else
+            {
+                //The match doesn't fit! Decrease the damage!
+                totalDamage *= typeMatchDamagePenalty;
+            }
+        }
+        totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
+        health.Value -= totalDamage;
     }
 
     /// <summary>
@@ -157,13 +214,10 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     private void Die()
     {
-        //TODO: Drop debris and invoke the death animation.
-
 
         FallApart(); 
-
-
-        if (IsOwner) Destroy(gameObject);
+        if (IsOwner) StartCoroutine(LateDestroy());
+        gameObject.SetActive(false);
     }
     void FallApart()
     {
@@ -196,6 +250,15 @@ public class Enemy : NetworkBehaviour
         return children; 
     }
 
+    /// <summary>
+    /// Destroy the enemy later, so it can sync up with the other clients.
+    /// </summary>
+    IEnumerator LateDestroy()
+    {
+        yield return new WaitForSeconds(5);
+        Destroy(gameObject);
+    }
+
     #endregion
 
 
@@ -214,6 +277,11 @@ public class Enemy : NetworkBehaviour
         if (enemyState == EnemyState.ATTACKING) return;
         targetBehaviour.FindTarget();
         attackBehaviour.TryAttack();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
 
     public virtual void AttackLogic(Transform target)
@@ -253,5 +321,15 @@ public class Enemy : NetworkBehaviour
         enemyMovement.SetSpeed(effectManager.ApplyMovementEffect(moveSpeed));
     }
 
+
+
+
+    void OnEnemyTypeChange(EnemyType prevType, EnemyType newType)
+    {
+        MatChanger[] matChangers = GetComponentsInChildren<MatChanger>();
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(newType);
+    }
+
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
+public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER }

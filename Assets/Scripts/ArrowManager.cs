@@ -26,7 +26,7 @@ public class ArrowManager : MonoBehaviour
         if(other.tag == "Enemy")
         {
             if(playerController.IsOwner)
-            other.transform.parent.GetComponent<Enemy>().TakeDamage(damage);
+            other.transform.parent.GetComponent<Enemy>().TakeDamage(damage, playerController.damageType);
         }
         attached = true;
         attachedObject = other.gameObject.transform;

@@ -21,6 +21,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] private float maxSpeed = 10f;
     private float currentSpeed = 5f;
     private Rigidbody rigidbody;
+    private SphereCollider sphereCollider;
 
     private Vector3 currentDirection = Vector3.zero;
 
@@ -32,13 +33,16 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] float explosionRange = 2f;
     [SerializeField] float rangeIncreasePerObj = 0.2f;
 
-    [SerializeField] GameObject explosionVFX, electricityVFX;
+    [SerializeField] GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
+
+    ParticleSystem.ShapeModule shape;
     private bool exploded = false;
 
+    Vector3 startPos;
 
     public override void OnNetworkSpawn()
     {
-
+        isBuilding.OnValueChanged += BuildingStopped;
         if (IsOwner)
         {
             //Get the camera to focus on this object!
@@ -46,23 +50,37 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.SetLookTarg(transform);
         }
     }
-    private void Start()
+
+    public void BuildingStopped(bool oldValue, bool newValue)
+    {
+        if (!newValue)//IF Stopped building
+        {
+            Destroy(chargingVFX);
+            boilingVFX.GetComponent<ParticleSystem>().Play();
+            rigidbody.isKinematic = false;
+            StartCoroutine(ExplosionCountdown());
+        }
+    }
+
+    public void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.isKinematic = true;
-
+        chargingVFX.GetComponent<ParticleSystem>();
+        shape = chargingVFX.GetComponent<ParticleSystem>().shape;
+        sphereCollider = GetComponent<SphereCollider>();
+        startPos = transform.position;
     }
 
-    private void Update()
+    public void Update()
     {
         if (isBuilding.Value)
         {
+            
             CollectBuildingPieces();
             if (Input.GetMouseButtonUp(1))
             {
                 isBuilding.Value = false;
-                rigidbody.isKinematic = false;
-                StartCoroutine(ExplosionCountdown());
             }
             return;
         }
@@ -106,26 +124,29 @@ public class RemoteEngineerAbility : NetworkBehaviour
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, collectRadius);
 
-        foreach (Collider collider in colliders)
+        for (int i = 0; i < colliders.Length; i++)
         {
+            Collider collider = colliders[i];
             if (collider.CompareTag("Debris"))
             {
 
-                Vector3 diff = (collider.transform.position - transform.position);
-               // RaycastHit hit;
-              //  Physics.Raycast(new Ray(transform.position, diff), out hit, diff.magnitude);
+                AttachObject(collider.gameObject);
 
-               // if (hit.transform == null) continue;
-               // if (hit.transform.CompareTag("Debris"))
-               // {
-                    AttachObject(collider.gameObject);
-                    sphereRadius += sphereRadiusIncreaseIncrement;
-               // }
+                float d = 2 * Mathf.Pow((Mathf.Pow(sphereRadius, 3) + Mathf.Pow(sphereRadiusIncreaseIncrement, 3)), (1 / 3f));
 
-
+                sphereRadius = d / 2;
+                sphereCollider.radius = sphereRadius;
+                transform.position = new Vector3(transform.position.x, startPos.y + sphereRadius, transform.position.z);
             }
         }
+/*        foreach (Collider collider in colliders)
+        {
+
+        }*/
+        
         collectRadius += collectRadiusIncreaseIncrement * Time.deltaTime;
+        shape.radius = collectRadius;
+
     }
 
     public void AttachObject(GameObject debrisObject)
@@ -159,6 +180,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;
         GameObject electricityVFXinstance = Instantiate(electricityVFX, transform.position, Quaternion.identity);
         electricityVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects / 5;
+        objCollector.gameObject.SetActive(false);
         if (!IsOwner) return;
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
@@ -166,7 +188,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             if (collider.CompareTag("Enemy"))
             {
-                collider.GetComponentInParent<Enemy>().TakeDamage(damage);
+                collider.GetComponentInParent<Enemy>().TakeDamage(damage,EnemyType.ENGINEER);//Hardcoded engineer, because it's a engineer ability
             }
         }
         StartCoroutine(LateCameraMoveBack(1));

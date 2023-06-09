@@ -14,8 +14,8 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
-    NetworkVariable<float> maxHealth = new(20);
-    NetworkVariable<float> health = new(20);
+    NetworkVariable<float> maxHealth = new(50);
+    NetworkVariable<float> health = new(25);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -23,6 +23,9 @@ public class PlayerCharacterController : NetworkBehaviour
     public bool canMove = true;
     public bool canAttack = true;
     public bool canAbility = true;
+
+    [Tooltip("What enemytype will take critical damage?")]
+    public EnemyType damageType = EnemyType.NONE;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
@@ -41,7 +44,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float maxSpeed = 10f;
     [SerializeField]float currentSpeed = 0f;
 
-    [SerializeField] EffectManager effectManager;
+    public EffectManager effectManager;
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
@@ -66,14 +69,17 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     public void Heal(float percentage)
     {
+        if (!IsOwner) return;
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool inPercentage = false)
     {
         if (isDead.Value) return;
+        if (inPercentage) damage = maxHealth.Value * (damage / 100);
+        damage = effectManager.ApplyResistanceEffect(damage);
         if (damage >= health.Value) damage = health.Value;
         if (damage > 0) health.Value -= damage;
         if (health.Value <= 0) isDead.Value = true;
@@ -89,7 +95,6 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
-            
         }
         else
         {
@@ -215,10 +220,12 @@ public class PlayerCharacterController : NetworkBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             weaponBehaviour.OnAttackInputStart();
+            AttackServerRpc();//Tell the server, that we are attacking!
         }
         else if (Input.GetMouseButtonUp(0))
         {
             weaponBehaviour.OnAttackInputStop();
+            AttackStopServerRpc();
         }
         if (Input.GetMouseButton(0))
         {
@@ -280,12 +287,15 @@ public class PlayerCharacterController : NetworkBehaviour
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
         healthText.text = health.Value.ToString();
-
+        damageType = (EnemyType)playerData.playerRole.Value;
         InitWeapon();
     }
 
+
+
     public void ToggleMovement(bool toggle)
     {
+        if (isDead.Value) return;
         canMove = toggle;
     }
 
@@ -415,4 +425,22 @@ public class PlayerCharacterController : NetworkBehaviour
         weaponBehaviour.AttackStart();
     }
 
+    /// <summary>
+    /// Tell the server we stopped the attack
+    /// </summary>
+    [ServerRpc]
+    public void AttackStopServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        AttackStopClientRpc(serverRpcParams.Receive.SenderClientId);
+    }
+
+    /// <summary>
+    /// Stop the attack
+    /// </summary>
+    [ClientRpc]
+    private void AttackStopClientRpc(ulong receivedClientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
+        weaponBehaviour.OnAttackInputStop();
+    }
 }

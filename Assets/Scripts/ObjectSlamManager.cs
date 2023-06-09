@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class ObjectSlamManager : MonoBehaviour
 {
-    public PlayerCharacterController owner;
+    public PlayerCharacterController playerController;
     Rigidbody rb;
     private bool hasFallen = false;
     float raycastDistance = 3;
-    float damage = 60;
+    float damage = 40;
     float nockback = 5;
-    GameObject slamObjVFX;
+    GameObject slamObjVFX, slamExtraVFX;
     List<Enemy> directHits = new List<Enemy>();
 
 
@@ -22,6 +22,7 @@ public class ObjectSlamManager : MonoBehaviour
         //TODO: Make damage better/correct?
         damage += transform.lossyScale.z;
         slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
+        slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
     }
     private void Update()
     {
@@ -31,7 +32,7 @@ public class ObjectSlamManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage);
+            collision.gameObject.GetComponentInParent<Enemy>().TakeDamage(damage, playerController.damageType);
             return;
         }
         else if (!hasFallen)
@@ -46,8 +47,10 @@ public class ObjectSlamManager : MonoBehaviour
         //Do fancy particle stuff
         GameObject slamObjVFXinstance = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
         slamObjVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
+        GameObject slamExtraVFXinstance = Instantiate(slamExtraVFX, transform.position, Quaternion.identity);
+        //slamExtraVFXinstance.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         //If the current client is the owner, we deal the damage
-        if (owner.IsOwner)
+        if (playerController.IsOwner)
         {
             List<GameObject> enemiesHit = new List<GameObject>();
             for (int i = 0; i < 360; i += 10)

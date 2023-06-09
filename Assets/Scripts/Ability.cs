@@ -20,6 +20,7 @@ public class Ability : MonoBehaviour
     private void Update()
     {
         if (!player.IsOwner) return;
+        if (!player.canAbility) return;//Until ability is refactored
         if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

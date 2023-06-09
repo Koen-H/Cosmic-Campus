@@ -52,23 +52,19 @@ public class HealthBar : MonoBehaviour
 
     IEnumerator FadeInOut(Image image, float duration, bool fadeIn = false)
     {
-        if (fadeIn)
-        {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / duration)
             {
-                image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(0, 1, t));
+                image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(image.color.r, 1, t));
                 yield return null;
             }
-        }
-        else
-        {
+            yield return new WaitForSeconds(5); // Wait 5 seconds before starting the fade out
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / duration)
             {
                 image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(1, 0, t));
                 yield return null;
             }
-        }
     }
+
 
     private void OnDestroy()
     {
