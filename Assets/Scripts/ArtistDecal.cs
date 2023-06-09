@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 
-public class ArtistDecal : MonoBehaviour
+public class ArtistDecal : NetworkBehaviour
 {
     private DecalProjector projector;
     [SerializeField, Tooltip("How long should this decal stay?")]
@@ -42,7 +43,7 @@ public class ArtistDecal : MonoBehaviour
 
         projector.fadeFactor = 0f; // Ensure the fade factor reaches 0 at the end
         yield return new WaitForSeconds(0.1f);
+        if(IsServer) Destroy(gameObject);
 
-        Destroy(gameObject);
     }
 }
