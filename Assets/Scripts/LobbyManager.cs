@@ -30,8 +30,8 @@ public class LobbyManager : MonoBehaviour
     public void AddClient(ulong id, ClientManager newClient)
     {
         clients.Add(id, newClient);
-        //OnNewClientJoined.Invoke(newClient);
-        Debug.Log("client added!");
+        OnNewClientJoined.Invoke(newClient);
+        Debug.Log("client added! with id " + newClient.GetClientId());
     }
     public void RemoveClient(ulong id)
     {
@@ -52,6 +52,7 @@ public class LobbyManager : MonoBehaviour
     public void CreateCharacters()
     {
 
+        if (spawnLocation == null) spawnLocation = this.gameObject;
         foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients)
         {
             

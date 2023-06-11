@@ -1,29 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SideClickerManager : MonoBehaviour
 {
-    [SerializeField] List<SideClickerValue> sideClickerValues;
-    int currentSideClick;
-    [SerializeField] TextMeshProUGUI displayText;
+    //[SerializeField] ReadyUpManager readyUpManager;
+    [SerializeField] protected List<SideClickerValue> sideClickerValues;
+    protected int currentSideClick;
+    [SerializeField] private TextMeshProUGUI displayText;
+    public event System.Action<SideClickerValue, int> OnValueChangedEvent;
 
 
     public void NextValue()
     {
         if (currentSideClick == sideClickerValues.Count -1) currentSideClick = 0;
         else currentSideClick++;
-        UpdateText();
+        SelfChanged();
+        OnValueChanged();
     }
 
     public void PrevValue() 
     {
         if (currentSideClick == 0) currentSideClick = sideClickerValues.Count - 1;
         else currentSideClick--;
+        SelfChanged();
+        OnValueChanged();
+    }
+    protected virtual void OnValueChanged()
+    {
         UpdateText();
+        //OnValueChangedEvent.Invoke(sideClickerValues[currentSideClick], currentSideClick);
     }
 
+    public void UpdateValue(int newValue)
+    {
+        currentSideClick = newValue;
+        OnValueChanged();
+    }
 
     void UpdateText()
     {
@@ -34,7 +49,11 @@ public class SideClickerManager : MonoBehaviour
     {
         return sideClickerValues[currentSideClick].value;
     }
-
+    
+    /// <summary>
+    /// When the variable is changed by the user themself.
+    /// </summary>
+    protected virtual void SelfChanged() { }
 }
 
 [System.Serializable]
