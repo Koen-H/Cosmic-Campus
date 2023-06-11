@@ -13,6 +13,11 @@ public class SideClickerManager : MonoBehaviour
     public event System.Action<SideClickerValue, int> OnValueChangedEvent;
 
 
+    private void OnEnable()
+    {
+        UpdateValue(0);
+    }
+
     public void NextValue()
     {
         if (currentSideClick == sideClickerValues.Count -1) currentSideClick = 0;
@@ -31,7 +36,7 @@ public class SideClickerManager : MonoBehaviour
     protected virtual void OnValueChanged()
     {
         UpdateText();
-        //OnValueChangedEvent.Invoke(sideClickerValues[currentSideClick], currentSideClick);
+        if(OnValueChangedEvent !=null) OnValueChangedEvent.Invoke(sideClickerValues[currentSideClick], currentSideClick);
     }
 
     public void UpdateValue(int newValue)
