@@ -6,7 +6,7 @@ using Random = System.Random;
 using UnityEngine.AI;
 using Unity.Netcode;
 
-public class RoomGenerator : MonoBehaviour
+public class RoomGenerator : NetworkBehaviour
 {
     [SerializeField] private int seed;
     [SerializeField] private float drawingDelay;
@@ -50,10 +50,19 @@ public class RoomGenerator : MonoBehaviour
     Random systemRand = new Random();
 
 
-    private void Start()
-    {
+    //public override void OnNetworkSpawn() {
 
+    //    if (!IsServer) return;
+    //    GenerateMapClientRpc(seed);//TODO: Replace with random seed?
+    //}
+
+    [ClientRpc]
+    public void GenerateMapClientRpc(int serverSeed)
+    {
+        seed = serverSeed;
+        ResetRooms();
     }
+
 
     List<Vector3> SplinePath(Door from, Door to)
     {
@@ -102,10 +111,14 @@ public class RoomGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R)) ResetRooms();
-       // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
+        if (Input.GetKeyDown(KeyCode.R)){
+            if (!IsServer) return;
+            GenerateMapClientRpc(seed);//TODO: Replace with random seed?
+        }
+        //ResetRooms();
+        // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
     }
-    void BakeNavMesh(List<NavMeshSurface> surfaces)
+        void BakeNavMesh(List<NavMeshSurface> surfaces)
     {
         for (int i = 0; i < surfaces.Count; i++)
         {
@@ -516,7 +529,7 @@ public class RoomGenerator : MonoBehaviour
         List<NavMeshSurface> newNavMeshSurfaces; 
         InitializeBranches(correctPath, numberOfBranches, maxDepthOfBranch, out newNavMeshSurfaces, out branchedPathEnemies, out outQuestNPC);
         foreach (var surface in newNavMeshSurfaces) navMeshSurfaces.Add(surface);
-        if(Input.GetKey(KeyCode.LeftShift))BakeNavMesh(navMeshSurfaces);
+        BakeNavMesh(navMeshSurfaces);
         SpawnEnemies(mainPathEnemies);
         SpawnEnemies(branchedPathEnemies);
         foreach (var questNPC in outQuestNPC) SpawnRoomNPC(questNPC);
