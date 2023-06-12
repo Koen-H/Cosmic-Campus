@@ -48,7 +48,19 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
-    private List<GameObject> collectedStudents = new List<GameObject>(); 
+    private List<GameObject> collectedStudents = new List<GameObject>();
+
+    private Animator animator;  
+
+    public enum PlayerAnimationState
+    {
+        IDLE,
+        RUNNING,
+        SWORDSLASH
+    }
+
+    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE); 
+
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -62,6 +74,7 @@ public class PlayerCharacterController : NetworkBehaviour
         rigidbody = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
         effectManager = GetComponent<EffectManager>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     /// <summary>
@@ -147,6 +160,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
+        playerAnimationState.OnValueChanged += OnPlayerStateChanged;
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
@@ -154,6 +168,21 @@ public class PlayerCharacterController : NetworkBehaviour
         CameraManager.MyCamera.TargetPlayer();
     }
 
+    void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
+    {
+        switch (newAnimationState)
+        {
+            case PlayerAnimationState.RUNNING:
+                animator.SetBool("Running", true);
+                break;
+            case PlayerAnimationState.SWORDSLASH:
+                animator.SetTrigger("SwordSlash");
+                break;
+            default:
+                animator.SetBool("Running", false);
+                break;
+        }
+    }
     void OnHealthChange(float prevHealth, float newHealth)
     {
         healthText.text = health.Value.ToString();
@@ -262,11 +291,13 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             // If there is input, accelerate the object
             currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+            playerAnimationState.Value = PlayerAnimationState.RUNNING;
         }
         else
         {
             // If there is no input, decelerate the object
             currentSpeed = 0;
+            playerAnimationState.Value = PlayerAnimationState.IDLE;
             //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
         }
         // Apply the calculated speed to the Rigidbody

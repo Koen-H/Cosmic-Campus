@@ -15,11 +15,12 @@ MonoBehaviour:
   nickName: Holy Shord
   weaponPrefab: {fileID: 7039644699625654322, guid: a34b6e7a50a3e384da103fbd37c35cd5,
     type: 3}
-  weaponObjOffset: {x: 0.051, y: 1.539, z: -0.275}
+  weaponObjOffset: {x: 0, y: 0, z: 0}
   weaponType: 1
   damage:
     min: 30
     max: 40
+    diff: 1
   speed: 1
   cooldown: 1
   range: 1
@@ -27,3 +28,4 @@ MonoBehaviour:
   minProjectileSpeed: 0
   maxProjectileSpeed: 0
   accuracy: 0
+  beamVfx: {fileID: 0}

@@ -5,10 +5,45 @@ using UnityEngine;
 public class Sword : Weapon
 {
 
+
     private void Start()
     {
         GetComponentInChildren<SwordCollider>().swrod = this;
+
+        weaponObj.transform.parent = FindDeepChild(this.transform, "Tool_bone");
+        ResetChildTransforms(weaponObj.transform, 2);
     }
+
+    public Transform FindDeepChild(Transform aParent, string aName)
+    {
+        var result = aParent.Find(aName);
+        if (result != null)
+            return result;
+        foreach (Transform child in aParent)
+        {
+            result = FindDeepChild(child, aName);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+    public void ResetChildTransforms(Transform parentTransform, int depth)
+    {
+        // Reset the local position, rotation, and scale of the parent first
+        parentTransform.localPosition = Vector3.zero;
+        parentTransform.localRotation = Quaternion.identity;
+        parentTransform.localScale = Vector3.one;
+
+        // Log the reset operation with depth indication
+        Debug.Log(new string('-', depth) + " Reset: " + parentTransform.name);
+
+        // Then do the same for each of its children
+        foreach (Transform childTransform in parentTransform)
+        {
+            ResetChildTransforms(childTransform, depth + 1);
+        }
+    }
+
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -52,7 +87,7 @@ public class Sword : Weapon
         base.Attack();
 
         weaponAnimation = GetComponentInChildren<Animator>();
-        weaponAnimation.SetTrigger("Animate");
+        weaponAnimation.SetTrigger("SwordSlash");
 
         StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
             
