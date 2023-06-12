@@ -139,7 +139,7 @@ public class ReadyUpManager : NetworkBehaviour
         ReadyUpClientRpc(ready,serverRpcParams.Receive.SenderClientId);
         CheckReady();
 
-        //StartGame();
+        //StartGame(); 
     }
 
     void CheckReady()
@@ -203,10 +203,10 @@ public class ReadyUpManager : NetworkBehaviour
 
     }
 
-    //public void StartGame()
-    //{
-    //    NetworkManager.SceneManager.LoadScene("TestingScene",UnityEngine.SceneManagement.LoadSceneMode.Single);
-    //}
+    public void StartGame()
+    {
+       NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
 
 
 

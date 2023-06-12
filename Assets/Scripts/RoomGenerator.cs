@@ -63,6 +63,10 @@ public class RoomGenerator : NetworkBehaviour
         ResetRooms();
     }
 
+    public void SetSeed(int newSeed)
+    {
+        seed = newSeed;
+    }
 
     List<Vector3> SplinePath(Door from, Door to)
     {
