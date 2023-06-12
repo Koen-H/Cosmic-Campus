@@ -12,4 +12,7 @@ public class RoomInfo : MonoBehaviour
 
     public Vector3 GetEntrancePosition() => doorEntrance.position;
     public Vector3 GetExitPosition() =>  doorExit.position;
+
+    public List<EnemySpawner> enemySpawners= new List<EnemySpawner>();
+
 }

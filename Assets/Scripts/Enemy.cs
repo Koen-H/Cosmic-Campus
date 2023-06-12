@@ -227,7 +227,7 @@ public class Enemy : NetworkBehaviour
         {
             bodyPart.parent = null;
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
-            bodyPart.gameObject.AddComponent<Rigidbody>();
+            bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
         }
     }
