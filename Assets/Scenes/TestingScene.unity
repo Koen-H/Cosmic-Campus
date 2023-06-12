@@ -580,8 +580,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avatarIdInput: {fileID: 1754066887}
   weaponIdInput: {fileID: 1553136649}
-  avatarShowcase: {fileID: 0}
-  weaponShowcase: {fileID: 0}
+  avatarShowcase: {fileID: 713649150}
+  weaponShowcase: {fileID: 828667881}
 --- !u!1 &240178136
 GameObject:
   m_ObjectHideFlags: 0
@@ -12936,6 +12936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!1 &475705809
@@ -15238,10 +15239,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: EnemySpawner, Assembly-CSharp
-        m_MethodName: SpawnEnemy
-        m_Mode: 1
+      - m_Target: {fileID: 1244202147}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -16402,9 +16403,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Spawn Enemy
-
-'
+  m_text: Hide UI
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16431,7 +16430,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49.65
+  m_fontSize: 53.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -16924,6 +16923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!1 &1324061818 stripped
@@ -16944,6 +16944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!1001 &1375355638
@@ -19601,6 +19602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!1001 &1669538511
@@ -20652,7 +20654,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1480751998}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
         m_MethodName: CreateCharacters
         m_Mode: 1
@@ -21029,6 +21031,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!1001 &1993134860
