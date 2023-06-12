@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerData : NetworkBehaviour
 {
     //Networkvariables
-    [HideInInspector] public NetworkVariable<PlayerRole> playerRole = new(PlayerRole.UNSET, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
+    [HideInInspector] public NetworkVariable<PlayerRole> playerRole = new(PlayerRole.ARTIST, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
     [HideInInspector] public NetworkVariable<int> avatarId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What avatar from that role is the player using?
     [HideInInspector] public NetworkVariable<int> weaponId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What weapon from that role is the player using?
     //Local
@@ -18,7 +18,7 @@ public class PlayerData : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         playerRole.OnValueChanged += SelectPlayerRoleData;
-        if (playerRole.Value != PlayerRole.UNSET) SelectPlayerRoleData();
+        if (playerRole.Value != PlayerRole.UNSET) SelectPlayerRoleData(playerRole.Value);
     }
     public override void OnNetworkDespawn()
     {

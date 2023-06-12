@@ -30,6 +30,13 @@ public class GameManager : NetworkBehaviour
         levelGenerator.GenerateMapClientRpc(0);
 
         LobbyManager.Instance.CreateCharacters();
+        ToggleLoadingScreenClientRpc(false);
+    }
+
+    [ClientRpc]
+    public void ToggleLoadingScreenClientRpc(bool toggle)
+    {
+        CanvasManager.Instance.ToggleLoadingScreen(toggle);
     }
 
 

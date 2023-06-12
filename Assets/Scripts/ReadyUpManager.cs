@@ -144,7 +144,10 @@ public class ReadyUpManager : NetworkBehaviour
 
     void CheckReady()
     {
-        if (IsServer) charNextButton.gameObject.SetActive(true);
+        if (!IsServer) return;
+
+        charNextButton.gameObject.SetActive(true);
+        weaponNextButton.gameObject.SetActive(true);
 
         int isReadies = 0;
         foreach (KeyValuePair<ulong, bool> entry in clientReady)
@@ -165,7 +168,7 @@ public class ReadyUpManager : NetworkBehaviour
             }
             else
             {
-                weaponNextButton.interactable = false;
+                weaponNextButton.interactable = true;
                 weaponNextButtonText.text = "Everyone ready!";
             }
         }
@@ -188,24 +191,41 @@ public class ReadyUpManager : NetworkBehaviour
     {
         foreach (KeyValuePair<ulong, ReadyUpUIItems> entry in clientItems)
         {
-            entry.Value.platform.SetActive(false);
+            entry.Value.platform.GetComponent<ReadyUpPlatform>().ChangeColor(false);
+        }
+        if (!IsServer) return;
+        List<ulong> keys = new List<ulong>(clientReady.Keys);
+        foreach (ulong key in keys)
+        {
+            clientReady[key] = false;
         }
     }
 
     [ClientRpc]
     void ReadyUpClientRpc(bool ready, ulong receivedClientId)
     {
-        clientItems[receivedClientId].platform.SetActive(ready);
+        clientItems[receivedClientId].platform.GetComponent<ReadyUpPlatform>().ChangeColor(ready);
     }
 
-    public void WeaponsSelected()
+    public void SelectWeapon(int weaponInt)
     {
+        ulong clientId = NetworkManager.Singleton.LocalClientId;
+        LobbyManager.Instance.GetClient(clientId).playerData.weaponId.Value = weaponInt;
+        //For now...
+        ReadyUpServerRpc(true);
+    }
+
+    [ClientRpc]
+    public void EnableLoadingScreenClientRpc()
+    {
+        CanvasManager.Instance.ToggleLoadingScreen(true);
 
     }
 
     public void StartGame()
     {
-       NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
+        EnableLoadingScreenClientRpc();
+        NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
 
@@ -213,6 +233,7 @@ public class ReadyUpManager : NetworkBehaviour
     [ClientRpc]
     public void LoadWeaponUIClientRpc()
     {
+        weaponsSelected = true;
         charUI.SetActive(false);
         weaponUI.SetActive(true);
         UnreadyAll();

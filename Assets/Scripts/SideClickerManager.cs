@@ -13,7 +13,7 @@ public class SideClickerManager : MonoBehaviour
     public event System.Action<SideClickerValue, int> OnValueChangedEvent;
 
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         UpdateValue(0);
     }
