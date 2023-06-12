@@ -31,6 +31,37 @@ Transform:
   m_Father: {fileID: 2732762253584807110}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2824540032504062397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3934991125932413055}
+  m_Layer: 0
+  m_Name: StudentSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3934991125932413055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2824540032504062397}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 76.6, y: 26.4, z: 15.7}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2732762253584807110}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4638747091625258796
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,6 +92,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2732762253584807110}
   m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5448942630735467242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2551884611948269048}
+  m_Layer: 0
+  m_Name: TeacherSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2551884611948269048
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5448942630735467242}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -26.83, y: 19.707987, z: 21.06}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2732762253584807110}
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6317311562071709498
 GameObject:
@@ -105,6 +167,8 @@ Transform:
   - {fileID: 8328782227164834854}
   - {fileID: 4263967804561621523}
   - {fileID: 6489998531116952026}
+  - {fileID: 3934991125932413055}
+  - {fileID: 2551884611948269048}
   m_Father: {fileID: 6520708142054457308}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -120,7 +184,7 @@ GameObject:
   - component: {fileID: 6520708141566364927}
   - component: {fileID: 6520708141566364924}
   - component: {fileID: 6520708141566364925}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,6 +318,9 @@ MonoBehaviour:
   doorExit: {fileID: 6489998531116952026}
   normalEntrance: {x: 0, y: 0, z: -1}
   normalExit: {x: 0, y: 0, z: 1}
+  studentSpawnPoint: {fileID: 3934991125932413055}
+  teacherSpawnPoint: {fileID: 2551884611948269048}
+  enemySpawners: []
 --- !u!1 &6520708142766069317
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +335,7 @@ GameObject:
   - component: {fileID: 6520708142766069318}
   - component: {fileID: 6520708142766069319}
   - component: {fileID: 6520708142766069316}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

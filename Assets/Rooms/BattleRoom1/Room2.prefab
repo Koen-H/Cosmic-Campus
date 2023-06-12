@@ -52,9 +52,42 @@ Transform:
   - {fileID: 8554174678008066399}
   - {fileID: 6871783034765946089}
   - {fileID: 6871783035379822245}
+  - {fileID: 4573479619370033888}
+  - {fileID: 2391421907438678633}
   m_Father: {fileID: 6871783035927780230}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &4649496012945029864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2391421907438678633}
+  m_Layer: 0
+  m_Name: TeacherSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2391421907438678633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4649496012945029864}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -122.3, y: -30.64, z: 56.9}
+  m_LocalScale: {x: 1.4999996, y: 1.5, z: 1.4999996}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6823092669074180991}
+  m_RootOrder: 25
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6871783034765946088
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,7 +133,7 @@ GameObject:
   - component: {fileID: 6871783035272524058}
   - component: {fileID: 6871783035272524053}
   - component: {fileID: 6871783035272524052}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2066,6 +2099,9 @@ MonoBehaviour:
   doorExit: {fileID: 6871783035379822245}
   normalEntrance: {x: 0, y: 0, z: -1}
   normalExit: {x: 0, y: 0, z: 1}
+  studentSpawnPoint: {fileID: 4573479619370033888}
+  teacherSpawnPoint: {fileID: 2391421907438678633}
+  enemySpawners: []
 --- !u!1 &6871783035972762364
 GameObject:
   m_ObjectHideFlags: 0
@@ -2163,6 +2199,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7513554171889227024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4573479619370033888}
+  m_Layer: 0
+  m_Name: StudentSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4573479619370033888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513554171889227024}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -59.3, y: -30.7, z: 50.1}
+  m_LocalScale: {x: 1.4999996, y: 1.5, z: 1.4999996}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6823092669074180991}
+  m_RootOrder: 24
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6871783034624476263
 PrefabInstance:
   m_ObjectHideFlags: 0

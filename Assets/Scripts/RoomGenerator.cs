@@ -410,13 +410,15 @@ public class RoomGenerator : NetworkBehaviour
     {
         if (room.roomNpc is StudentNPC)
         {
-            QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
+            QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + room.roomPrefab.GetStudentPosition(), Quaternion.identity, this.transform);
             student.self = room.roomNpc;
         }
         if (room.roomNpc is TeacherNPC)
         {
-            QuestTeacherNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + Vector3.up * hightOffset, Quaternion.identity, this.transform);
+            QuestTeacherNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + room.roomPrefab.GetTeacherPosition(), Quaternion.identity, this.transform);
             teacher.self = room.roomNpc;
+            teacher.doorNormal = room.exit.normal;
+            teacher.doorPosition = room.exit.position;
         }
     }
 
