@@ -40,7 +40,6 @@ public class CrystalManagerWithShader: MonoBehaviour
             essence--;
             StartCoroutine(DrainMaterialCoroutine());
         }
-        Debug.Log(targetEmissionIntensity);
     }
 
     private void CalculateTargetEmission()
