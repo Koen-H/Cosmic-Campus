@@ -97,7 +97,9 @@ public class SteamGameNetworkManager : MonoBehaviour
             if (friend.IsPlayingThisGame)
             {
                 Debug.Log($"{friendName} is playing this game, trying to join!");
-                await friend.GameInfo.Value.Lobby.Value.Join();
+                //await friend.GameInfo.Value.Lobby.Value.Join();
+                //transport.targetSteamId = friend.Id;
+                await SteamMatchmaking.JoinLobbyAsync(friend.Id);
             }
         }
         //LobbyQuery query = new LobbyQuery();
