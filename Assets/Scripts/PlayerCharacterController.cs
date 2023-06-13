@@ -15,7 +15,7 @@ public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
     NetworkVariable<float> maxHealth = new(50);
-    NetworkVariable<float> health = new(25);
+    NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -59,7 +59,7 @@ public class PlayerCharacterController : NetworkBehaviour
         SWORDSLASH
     }
 
-    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE); 
+    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector

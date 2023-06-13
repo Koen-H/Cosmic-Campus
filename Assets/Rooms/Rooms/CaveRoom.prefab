@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 628055116463460972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -79.634026, y: 1.2383405, z: 84.211914}
+  m_LocalPosition: {x: -79.6, y: 1.05, z: 82.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -192,8 +192,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorEntrance: {fileID: 440450474038795944}
   doorExit: {fileID: 4452417168652810896}
-  normalEntrance: {x: 0, y: 0, z: 1}
-  normalExit: {x: 0, y: 0, z: -1}
+  normalEntrance: {x: 1, y: 0, z: 1}
+  normalExit: {x: 0, y: 0, z: 1}
   studentSpawnPoint: {fileID: 1013834908889738958}
   teacherSpawnPoint: {fileID: 4753162603004265434}
   enemySpawners: []
