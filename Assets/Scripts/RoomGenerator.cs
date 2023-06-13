@@ -49,6 +49,8 @@ public class RoomGenerator : NetworkBehaviour
 
     Random systemRand = new Random();
 
+    private List<RoomInfo> allRoomsKoen = new List<RoomInfo>();
+
 
     //public override void OnNetworkSpawn() {
 
@@ -357,7 +359,9 @@ public class RoomGenerator : NetworkBehaviour
             VisualisePath(splinePath, Color.blue);
             GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
         }
-        Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform).gameObject.layer = 6;// generates Last room
+        RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
+        room.gameObject.layer = 6;
+        allRoomsKoen.Add(room);
     }
 
     private void SpawnEnemies(List<EnemyNPC> allEnemies)
@@ -381,7 +385,9 @@ public class RoomGenerator : NetworkBehaviour
         int randomCount = systemRand.Next(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
-        Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform).gameObject.layer = 6;
+        RoomInfo room = Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+        room.gameObject.layer = 6;
+        allRoomsKoen.Add(room);
     }
 
     public void SpawnEnemy(Vector3 position, float hightOffset)
@@ -539,6 +545,10 @@ public class RoomGenerator : NetworkBehaviour
         {
             SpawnEnemies(mainPathEnemies);
             SpawnEnemies(branchedPathEnemies);
+            foreach(RoomInfo room in allRoomsKoen)
+            {
+                foreach (EnemySpawner spawner in room.enemySpawners) spawner.SpawnEnemy();
+            }
         }
         foreach (var questNPC in outQuestNPC) SpawnRoomNPC(questNPC);
         return from;
