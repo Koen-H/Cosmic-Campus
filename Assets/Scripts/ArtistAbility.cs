@@ -34,7 +34,7 @@ public class ArtistAbility : Ability
         if (target.CompareTag("Crystal"))
         {
             if (paintBucketCapacity == paintBucket.Count) return;//Bucket full!
-            CrystalManager crystalManager = target.GetComponent<CrystalManager>();
+            CrystalManagerWithShader crystalManager = target.GetComponent<CrystalManagerWithShader>();
             ArtistPaintColor color = crystalManager.GetColor();
             paintBucket.Add(color);
 

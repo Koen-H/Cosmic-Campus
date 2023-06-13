@@ -90,6 +90,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void TakeDamage(float damage, bool inPercentage = false)
     {
+        if (!IsOwner) return;
         if (isDead.Value) return;
         if (inPercentage) damage = maxHealth.Value * (damage / 100);
         damage = effectManager.ApplyResistanceEffect(damage);
