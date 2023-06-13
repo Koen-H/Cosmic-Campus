@@ -23,6 +23,7 @@ public class Sword : Weapon
             Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
             float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
             enemy.TakeDamage(damage, playerController.damageType);
+            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,2f,1f);
         }
     }
 
@@ -36,6 +37,7 @@ public class Sword : Weapon
         foreach (AttackCollider atCol in attackColliders)
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
+            
         }
     }
 
