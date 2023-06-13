@@ -49,6 +49,8 @@ public class RoomGenerator : NetworkBehaviour
 
     Random systemRand = new Random();
 
+    Dictionary<int, Animator> doorKeys = new Dictionary<int, Animator>();
+
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = 0;
 
@@ -475,11 +477,21 @@ public class RoomGenerator : NetworkBehaviour
         }
         if (room.roomNpc is TeacherNPC)
         {
-            QuestTeacherNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + room.roomPrefab.GetTeacherPosition(), Quaternion.identity, this.transform);
-            teacher.self = room.roomNpc;
-            teacher.doorNormal = room.exit.normal;
-            teacher.doorPosition = room.exit.position;
+            if (IsServer)
+            {
+                QuestNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + room.roomPrefab.GetTeacherPosition(), Quaternion.identity, this.transform);
+                teacher.self = room.roomNpc;
+                teacher.doorNormal = room.exit.normal;
+                teacher.doorPosition = room.exit.position;
+                teacher.GetComponent<NetworkObject>().Spawn();
+                doorKeys.Add(teacher.GetHashCode(), teacher.doorAnimation);
+            }
         }
+    }
+    [ClientRpc]
+    public void OpenDoorClientRpc(int code)
+    {
+        doorKeys[code].SetTrigger("Animate");
     }
 
     void DrawTriangle(Vector3 start, float width, float height, Color color, bool downwards = true, int iterations = 5)

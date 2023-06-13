@@ -11,7 +11,7 @@ public class QuestNPC : NetworkBehaviour
     private Transform currentTarget;
 
     [SerializeField] private GameObject door;
-    [SerializeField] private Animator doorAnimation;
+    [SerializeField] public Animator doorAnimation;
 
     [HideInInspector] public Vector3 doorPosition;
     [HideInInspector] public Vector3 doorNormal;
@@ -90,8 +90,14 @@ public class QuestNPC : NetworkBehaviour
     [ClientRpc]
     public void OpenDoorClientRpc()
     {
-
-        doorAnimation.SetTrigger("Animate");
+        if (IsServer)
+        {
+            doorAnimation.SetTrigger("Animate");
+        }
+        else
+        {
+            RoomGenerator.Instance.OpenDoorClientRpc(this.GetHashCode());
+        }
     }
 }
 
