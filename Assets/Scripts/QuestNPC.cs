@@ -57,14 +57,14 @@ public class QuestNPC : NetworkBehaviour
         }
 
     }
-
-    public virtual OnMapNPC Interact(Transform player)//List<OnMapNPC> students, 
+    [ServerRpc(RequireOwnership = false)]
+    public virtual OnMapNPC InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
     {
         if (self is StudentNPC && !CurrentTarget)
         {
             Debug.Log("Hey i am a student, please take me to my teacher UwU");
             //this.gameObject.SetActive(false);
-            CurrentTarget = player;
+            CurrentTarget = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter.transform;
             enemyState = QuestNPCState.FOLLOWING;
             //Destroy(this.GetComponent<CapsuleCollider>());
             return self;

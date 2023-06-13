@@ -242,7 +242,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!interactingNPC) return;
 
-        OnMapNPC student = interactingNPC.Interact( this.transform);//colllectedStudents,
+        OnMapNPC student = interactingNPC.InteractServerRpc();//colllectedStudents,
         if (student is StudentNPC)
         {
             collectedStudents.Add(interactingNPC.gameObject);
