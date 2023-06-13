@@ -1,18 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Sword : Weapon
 {
+    [SerializeField] List<AttackCollider> attackColliders;
+
+    List<Transform> hits = new List<Transform>();
+
+    private void Awake()
+    {
+        base.Awake();
+    }
+
+    void OnAttackColliderEnter(Transform enteredTransform)
+    {
+        if (hits.Contains(enteredTransform)) return;
+        hits.Add(enteredTransform);
+        if (enteredTransform.CompareTag("Enemy"))
+        {
+            Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
+            float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
+            enemy.TakeDamage(damage, playerController.damageType);
+        }
+    }
 
 
     private void Start()
     {
-        GetComponentInChildren<SwordCollider>().swrod = this;
-
         weaponObj.transform.parent = FindDeepChild(this.transform, "Tool_bone");
         ResetChildTransforms(weaponObj.transform, 2);
+        weaponAnimation = GetComponentInChildren<Animator>();
+        attackColliders = GetComponentsInChildren<AttackCollider>().ToList();
+        foreach (AttackCollider atCol in attackColliders)
+        {
+            atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
+        }
     }
+
+
+    protected override void AfterAttack()
+    {
+        base.AfterAttack();
+        ToggleColliders(false);
+        hits.Clear();
+    }
+
+    void ToggleColliders(bool enabled)
+    {
+        foreach (AttackCollider atCol in attackColliders)
+        {
+            Collider[] colliders = atCol.GetComponents<Collider>();
+            foreach (Collider collider in colliders) collider.enabled = enabled;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public Transform FindDeepChild(Transform aParent, string aName)
     {
@@ -32,7 +95,7 @@ public class Sword : Weapon
         // Reset the local position, rotation, and scale of the parent first
         parentTransform.localPosition = Vector3.zero;
         parentTransform.localRotation = Quaternion.EulerAngles(0,-Mathf.PI/2,0);
-        parentTransform.localScale = Vector3.one;
+        //parentTransform.localScale = Vector3.one;
 
         // Log the reset operation with depth indication
         Debug.Log(new string('-', depth) + " Reset: " + parentTransform.name);
@@ -70,8 +133,7 @@ public class Sword : Weapon
     /// </summary>
     public override void OnAttackInputStop()
     {
-        //Aim();
-        //playerController.ToggleMovement(true);
+
     }
 
     /// <summary>
@@ -85,53 +147,33 @@ public class Sword : Weapon
     public override void Attack()
     {
         base.Attack();
+        //
+        ToggleColliders(true);
 
-        weaponAnimation = GetComponentInChildren<Animator>();
+        //Play the punch attack animation
+
+        //For now...
+        
         weaponAnimation.SetTrigger("SwordSlash");
 
         StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
-            
-/*        // calculate raycast direction
-        Vector3 rayDirection = weaponObj.transform.TransformDirection(Vector3.forward);
-
-        Debug.DrawRay(transform.position + Vector3.up, rayDirection, Color.red, 0.01f);
-        // initialize a variable to store the hit information
-        RaycastHit hit;
-
-        // shoot the raycast
-        if (Physics.Raycast(transform.position + Vector3.up, rayDirection, out hit, 1))
-        {
-            // check if the object hit has the tag "Enemy"
-            if (hit.transform.CompareTag("Enemy"))
-            {
-                // call DealDamage function
-                if(playerController.IsOwner)DealDamage(hit.transform.gameObject);
-            }
-        }*/
     }
-
-/*    private void weaponCollider.OnTriggerEnter(Collider other)
-    {
-        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
-        {
-            DealDamage(other.transform.gameObject);
-        }
-    }*/
-    public void DealDamage(GameObject enemyObject)
-    {
-        if (!weaponAnimation) return;
-        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("MainBones|SwordSlashAnimation"))
-        {
-            Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
-            if (enemy == null) return;
-            float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
-            enemy.TakeDamage(damage, playerController.damageType);
-        }
-    }
-
     IEnumerator AfterAnim(float duration)
     {
         yield return new WaitForSeconds(duration);
         AfterAttack();
     }
+
+    //public void DealDamage(GameObject enemyObject)
+    //{
+    //    if (!weaponAnimation) return;
+    //    if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("MainBones|SwordSlashAnimation"))
+    //    {
+    //        Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
+    //        if (enemy == null) return;
+    //        float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
+    //        enemy.TakeDamage(damage, playerController.damageType);
+    //    }
+    //}
+
 }

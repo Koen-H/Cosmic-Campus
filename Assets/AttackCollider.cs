@@ -9,6 +9,7 @@ public class AttackCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (OnTriggerEnterEvent != null)
         OnTriggerEnterEvent.Invoke(other.transform);
     }
 

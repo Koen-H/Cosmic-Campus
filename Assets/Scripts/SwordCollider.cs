@@ -6,12 +6,12 @@ public class SwordCollider : MonoBehaviour
 {
     public Sword swrod; 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!swrod) return;
-        Debug.Log(other.gameObject);
-        swrod.DealDamage(other.gameObject); 
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (!swrod) return;
+    //    Debug.Log(other.gameObject);
+    //    swrod.DealDamage(other.gameObject); 
+    //}
 
 
 
