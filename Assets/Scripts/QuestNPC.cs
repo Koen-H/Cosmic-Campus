@@ -10,21 +10,22 @@ public class QuestNPC : NetworkBehaviour
     public event System.Action<Transform> OnTargetChange;
     private Transform currentTarget;
 
-    [SerializeField] private GameObject door;
+    [SerializeField] public  GameObject door;
     [SerializeField] public Animator doorAnimation;
 
     [HideInInspector] public Vector3 doorPosition;
     [HideInInspector] public Vector3 doorNormal;
+    [HideInInspector] public int doorId; 
 
 
     private void Start()
     {
         if (door != null)
         {
-            GameObject newDoor = Instantiate(door, this.transform.parent);
+/*            GameObject newDoor = Instantiate(door, this.transform.parent);
             newDoor.transform.position = doorPosition;
             newDoor.transform.rotation = Quaternion.LookRotation(-doorNormal, Vector3.up);
-            doorAnimation = newDoor.GetComponent<Animator>();
+            doorAnimation = newDoor.GetComponent<Animator>();*/
         }
     }
 
@@ -96,7 +97,7 @@ public class QuestNPC : NetworkBehaviour
         }
         else
         {
-            RoomGenerator.Instance.OpenDoorClientRpc(this.GetHashCode());
+            RoomGenerator.Instance.OpenDoorClientRpc(doorId);
         }
     }
 }

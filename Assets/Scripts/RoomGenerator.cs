@@ -49,7 +49,7 @@ public class RoomGenerator : NetworkBehaviour
 
     Random systemRand = new Random();
 
-    Dictionary<int, Animator> doorKeys = new Dictionary<int, Animator>();
+    List<Animator> doorKeys = new List<Animator>();
 
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = 0;
@@ -477,6 +477,15 @@ public class RoomGenerator : NetworkBehaviour
         }
         if (room.roomNpc is TeacherNPC)
         {
+            GameObject newDoor = Instantiate(teacherPrefab.door, this.transform.parent);
+            newDoor.transform.position = room.exit.position;
+            newDoor.transform.rotation = Quaternion.LookRotation(-room.exit.normal, Vector3.up);
+            //teacher.doorAnimation = newDoor.GetComponent<Animator>();
+
+            int doorId = doorKeys.Count; 
+
+            doorKeys.Add(newDoor.GetComponent<Animator>());
+
             if (IsServer)
             {
                 QuestNPC teacher = Instantiate(teacherPrefab, room.GetRoomPosition() + room.roomPrefab.GetTeacherPosition(), Quaternion.identity, this.transform);
@@ -484,8 +493,10 @@ public class RoomGenerator : NetworkBehaviour
                 teacher.doorNormal = room.exit.normal;
                 teacher.doorPosition = room.exit.position;
                 teacher.GetComponent<NetworkObject>().Spawn();
-                doorKeys.Add(teacher.GetHashCode(), teacher.doorAnimation);
+                teacher.doorId = doorId;
+
             }
+
         }
     }
     [ClientRpc]
