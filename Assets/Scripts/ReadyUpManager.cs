@@ -30,12 +30,12 @@ public class ReadyUpManager : NetworkBehaviour
         LobbyManager.OnNewClientJoined += NewClientJoined;
     }
 
-    public void StartHost()
+    public void StartNetcodeHost()
     {
         NetworkManager.Singleton.StartHost();
     }
 
-    public void StartClient()
+    public void StartNetcodeClient()
     {
         NetworkManager.Singleton.StartClient();
     }
