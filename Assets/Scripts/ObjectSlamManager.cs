@@ -9,7 +9,7 @@ public class ObjectSlamManager : MonoBehaviour
     private bool hasFallen = false;
     float raycastDistance = 3;
     float damage = 40;
-    float nockback = 5;
+    float nockback = 20;
     GameObject slamObjVFX, slamExtraVFX;
     List<Enemy> directHits = new List<Enemy>();
 
