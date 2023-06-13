@@ -28,7 +28,7 @@ public class PlayerData : NetworkBehaviour
     /// <summary>
     /// When the role changes, so does the related SO.
     /// </summary>
-    void SelectPlayerRoleData(PlayerRole oldRole = PlayerRole.UNSET, PlayerRole newRole = PlayerRole.UNSET)
+    void SelectPlayerRoleData(PlayerRole oldRole = PlayerRole.UNSET, PlayerRole newRole = PlayerRole.ARTIST)
     {
         switch (newRole)
         {

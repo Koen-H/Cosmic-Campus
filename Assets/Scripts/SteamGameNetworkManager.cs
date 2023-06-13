@@ -77,7 +77,6 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     public async void StartHost(int maxMembers = 3)
     {
-        UseSteam(true);
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
 
@@ -106,6 +105,7 @@ public class SteamGameNetworkManager : MonoBehaviour
                 //await friend.GameInfo.Value.Lobby.Value.Join();
                 //transport.targetSteamId = friend.Id;
                 await SteamMatchmaking.JoinLobbyAsync(friend.Id);
+                if (CurrentLobby != null) break;
             }
         }
         //LobbyQuery query = new LobbyQuery();
