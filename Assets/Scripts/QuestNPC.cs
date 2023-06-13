@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class QuestNPC : MonoBehaviour
+public class QuestNPC : NetworkBehaviour
 {
     public OnMapNPC self;
 
@@ -10,10 +11,10 @@ public class QuestNPC : MonoBehaviour
     private Transform currentTarget;
 
     [SerializeField] private GameObject door;
-    [SerializeField] private Animator doorAnimation; 
+    [SerializeField] private Animator doorAnimation;
 
-    [HideInInspector] public Vector3 doorPosition; 
-    [HideInInspector] public Vector3 doorNormal; 
+    [HideInInspector] public Vector3 doorPosition;
+    [HideInInspector] public Vector3 doorNormal;
 
 
     private void Start()
@@ -43,23 +44,23 @@ public class QuestNPC : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(self is TeacherNPC)
+        if (self is TeacherNPC)
         {
             QuestStudentNPC student = other.GetComponent<QuestStudentNPC>();
-            if(student && student.self is StudentNPC)
+            if (student && student.self is StudentNPC)
             {
                 student.CurrentTarget = null;
                 Destroy(student.GetComponent<CapsuleCollider>());
                 self.requiredStudents--;
             }
-            if (self.requiredStudents == 0) OpenDoor();
+            if (self.requiredStudents == 0) OpenDoorClientRpc();
         }
 
     }
 
     public virtual OnMapNPC Interact(Transform player)//List<OnMapNPC> students, 
     {
-        if(self is StudentNPC && !CurrentTarget)
+        if (self is StudentNPC && !CurrentTarget)
         {
             Debug.Log("Hey i am a student, please take me to my teacher UwU");
             //this.gameObject.SetActive(false);
@@ -68,26 +69,26 @@ public class QuestNPC : MonoBehaviour
             //Destroy(this.GetComponent<CapsuleCollider>());
             return self;
         }
-/*        else if (self is TeacherNPC)
-        {
-            foreach (var requiredStudent in self.dependency)
-            {
-                if (!students.Contains(requiredStudent))
+        /*        else if (self is TeacherNPC)
                 {
-                    Debug.Log("You need to collect more students!");
-                    return null;
-                }
-            }
-            Debug.Log("Thank you for bringing my students, You may continue");
-            OpenDoor();
-            students.Clear();
-            
-            return self; 
-        }*/
+                    foreach (var requiredStudent in self.dependency)
+                    {
+                        if (!students.Contains(requiredStudent))
+                        {
+                            Debug.Log("You need to collect more students!");
+                            return null;
+                        }
+                    }
+                    Debug.Log("Thank you for bringing my students, You may continue");
+                    OpenDoor();
+                    students.Clear();
+
+                    return self; 
+                }*/
         return null;
     }    
-
-    public void OpenDoor()
+    [ClientRpc]
+    public void OpenDoorClientRpc()
     {
 
         doorAnimation.SetTrigger("Animate");
