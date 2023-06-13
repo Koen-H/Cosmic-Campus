@@ -54,7 +54,8 @@ public class QuestNPC : NetworkBehaviour
                 Destroy(student.GetComponent<CapsuleCollider>());
                 self.requiredStudents--;
             }
-            if (self.requiredStudents == 0) OpenDoorClientRpc();
+            if (self.requiredStudents == 0) 
+                if(IsServer) OpenDoorClientRpc(doorId);
         }
 
     }
@@ -89,9 +90,9 @@ public class QuestNPC : NetworkBehaviour
         //return null;
     }
     [ClientRpc]
-    public void OpenDoorClientRpc()
+    public void OpenDoorClientRpc(int theDoorID)
     {
-        RoomGenerator.Instance.OpenDoor(doorId);
+        RoomGenerator.Instance.OpenDoor(theDoorID);
     }
 }
 
