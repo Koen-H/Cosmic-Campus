@@ -3363,6 +3363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorEntrance: {fileID: 6452377995253759095}
   doorExit: {fileID: 6452377994604312965}
+  roomLayer: 0
   normalEntrance: {x: 0, y: 0, z: -1}
   normalExit: {x: 0, y: 0, z: 1}
   studentSpawnPoint: {fileID: 5471488737047756854}
@@ -3400,6 +3401,7 @@ MonoBehaviour:
   - {fileID: 3383175219040164470}
   - {fileID: 1565138941313457758}
   - {fileID: 8719714551262454310}
+  potions: []
 --- !u!65 &7495451678682904530
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12991,7 +12993,7 @@ PrefabInstance:
     - target: {fileID: 225883056818586178, guid: 3693bb37bd5305248a43f057b1bf15e8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -35.321487
+      value: -28.5
       objectReference: {fileID: 0}
     - target: {fileID: 225883056818586178, guid: 3693bb37bd5305248a43f057b1bf15e8,
         type: 3}
@@ -13001,7 +13003,7 @@ PrefabInstance:
     - target: {fileID: 225883056818586178, guid: 3693bb37bd5305248a43f057b1bf15e8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.762953
+      value: -112.3
       objectReference: {fileID: 0}
     - target: {fileID: 225883056818586178, guid: 3693bb37bd5305248a43f057b1bf15e8,
         type: 3}

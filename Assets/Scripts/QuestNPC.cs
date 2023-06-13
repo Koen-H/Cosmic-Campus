@@ -33,7 +33,7 @@ public class QuestNPC : MonoBehaviour
         get { return currentTarget; }
         set
         {
-            if (currentTarget == value) return;
+            //if (currentTarget == value) return;
             currentTarget = value;
             OnTargetChange?.Invoke(currentTarget);
         }
@@ -41,18 +41,34 @@ public class QuestNPC : MonoBehaviour
 
     public QuestNPCState enemyState = QuestNPCState.WAITING;
 
-    public virtual OnMapNPC Interact(List<OnMapNPC> students, Transform player)
+    private void OnTriggerEnter(Collider other)
     {
-        if(self is StudentNPC)
+        if(self is TeacherNPC)
+        {
+            QuestStudentNPC student = other.GetComponent<QuestStudentNPC>();
+            if(student && student.self is StudentNPC)
+            {
+                student.CurrentTarget = null;
+                Destroy(student.GetComponent<CapsuleCollider>());
+                self.requiredStudents--;
+            }
+            if (self.requiredStudents == 0) OpenDoor();
+        }
+
+    }
+
+    public virtual OnMapNPC Interact(Transform player)//List<OnMapNPC> students, 
+    {
+        if(self is StudentNPC && !CurrentTarget)
         {
             Debug.Log("Hey i am a student, please take me to my teacher UwU");
             //this.gameObject.SetActive(false);
             CurrentTarget = player;
             enemyState = QuestNPCState.FOLLOWING;
-            Destroy(this.GetComponent<CapsuleCollider>());
+            //Destroy(this.GetComponent<CapsuleCollider>());
             return self;
         }
-        else if (self is TeacherNPC)
+/*        else if (self is TeacherNPC)
         {
             foreach (var requiredStudent in self.dependency)
             {
@@ -67,7 +83,7 @@ public class QuestNPC : MonoBehaviour
             students.Clear();
             
             return self; 
-        }
+        }*/
         return null;
     }    
 

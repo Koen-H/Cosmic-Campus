@@ -247,8 +247,10 @@ public class RoomGenerator : NetworkBehaviour
             }
             else
             {
-                currentTeacher.dependency.Add(newNPC);
-                newNPC.dependency.Add(currentTeacher);
+                currentTeacher.requiredStudents++;
+                newNPC.requiredStudents++;
+                //currentTeacher.dependency.Add(newNPC);
+                //newNPC.dependency.Add(currentTeacher);
             }
 
             // Decrease teacher ratio or reset it and prepare to draw a new teacher
@@ -266,13 +268,13 @@ public class RoomGenerator : NetworkBehaviour
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
 
-        foreach (var teacher in allTeachers)
+/*        foreach (var teacher in allTeachers)
         {
             foreach (var student in teacher.dependency)
             {
                 Debug.DrawLine(student.position, teacher.position, new Color(255, 137, 0), drawingDelay * 1.5f);
             }
-        }
+        }*/
     }
     private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher, out List<Room> outQuestNPC)
     {
@@ -298,8 +300,9 @@ public class RoomGenerator : NetworkBehaviour
             // Draw a teacher and add the student to its dependencies
             OnMapNPC teacher = new TeacherNPC(teacherRoom.GetRoomPosition());
             teacherRoom.roomNpc = teacher;
-            student.dependency.Add(teacher);
-            teacher.dependency.Add(student);
+            //student.dependency.Add(teacher);
+            //teacher.dependency.Add(student);
+            teacher.requiredStudents++;
             if (teacherRoom.roomNpc != null)
             {
                 VisualiseRoomNPC(teacherRoom);
@@ -463,8 +466,12 @@ public class RoomGenerator : NetworkBehaviour
     {
         if (room.roomNpc is StudentNPC)
         {
-            QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + room.roomPrefab.GetStudentPosition(), Quaternion.identity, this.transform);
-            student.self = room.roomNpc;
+            if (IsServer)
+            {
+                QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + room.roomPrefab.GetStudentPosition(), Quaternion.identity, this.transform);
+                student.self = room.roomNpc;
+                student.GetComponent<NetworkObject>().Spawn();
+            }
         }
         if (room.roomNpc is TeacherNPC)
         {
@@ -691,7 +698,8 @@ public class Door
 public class OnMapNPC
 {
     public Vector3 position;
-    public List<OnMapNPC> dependency = new List<OnMapNPC>();
+    //public List<OnMapNPC> dependency = new List<OnMapNPC>();
+    public int requiredStudents;
 
     public OnMapNPC(Vector3 position)
     {
