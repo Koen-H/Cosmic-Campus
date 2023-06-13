@@ -16,7 +16,7 @@ public class PlayerCharacterController : NetworkBehaviour
     //NetworkVariables
     NetworkVariable<float> maxHealth = new(50);
     NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
-    NetworkVariable<bool> isDead = new(false);
+    NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
     public float moveSpeed = 5f;

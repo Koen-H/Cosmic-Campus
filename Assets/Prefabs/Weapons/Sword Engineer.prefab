@@ -30,7 +30,6 @@ Transform:
   m_Children:
   - {fileID: 7149926309746240587}
   - {fileID: 7039644700495237958}
-  - {fileID: 5100175338405196799}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,7 +45,7 @@ GameObject:
   - component: {fileID: 7039644700495237977}
   - component: {fileID: 7039644700495237976}
   - component: {fileID: 7039644700495237959}
-  - component: {fileID: 836499918367054984}
+  - component: {fileID: 2796140470781092928}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -65,7 +64,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.108745, y: 1.1727, z: 0.10582346}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5100175338405196799}
   m_Father: {fileID: 7039644699625654324}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -144,7 +144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ea248c503700d48855e4a84561dbc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swrod: {fileID: 0}
 --- !u!1 &9204500974016043789
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,12 +169,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9204500974016043789}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.571418, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 1.3399999, z: 0}
+  m_LocalScale: {x: 9.195825, y: 0.85273296, z: 9.4497}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7039644699625654324}
-  m_RootOrder: 2
+  m_Father: {fileID: 7039644700495237958}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &5898435809958933467
 TrailRenderer:
