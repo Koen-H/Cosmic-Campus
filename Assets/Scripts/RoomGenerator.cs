@@ -499,8 +499,7 @@ public class RoomGenerator : NetworkBehaviour
 
         }
     }
-    [ClientRpc]
-    public void OpenDoorClientRpc(int code)
+    public void OpenDoor(int code)
     {
         doorKeys[code].SetTrigger("Animate");
     }

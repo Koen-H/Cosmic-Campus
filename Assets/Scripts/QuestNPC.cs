@@ -87,18 +87,11 @@ public class QuestNPC : NetworkBehaviour
                     return self; 
                 }*/
         //return null;
-    }    
+    }
     [ClientRpc]
     public void OpenDoorClientRpc()
     {
-        if (IsServer)
-        {
-            doorAnimation.SetTrigger("Animate");
-        }
-        else
-        {
-            RoomGenerator.Instance.OpenDoorClientRpc(doorId);
-        }
+        RoomGenerator.Instance.OpenDoor(doorId);
     }
 }
 

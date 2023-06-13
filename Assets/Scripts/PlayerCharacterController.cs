@@ -142,8 +142,7 @@ public class PlayerCharacterController : NetworkBehaviour
     /// <summary>
     /// Revive the player
     /// </summary>
-    [ServerRpc(RequireOwnership=false)]
-    public void ReviveServerRpc()
+    public void Revive()
     {
         isDead.Value = false;
         health.Value = maxHealth.Value * 0.25f;
