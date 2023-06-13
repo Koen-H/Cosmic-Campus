@@ -58,7 +58,7 @@ public class QuestNPC : NetworkBehaviour
 
     }
     [ServerRpc(RequireOwnership = false)]
-    public virtual OnMapNPC InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
+    public virtual void InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
     {
         if (self is StudentNPC && !CurrentTarget)
         {
@@ -67,7 +67,7 @@ public class QuestNPC : NetworkBehaviour
             CurrentTarget = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter.transform;
             enemyState = QuestNPCState.FOLLOWING;
             //Destroy(this.GetComponent<CapsuleCollider>());
-            return self;
+            //return self;
         }
         /*        else if (self is TeacherNPC)
                 {
@@ -85,7 +85,7 @@ public class QuestNPC : NetworkBehaviour
 
                     return self; 
                 }*/
-        return null;
+        //return null;
     }    
     [ClientRpc]
     public void OpenDoorClientRpc()

@@ -242,18 +242,18 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!interactingNPC) return;
 
-        OnMapNPC student = interactingNPC.InteractServerRpc();//colllectedStudents,
-        if (student is StudentNPC)
-        {
-            collectedStudents.Add(interactingNPC.gameObject);
-        }
-        if(student is TeacherNPC)
-        {
-            foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
-            collectedStudents.Clear();
-        }
-        interactingNPC = null;
-        if (student != null) colllectedStudents.Add(student);
+        interactingNPC.InteractServerRpc();//colllectedStudents,  //OnMapNPC student = 
+        /*        if (student is StudentNPC)
+                {
+                    collectedStudents.Add(interactingNPC.gameObject);
+                }
+                if(student is TeacherNPC)
+                {
+                    foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
+                    collectedStudents.Clear();
+                }
+                interactingNPC = null;
+                if (student != null) colllectedStudents.Add(student);*/
     }
 
 
