@@ -31,7 +31,7 @@ public class Sword : Weapon
     {
         // Reset the local position, rotation, and scale of the parent first
         parentTransform.localPosition = Vector3.zero;
-        parentTransform.localRotation = Quaternion.identity;
+        parentTransform.localRotation = Quaternion.EulerAngles(0,-Mathf.PI/2,0);
         parentTransform.localScale = Vector3.one;
 
         // Log the reset operation with depth indication
@@ -120,7 +120,7 @@ public class Sword : Weapon
     public void DealDamage(GameObject enemyObject)
     {
         if (!weaponAnimation) return;
-        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("SwordSwing"))
+        if (weaponAnimation.GetCurrentAnimatorStateInfo(0).IsName("MainBones|SwordSlashAnimation"))
         {
             Enemy enemy = enemyObject.transform.parent.GetComponent<Enemy>();
             if (enemy == null) return;
