@@ -56,27 +56,6 @@ public class Sword : Weapon
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public Transform FindDeepChild(Transform aParent, string aName)
     {
         var result = aParent.Find(aName);

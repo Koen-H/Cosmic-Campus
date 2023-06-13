@@ -279,6 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6520708142054457308}
   - component: {fileID: 9144258476487417920}
+  - component: {fileID: 8708894060994524116}
   m_Layer: 0
   m_Name: Room4
   m_TagString: Untagged
@@ -377,6 +378,19 @@ MonoBehaviour:
   studentSpawnPoint: {fileID: 341102872927515339}
   teacherSpawnPoint: {fileID: 9030308368491030746}
   enemySpawners: []
+--- !u!65 &8708894060994524116
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6520708142054457309}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9.909082, y: 4.8699527, z: 1}
+  m_Center: {x: -13.53, y: -4.5, z: -179.9}
 --- !u!1 &6520708142766069317
 GameObject:
   m_ObjectHideFlags: 0

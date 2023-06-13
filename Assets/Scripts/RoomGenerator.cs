@@ -49,7 +49,26 @@ public class RoomGenerator : NetworkBehaviour
 
     Random systemRand = new Random();
 
-    private List<RoomInfo> allRoomsKoen = new List<RoomInfo>();
+    private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
+    private int latestEnemyLayer = 0;
+
+    private static RoomGenerator instance;
+    public static RoomGenerator Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                Debug.LogError("RoomGenerator Instance is null");
+                return instance;            
+            }
+            else
+            {
+                return instance; 
+            }
+        }
+    }
+
 
 
     //public override void OnNetworkSpawn() {
@@ -57,12 +76,34 @@ public class RoomGenerator : NetworkBehaviour
     //    if (!IsServer) return;
     //    GenerateMapClientRpc(seed);//TODO: Replace with random seed?
     //}
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnEnemiesInRoomServerRpc(int layer)
+    {
+        if(layer > latestEnemyLayer)
+        {
+            latestEnemyLayer = layer;
+            if (IsServer)
+            {
+                foreach (RoomInfo room in lateRoomEnemiesToSpawn)
+                {
+                    if (room.roomLayer == latestEnemyLayer) {
+                        foreach (var spawner in room.enemySpawners) spawner.SpawnEnemy();
+                        foreach (var potion in room.potions) potion.Spawn();
+                    }
+                }
+            }
+        }
+    }
 
     [ClientRpc]
     public void GenerateMapClientRpc(int serverSeed)
     {
         seed = serverSeed;
         ResetRooms();
+    }
+    private void Awake()
+    {
+        instance = this;
     }
 
     public void SetSeed(int newSeed)
@@ -361,7 +402,8 @@ public class RoomGenerator : NetworkBehaviour
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
-        allRoomsKoen.Add(room);
+        room.roomLayer = path[path.Count - 1].layerNumber;
+        lateRoomEnemiesToSpawn.Add(room);
     }
 
     private void SpawnEnemies(List<EnemyNPC> allEnemies)
@@ -386,8 +428,9 @@ public class RoomGenerator : NetworkBehaviour
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
         RoomInfo room = Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+        room.roomLayer = path[i].layerNumber;
         room.gameObject.layer = 6;
-        allRoomsKoen.Add(room);
+        lateRoomEnemiesToSpawn.Add(room);
     }
 
     public void SpawnEnemy(Vector3 position, float hightOffset)
@@ -547,10 +590,7 @@ public class RoomGenerator : NetworkBehaviour
         {
             SpawnEnemies(mainPathEnemies);
             SpawnEnemies(branchedPathEnemies);
-            foreach(RoomInfo room in allRoomsKoen)
-            {
-                foreach (EnemySpawner spawner in room.enemySpawners) spawner.SpawnEnemy();
-            }
+
         }
         foreach (var questNPC in outQuestNPC) SpawnRoomNPC(questNPC);
         return from;
