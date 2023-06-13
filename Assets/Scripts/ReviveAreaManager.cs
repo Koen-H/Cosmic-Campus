@@ -21,6 +21,7 @@ public class ReviveAreaManager : NetworkBehaviour
     private void OnEnable()
     {
         reviveTime.OnValueChanged += OnReviveTimeChange;
+        if (!IsServer) return;
         reviveTime.Value = totalReviveTime;
     }
 

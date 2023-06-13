@@ -82,7 +82,7 @@ public class Sword : Weapon
         // Then do the same for each of its children
         foreach (Transform childTransform in parentTransform)
         {
-            ResetChildTransforms(childTransform, depth + 1);
+           // ResetChildTransforms(childTransform, depth + 1);
         }
     }
 
