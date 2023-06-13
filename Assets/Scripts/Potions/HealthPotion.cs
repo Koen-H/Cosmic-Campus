@@ -8,7 +8,7 @@ public class HealthPotion : Potion
     protected override void UsePlayerPotion(GameObject other)
     {
         PlayerCharacterController player = other.GetComponentInParent<PlayerCharacterController>();
-        player.Heal(healAmount);//Heal the player by 100%!
+        player.HealPlayerClientRPC(healAmount);//Heal the player by 100%!
 
     }
 

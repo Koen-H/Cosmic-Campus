@@ -15,12 +15,25 @@ public class EffectManager : MonoBehaviour
     public PlayerCharacterController player;
     public Enemy enemy;
     public bool isEnemy;
+    public bool IsOwner;
 
     private void Awake()
     {
         player = GetComponent<PlayerCharacterController>();
         enemy = GetComponent<Enemy>();
-        if(enemy != null) isEnemy= true;
+    }
+
+    private void Start()
+    {
+        if (enemy != null)
+        {
+            isEnemy = true;
+            IsOwner = enemy.IsOwner;
+        }
+        else
+        {
+            IsOwner = player.IsOwner;
+        }
     }
 
     //Improvements:
