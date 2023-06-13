@@ -4653,7 +4653,7 @@ Transform:
   m_GameObject: {fileID: 6840445109395201180}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5648978150953757277}
@@ -4725,6 +4725,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorEntrance: {fileID: 4927056893745340271}
   doorExit: {fileID: 2560699648102172693}
+  roomLayer: 0
   normalEntrance: {x: 0, y: 0, z: -1}
   normalExit: {x: 0, y: 0, z: 1}
   studentSpawnPoint: {fileID: 8841225868758580989}
@@ -4769,6 +4770,7 @@ MonoBehaviour:
   - {fileID: 5165244872418828829}
   - {fileID: 9093742722153397826}
   - {fileID: 5853414678042316365}
+  potions: []
 --- !u!65 &6123374320237208202
 BoxCollider:
   m_ObjectHideFlags: 0
