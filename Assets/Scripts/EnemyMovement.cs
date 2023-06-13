@@ -30,8 +30,15 @@ public class EnemyMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<Enemy>();
         enemy.OnTargetChange+= OnTargetChange;
+
+    }
+
+    private void Start()
+    {
+        agent.enabled = true;
         if (canWander) StartCoroutine(Wander());
     }
+
     private void OnDisable()
     {
         enemy.OnTargetChange -= OnTargetChange;

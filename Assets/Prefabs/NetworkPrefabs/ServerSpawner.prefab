@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7562162668468827631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7562162668468827628}
+  - component: {fileID: 7562162668468827629}
+  - component: {fileID: 7562162668468827630}
+  m_Layer: 0
+  m_Name: ServerSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7562162668468827628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7562162668468827631}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 10, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7562162668468827629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7562162668468827631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ba9d6aa8302bb41893c0fce3cd6d05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remoteEngineerPrefab: {fileID: 8464556065097483213, guid: 6f5cdcc6523532c4f9792ac9ae74ec2b,
+    type: 3}
+  whiteDecal: {fileID: 2360242728709914674, guid: 713f91c4bc0c56340a137885469b8645,
+    type: 3}
+  blueDecal: {fileID: 5410640111742468837, guid: 3a8551368a8d79b4f8587cc4bbe33a3e,
+    type: 3}
+  yellowDecal: {fileID: 2071756919989360063, guid: e65daddee86e8554c940e15be2d4c7dc,
+    type: 3}
+  orangeDecal: {fileID: 5834912043270402635, guid: cc209fcd249642a4bbaee36ad4957873,
+    type: 3}
+  redDecal: {fileID: 8486422499899477231, guid: 7bd7f7a01a53d5742bf43349199135de,
+    type: 3}
+  greenDecal: {fileID: 8182390607568246610, guid: 9081b8ff0a183bc43b921fb3017c003f,
+    type: 3}
+  purpleDecal: {fileID: 7838378232285436942, guid: 4a3da84a19cf52548891890f3b4cf437,
+    type: 3}
+  pinkDecal: {fileID: 6986950564221939489, guid: 683a69c70a1cfc746804b7a6c6aa13b3,
+    type: 3}
+--- !u!114 &7562162668468827630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7562162668468827631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

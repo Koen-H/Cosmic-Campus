@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UNET;
 using Unity.Netcode.Transports.UTP;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class SteamGameNetworkManager : MonoBehaviour
@@ -50,6 +49,12 @@ public class SteamGameNetworkManager : MonoBehaviour
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
     }
 
+
+    public void OpenFriends()
+    {
+        SteamFriends.OpenGameInviteOverlay(CurrentLobby.Value.Id);
+    }
+
     public void OnApplicationQuit() => Disconnect();
 
     private void OnDestroy()
@@ -70,7 +75,7 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     }
 
-    public async void StartHost(int maxMembers = 10)
+    public async void StartHost(int maxMembers = 3)
     {
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
@@ -97,7 +102,10 @@ public class SteamGameNetworkManager : MonoBehaviour
             if (friend.IsPlayingThisGame)
             {
                 Debug.Log($"{friendName} is playing this game, trying to join!");
-                await friend.GameInfo.Value.Lobby.Value.Join();
+                //await friend.GameInfo.Value.Lobby.Value.Join();
+                //transport.targetSteamId = friend.Id;
+                await SteamMatchmaking.JoinLobbyAsync(friend.Id);
+                if (CurrentLobby != null) break;
             }
         }
         //LobbyQuery query = new LobbyQuery();

@@ -5,19 +5,24 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject enemyPrefab;//Enemy to spawn.
 
-    //private void Start()
-    //{
-    //    if (NetworkManager.Singleton.IsServer) SpawnEnemy();
-    //    Destroy(this.gameObject);
-    //}
+    [SerializeField] bool spawnOnNetwork;
+
+    [SerializeField] GameObject enemyPrefab;//Enemy to spawn.
 
     private void Update()
     {
         if (NetworkManager.Singleton.IsServer)
         {
             if(Input.GetKeyDown(KeyCode.P)) SpawnEnemy();
+        }
+    }
+
+    private void Start()
+    {
+        if (spawnOnNetwork && NetworkManager.Singleton.IsServer)
+        {
+            SpawnEnemy();
         }
     }
 

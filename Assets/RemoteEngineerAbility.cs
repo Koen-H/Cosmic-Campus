@@ -78,6 +78,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         {
             
             CollectBuildingPieces();
+            if (!IsOwner) return;
             if (Input.GetMouseButtonUp(1))
             {
                 isBuilding.Value = false;
@@ -172,7 +173,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     {
         ExplodeClientRpc();
     }
-
+    
     [ClientRpc]
     public void ExplodeClientRpc()
     {

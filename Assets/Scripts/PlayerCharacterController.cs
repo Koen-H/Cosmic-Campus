@@ -15,7 +15,7 @@ public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
     NetworkVariable<float> maxHealth = new(50);
-    NetworkVariable<float> health = new(25);
+    NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
     NetworkVariable<bool> isDead = new(false);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -48,7 +48,20 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
-    private List<GameObject> collectedStudents = new List<GameObject>(); 
+    private List<GameObject> collectedStudents = new List<GameObject>();
+
+    private Animator animator;
+    public Vector3 checkPoint; 
+
+    public enum PlayerAnimationState
+    {
+        IDLE,
+        RUNNING,
+        SWORDSLASH
+    }
+
+    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
+
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
     PlayerData playerData;
@@ -56,20 +69,30 @@ public class PlayerCharacterController : NetworkBehaviour
     private Rigidbody rigidbody;
     Vector3 movementDirection;
 
-    [SerializeField] float grav; 
+    [SerializeField] float grav;
+    private bool isGrounded;
+    private float groundDistance = 0.2f;
+
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
         effectManager = GetComponent<EffectManager>();
+        animator = GetComponentInChildren<Animator>();
     }
 
+    [ClientRpc]
+    public void HealPlayerClientRPC(float percentage)
+    {
+        if (!IsOwner) return;
+        Heal(percentage);
+    }
+    
     /// <summary>
     /// Heal the player based on percentage of max health.
     /// </summary>
-    public void Heal(float percentage)
+    private void Heal(float percentage)
     {
-        if (!IsOwner) return;
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
@@ -77,6 +100,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void TakeDamage(float damage, bool inPercentage = false)
     {
+        if (!IsOwner) return;
         if (isDead.Value) return;
         if (inPercentage) damage = maxHealth.Value * (damage / 100);
         damage = effectManager.ApplyResistanceEffect(damage);
@@ -147,6 +171,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
+        playerAnimationState.OnValueChanged += OnPlayerStateChanged;
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         if (!IsOwner) return;
@@ -154,6 +179,21 @@ public class PlayerCharacterController : NetworkBehaviour
         CameraManager.MyCamera.TargetPlayer();
     }
 
+    void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
+    {
+        switch (newAnimationState)
+        {
+            case PlayerAnimationState.RUNNING:
+                animator.SetBool("Running", true);
+                break;
+            case PlayerAnimationState.SWORDSLASH:
+                animator.SetTrigger("SwordSlash");
+                break;
+            default:
+                animator.SetBool("Running", false);
+                break;
+        }
+    }
     void OnHealthChange(float prevHealth, float newHealth)
     {
         healthText.text = health.Value.ToString();
@@ -181,12 +221,22 @@ public class PlayerCharacterController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
-        if(canMove) Move();
+        CheckIfGrounded();
+        if (canMove) Move();
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-        
+        DeathCheck();
+    }
+
+    void DeathCheck()
+    {
+        if (transform.position.y < -20) Respawn();
+    }
+    void Respawn()
+    {
+        transform.position = checkPoint;
     }
     void CheckNPCInteraction()
     {
@@ -239,6 +289,21 @@ public class PlayerCharacterController : NetworkBehaviour
         
     }
 
+    private void CheckIfGrounded()
+    {
+        // Cast a ray downwards from the character
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + Vector3.up, -Vector3.up, out hit, groundDistance+1))
+        {
+            // If the ray hit something, the character is grounded
+            isGrounded = true;
+        }
+        else
+        {
+            // If the ray didn't hit anything, the character is not grounded
+            isGrounded = false;
+        }
+    }
 
     /// <summary>
     /// Movement
@@ -262,15 +327,19 @@ public class PlayerCharacterController : NetworkBehaviour
         {
             // If there is input, accelerate the object
             currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+            playerAnimationState.Value = PlayerAnimationState.RUNNING;
         }
         else
         {
             // If there is no input, decelerate the object
             currentSpeed = 0;
+            playerAnimationState.Value = PlayerAnimationState.IDLE;
             //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
         }
         // Apply the calculated speed to the Rigidbody
-        rigidbody.velocity = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
+        Vector3 velocityVector = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
+        if (!isGrounded) velocityVector += Vector3.up * grav;
+        rigidbody.velocity = velocityVector;
 
         if (movementDirection.magnitude == 0) return;
         playerObj.transform.forward = movementDirection; 

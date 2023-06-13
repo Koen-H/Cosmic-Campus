@@ -76,7 +76,7 @@ Material:
     - _DstBlend: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
-    - _Metallic: 0.616
+    - _Metallic: 1
     - _OpaqueCullMode: 2
     - _RayTracing: 0
     - _ReceivesSSR: 1
@@ -84,7 +84,7 @@ Material:
     - _RefractionModel: 0
     - _RenderQueueType: 1
     - _RequireSplitLighting: 0
-    - _Smoothness: 0.461
+    - _Smoothness: 1
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 8
@@ -98,7 +98,7 @@ Material:
     - _StencilWriteMaskMV: 40
     - _SupportDecals: 1
     - _SurfaceType: 0
-    - _TopLine: 0.649
+    - _TopLine: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
@@ -113,8 +113,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 3.9131866, g: 17.310385, b: 19.14452, a: 1}
-    - _BottomColor: {r: 1048576, g: 0, b: 0, a: 0}
+    - _BottomColor: {r: 0, g: 1231551.2, b: 1399929.2, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TopColor: {r: 0, g: 370085.66, b: 785404, a: 1}
+    - _EmissiveColor: {r: 0.62299746, g: 0.67153335, b: 0.990566, a: 1}
+    - _TopColor: {r: 0, g: 56890.29, b: 392702, a: 0}
   m_BuildTextureStacks: []

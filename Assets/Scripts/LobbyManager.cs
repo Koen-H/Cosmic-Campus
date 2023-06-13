@@ -30,8 +30,9 @@ public class LobbyManager : MonoBehaviour
     public void AddClient(ulong id, ClientManager newClient)
     {
         clients.Add(id, newClient);
-        //OnNewClientJoined.Invoke(newClient);
-        Debug.Log("client added!");
+        if(OnNewClientJoined != null) OnNewClientJoined.Invoke(newClient);
+
+        Debug.Log("client added! with id " + newClient.GetClientId());
     }
     public void RemoveClient(ulong id)
     {
@@ -52,12 +53,14 @@ public class LobbyManager : MonoBehaviour
     public void CreateCharacters()
     {
 
+        if (spawnLocation == null) spawnLocation = this.gameObject;
         foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients)
         {
             
             GameObject obj = Instantiate(playerObj, spawnLocation.transform.position, Quaternion.LookRotation(spawnLocation.transform.forward));
             ClientManager clientManager = client.Value.PlayerObject.GetComponent<ClientManager>();
             clientManager.playerCharacter = obj.GetComponent<PlayerCharacterController>();
+            clientManager.playerCharacter.checkPoint = spawnLocation.transform.position;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);

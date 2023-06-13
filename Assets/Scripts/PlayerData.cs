@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerData : NetworkBehaviour
 {
     //Networkvariables
-    [HideInInspector] public NetworkVariable<PlayerRole> playerRole = new(PlayerRole.UNSET, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
+    [HideInInspector] public NetworkVariable<PlayerRole> playerRole = new(PlayerRole.ARTIST, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What role is the player?
     [HideInInspector] public NetworkVariable<int> avatarId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What avatar from that role is the player using?
     [HideInInspector] public NetworkVariable<int> weaponId = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);//What weapon from that role is the player using?
     //Local
@@ -18,7 +18,7 @@ public class PlayerData : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         playerRole.OnValueChanged += SelectPlayerRoleData;
-        if (playerRole.Value != PlayerRole.UNSET) SelectPlayerRoleData();
+        if (playerRole.Value != PlayerRole.UNSET) SelectPlayerRoleData(playerRole.Value);
     }
     public override void OnNetworkDespawn()
     {
@@ -28,7 +28,7 @@ public class PlayerData : NetworkBehaviour
     /// <summary>
     /// When the role changes, so does the related SO.
     /// </summary>
-    void SelectPlayerRoleData(PlayerRole oldRole = PlayerRole.UNSET, PlayerRole newRole = PlayerRole.UNSET)
+    void SelectPlayerRoleData(PlayerRole oldRole = PlayerRole.UNSET, PlayerRole newRole = PlayerRole.ARTIST)
     {
         switch (newRole)
         {
@@ -47,7 +47,7 @@ public class PlayerData : NetworkBehaviour
             default:
                 break;
         }
-        Debug.Log($"{newRole} And avatar id {avatarId.Value}");
+        Debug.Log($"Playerdata role changed to {newRole} for client {OwnerClientId}");
     }
 
     /// <summary>
@@ -55,8 +55,8 @@ public class PlayerData : NetworkBehaviour
     /// </summary>
     public void SetData(PlayerRole newPlayerRole, int newAvatarId, int newWeaponId)
     {
-        avatarId.Value = newAvatarId;
         playerRole.Value = newPlayerRole;
+        avatarId.Value = newAvatarId;
         weaponId.Value = newWeaponId;
     }
 

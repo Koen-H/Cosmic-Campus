@@ -152,7 +152,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9128107290287681430}
-  - component: {fileID: 5207936547127460221}
   m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
@@ -176,24 +175,3 @@ Transform:
   m_Father: {fileID: 7039644699625654324}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 60, z: 0}
---- !u!95 &5207936547127460221
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7113277819429926826}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: baa0a2f5ed8f23042b5dd4cb794cb781, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0

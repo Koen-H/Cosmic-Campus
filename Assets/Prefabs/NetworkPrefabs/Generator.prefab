@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2991427587043466507}
   - component: {fileID: 2991427587043466504}
+  - component: {fileID: 2764607105048962562}
   m_Layer: 0
   m_Name: Generator
   m_TagString: Untagged
@@ -44,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ee58c74395a004ea3e9b7d68e13d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 0
   drawingDelay: 3
   numberOfPyramids: 1
   numberOfRooms: 12
@@ -62,10 +64,26 @@ MonoBehaviour:
   curveMesh: {fileID: 8140296913093499467, guid: 52a3b7cc20d57e344a9db382b3837b73,
     type: 3}
   teacherStudentRatio: 2
-  maxEnemiesOnPath: 0
+  maxEnemiesOnPath: 100
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
   teacherPrefab: {fileID: -3905282409277695776, guid: 7117023e2182c074fb79282d76951ea0,
     type: 3}
   studentPrefab: {fileID: 1231603171206996409, guid: d6c2f0300f950594cba4d980bad07043,
     type: 3}
+--- !u!114 &2764607105048962562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2991427587043466505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

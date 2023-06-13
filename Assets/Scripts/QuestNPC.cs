@@ -8,6 +8,26 @@ public class QuestNPC : MonoBehaviour
 
     public event System.Action<Transform> OnTargetChange;
     private Transform currentTarget;
+
+    [SerializeField] private GameObject door;
+    [SerializeField] private Animator doorAnimation; 
+
+    [HideInInspector] public Vector3 doorPosition; 
+    [HideInInspector] public Vector3 doorNormal; 
+
+
+    private void Start()
+    {
+        if (door != null)
+        {
+            GameObject newDoor = Instantiate(door, this.transform.parent);
+            newDoor.transform.position = doorPosition;
+            newDoor.transform.rotation = Quaternion.LookRotation(-doorNormal, Vector3.up);
+            doorAnimation = newDoor.GetComponent<Animator>();
+        }
+    }
+
+
     public Transform CurrentTarget
     {
         get { return currentTarget; }
@@ -43,11 +63,19 @@ public class QuestNPC : MonoBehaviour
                 }
             }
             Debug.Log("Thank you for bringing my students, You may continue");
+            OpenDoor();
             students.Clear();
+            
             return self; 
         }
         return null;
     }    
+
+    public void OpenDoor()
+    {
+
+        doorAnimation.SetTrigger("Animate");
+    }
 }
 
 public enum QuestNPCState { WAITING, FOLLOWING, BORED}

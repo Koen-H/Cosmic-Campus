@@ -113,6 +113,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1680f76cefe5f9b4bb077a6bae81de38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  door: {fileID: 3504329468724802532, guid: 3039ff263f752174b88ff350286875c3, type: 3}
+  doorAnimation: {fileID: 4350627616612504266, guid: 3039ff263f752174b88ff350286875c3,
+    type: 3}
+  doorPosition: {x: 0, y: 0, z: 0}
+  doorNormal: {x: 0, y: 0, z: 0}
   enemyState: 0
 --- !u!195 &2548790869303321592
 NavMeshAgent:
@@ -153,4 +158,5 @@ MonoBehaviour:
   wanderDelay:
     min: 0
     max: 1
+    diff: 1
   canBeNockedBack: 1

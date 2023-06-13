@@ -21,6 +21,6 @@ public class HealingEffect : Effect
     public override void EverySecond()
     {
         if (manager.isEnemy) manager.enemy.Heal(healPercentage * strength);
-        else manager.player.Heal(healPercentage * strength);
+        else manager.player.HealPlayerClientRPC(healPercentage * strength);
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2161.8018, g: 2265.7695, b: 3288.9727, a: 1}
+  m_IndirectSpecularColor: {r: 895.718, g: 561.9059, b: 2749.0825, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3135,6 +3135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!4 &1076424486
@@ -6179,6 +6180,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2764607105048962562, guid: 0a68af601b2f108449aa21f2573efde7,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1173558965
+      objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: rightOffset
@@ -6194,12 +6200,6 @@ PrefabInstance:
       propertyPath: randomXOffset
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: studentPrefab
-      value: 
-      objectReference: {fileID: 5372416715083914912, guid: d6c2f0300f950594cba4d980bad07043,
-        type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: teacherPrefab

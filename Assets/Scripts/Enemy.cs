@@ -82,12 +82,13 @@ public class Enemy : NetworkBehaviour
 
     private void Start()
     {
-        healthBarOriginalRotation = healthBar.transform.rotation; 
+        healthBarOriginalRotation = healthBar.transform.rotation;
+        if (IsOwner) enemyType.Value = enemyTypeInsp;
+        if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
     }
 
     public override void OnNetworkSpawn()
     {
-        if(IsOwner) enemyType.Value = enemyTypeInsp;
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
         enemyType.OnValueChanged+= OnEnemyTypeChange;
@@ -95,7 +96,6 @@ public class Enemy : NetworkBehaviour
         SetNavMeshData();
         maxHealth = health.Value;
         healthBar.SetMaxValue(maxHealth);
-        if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
     }
     //TODO: Don't put it in here.
     private T GetRandomEnumValue<T>() where T : Enum
@@ -227,7 +227,7 @@ public class Enemy : NetworkBehaviour
         {
             bodyPart.parent = null;
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
-            bodyPart.gameObject.AddComponent<Rigidbody>();
+            bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
         }
     }
