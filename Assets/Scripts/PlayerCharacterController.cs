@@ -81,12 +81,18 @@ public class PlayerCharacterController : NetworkBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
+    [ClientRpc]
+    public void HealPlayerClientRPC(float percentage)
+    {
+        if (!IsOwner) return;
+        Heal(percentage);
+    }
+    
     /// <summary>
     /// Heal the player based on percentage of max health.
     /// </summary>
-    public void Heal(float percentage)
+    private void Heal(float percentage)
     {
-        if (!IsOwner) return;
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
