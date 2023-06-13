@@ -695,7 +695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d52764ac7d3d5c44a6e40b15042744f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canWander: 1
+  canWander: 0
   wanderDistance: 5
   wanderDelay:
     min: 6
@@ -717,7 +717,7 @@ MonoBehaviour:
   detectionRange: 5
   trackingRange: 10
   enemyEyes: {fileID: 1255730161906014976}
-  hasThirdEye: 1
+  hasThirdEye: 0
   thirdEyeRange: 20
   useThirdEyeOnDamage: 0
 --- !u!114 &429127547035457455

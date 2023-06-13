@@ -16,7 +16,7 @@ public abstract class Weapon : MonoBehaviour
 
     protected WeaponState weaponState = WeaponState.READY;
 
-    private void Awake()
+    protected void Awake()
     {
         playerController = GetComponent<PlayerCharacterController>();
         playerController.gunForward.OnValueChanged += (Vector3 prevValue, Vector3 newValue) => { weaponObj.transform.forward = newValue; };
@@ -56,7 +56,7 @@ public abstract class Weapon : MonoBehaviour
     }
 
 
-    protected void AfterAttack()
+    protected virtual void AfterAttack()
     {
         playerController.ToggleMovement(true);
     }
