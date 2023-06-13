@@ -622,8 +622,9 @@ MonoBehaviour:
   maxSpeed: 5
   currentSpeed: 0
   effectManager: {fileID: 0}
+  checkPoint: {x: 0, y: 0, z: 0}
   attackRange: 10
-  grav: 0
+  grav: -9.8
 --- !u!114 &8066588647814255692
 MonoBehaviour:
   m_ObjectHideFlags: 0

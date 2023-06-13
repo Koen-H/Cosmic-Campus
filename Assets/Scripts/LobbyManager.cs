@@ -60,6 +60,7 @@ public class LobbyManager : MonoBehaviour
             GameObject obj = Instantiate(playerObj, spawnLocation.transform.position, Quaternion.LookRotation(spawnLocation.transform.forward));
             ClientManager clientManager = client.Value.PlayerObject.GetComponent<ClientManager>();
             clientManager.playerCharacter = obj.GetComponent<PlayerCharacterController>();
+            clientManager.playerCharacter.checkPoint = spawnLocation.transform.position;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);

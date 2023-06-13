@@ -4636,6 +4636,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6840445109395201181}
   - component: {fileID: 4841255964358253892}
+  - component: {fileID: 6123374320237208202}
   m_Layer: 0
   m_Name: RoomBigCrystalInMiddle
   m_TagString: Untagged
@@ -4768,6 +4769,19 @@ MonoBehaviour:
   - {fileID: 5165244872418828829}
   - {fileID: 9093742722153397826}
   - {fileID: 5853414678042316365}
+--- !u!65 &6123374320237208202
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6840445109395201180}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 35.22, y: 4.8699527, z: 1}
+  m_Center: {x: 112.46, y: -0, z: -152.06}
 --- !u!1 &7265948273651920020
 GameObject:
   m_ObjectHideFlags: 0

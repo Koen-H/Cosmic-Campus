@@ -50,7 +50,8 @@ public class PlayerCharacterController : NetworkBehaviour
     private QuestNPC interactingNPC;
     private List<GameObject> collectedStudents = new List<GameObject>();
 
-    private Animator animator;  
+    private Animator animator;
+    public Vector3 checkPoint; 
 
     public enum PlayerAnimationState
     {
@@ -68,7 +69,10 @@ public class PlayerCharacterController : NetworkBehaviour
     private Rigidbody rigidbody;
     Vector3 movementDirection;
 
-    [SerializeField] float grav; 
+    [SerializeField] float grav;
+    private bool isGrounded;
+    private float groundDistance = 0.2f;
+
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -217,12 +221,22 @@ public class PlayerCharacterController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
-        if(canMove) Move();
+        CheckIfGrounded();
+        if (canMove) Move();
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-        
+        DeathCheck();
+    }
+
+    void DeathCheck()
+    {
+        if (transform.position.y < -20) Respawn();
+    }
+    void Respawn()
+    {
+        transform.position = checkPoint;
     }
     void CheckNPCInteraction()
     {
@@ -275,6 +289,21 @@ public class PlayerCharacterController : NetworkBehaviour
         
     }
 
+    private void CheckIfGrounded()
+    {
+        // Cast a ray downwards from the character
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + Vector3.up, -Vector3.up, out hit, groundDistance+1))
+        {
+            // If the ray hit something, the character is grounded
+            isGrounded = true;
+        }
+        else
+        {
+            // If the ray didn't hit anything, the character is not grounded
+            isGrounded = false;
+        }
+    }
 
     /// <summary>
     /// Movement
@@ -308,7 +337,9 @@ public class PlayerCharacterController : NetworkBehaviour
             //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
         }
         // Apply the calculated speed to the Rigidbody
-        rigidbody.velocity = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
+        Vector3 velocityVector = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
+        if (!isGrounded) velocityVector += Vector3.up * grav;
+        rigidbody.velocity = velocityVector;
 
         if (movementDirection.magnitude == 0) return;
         playerObj.transform.forward = movementDirection; 
