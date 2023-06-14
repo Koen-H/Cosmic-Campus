@@ -133,6 +133,7 @@ public class Enemy : NetworkBehaviour
         health.OnValueChanged -= OnHealthChange;
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
+        FallApart();
     }
     void SetSOData()
     {
@@ -239,8 +240,8 @@ public class Enemy : NetworkBehaviour
     private void Die()
     {
 
-        FallApart(); 
-        if (IsOwner) StartCoroutine(LateDestroy());
+        //if (IsOwner) StartCoroutine(LateDestroy());
+        if (IsOwner) Destroy(this.gameObject);
         gameObject.SetActive(false);
     }
     void FallApart()
