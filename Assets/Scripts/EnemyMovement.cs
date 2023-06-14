@@ -67,7 +67,6 @@ public class EnemyMovement : MonoBehaviour
         knockbackDuration = duration;
         knockbackTimer = 0f;
         isKnockedBack = true;
-
     }
 
     private void Nockback()

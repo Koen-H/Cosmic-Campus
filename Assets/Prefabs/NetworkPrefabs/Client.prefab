@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea9fc15a09ad4c428dc2623fd535e3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientId: 0
   steamAccountId:
     m_InternalValue: 0
   playerData: {fileID: 2648143796615619875}
+  playerCharacter: {fileID: 0}
 --- !u!114 &315195460465529140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,8 +79,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRole:
-    m_InternalValue: 0
+    m_InternalValue: 1
   avatarId:
     m_InternalValue: 0
   weaponId:
     m_InternalValue: 0
+  playerRoleData: {fileID: 0}

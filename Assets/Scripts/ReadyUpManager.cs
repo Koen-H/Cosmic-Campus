@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -45,20 +46,38 @@ public class ReadyUpManager : NetworkBehaviour
         ulong newClientId = newClient.GetClientId();
         clientReady[newClientId] = false;
         clientItems.Add(newClientId, avatarPlatform[clientItems.Count]);
-        UpdatePlayerCharacter(newClientId);
         clientItems[newClientId].sideClickerManager.gameObject.SetActive(true);
         //Give the client their front space spot on their own screen
         ulong localClientId = NetworkManager.Singleton.LocalClientId;
-        if (!clientItems.ContainsKey(localClientId)) return;
-        if (clientItems[localClientId] != avatarPlatform[0])//If we don't have the first spot
+        if (clientItems.ContainsKey(localClientId))
         {
-            ReadyUpUIItems myCurrentItems = clientItems[localClientId];
-            ReadyUpUIItems myNewItems = clientItems[0];
-            clientItems[localClientId] = myNewItems;
-            clientItems[0] = myCurrentItems;
+            if (clientItems[localClientId] != avatarPlatform[0])//If we don't have the first spot
+            {
+                ulong firstSpotId = FindKeyByValue(avatarPlatform[0]);
+                ReadyUpUIItems myCurrentItems = clientItems[localClientId];
+                ReadyUpUIItems myNewItems = clientItems[firstSpotId];
+                clientItems[localClientId] = myNewItems;
+                clientItems[firstSpotId] = myCurrentItems;
+                UpdatePlayerCharacter(firstSpotId);
+            }
         }
+        UpdatePlayerCharacter(newClientId);
         CheckReady();
     }
+
+    private ulong FindKeyByValue(ReadyUpUIItems value)
+    {
+        foreach (var pair in clientItems)
+        {
+            if (pair.Value == value)
+            {
+                return pair.Key;
+            }
+        }
+        Debug.Log("NMO KEUY");
+        return 0; // Key not found
+    }
+
 
     public void HandleRoleValueChange(SideClickerValue newValue)
     {
@@ -83,7 +102,10 @@ public class ReadyUpManager : NetworkBehaviour
                 break;
             default:
                 Debug.Log("no value!?");
-                try {playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;}
+                try {
+                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRole.Value);
+                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData);
+                    playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;}
                 catch { return; }
                 break;
         }

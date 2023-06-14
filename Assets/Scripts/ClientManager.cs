@@ -56,7 +56,11 @@ public class ClientManager : NetworkBehaviour
                 this.gameObject.name = $"Client ({SteamClient.Name})";
             }
         }
-        LobbyManager.Instance.AddClient(OwnerClientId, this);
+    }
+    private void Start()
+    {
+        LobbyManager.Instance.AddClient(OwnerClientId, this);//Do this after networkspawn so the data is synchronised
+
     }
 
     public override void OnNetworkDespawn()
