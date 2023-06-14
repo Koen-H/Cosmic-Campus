@@ -2070,7 +2070,7 @@ Transform:
   m_GameObject: {fileID: 6871783035927780225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6823092669074180991}
@@ -2132,6 +2132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorEntrance: {fileID: 6871783034765946089}
   doorExit: {fileID: 6871783035379822245}
+  roomLayer: 0
   normalEntrance: {x: 0, y: 0, z: -1}
   normalExit: {x: 0, y: 0, z: 1}
   studentSpawnPoint: {fileID: 1546248579648409305}
@@ -2169,6 +2170,7 @@ MonoBehaviour:
   - {fileID: 6318153045321873621}
   - {fileID: 8616117545833738122}
   - {fileID: 3743522329602423085}
+  potions: []
 --- !u!65 &6796217468128165828
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3711,6 +3713,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Resistance
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653488424175384500, guid: 680ad6e15567aeb4daa2e2a18891588a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 680ad6e15567aeb4daa2e2a18891588a, type: 3}
@@ -5633,6 +5640,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Speed
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435848589570230171, guid: daaa99fa8acdcc64bbd749c8a8c65d7b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daaa99fa8acdcc64bbd749c8a8c65d7b, type: 3}

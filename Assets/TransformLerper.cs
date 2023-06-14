@@ -9,10 +9,13 @@ public class TransformLerper : MonoBehaviour
     public Quaternion targetRotation;
 
     public float lerpSpeed = 10f;
+
+    float closeDistance = 0.2f;
+
     void Update()
     {
         transform.localPosition = Vector3.Lerp(transform.localPosition, targetVector, lerpSpeed * Time.deltaTime);
         transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, lerpSpeed * Time.deltaTime);
-        if (transform.localPosition == targetVector && transform.rotation == targetRotation) Destroy(this);
+        if ((transform.localPosition - targetVector).magnitude < closeDistance) Destroy(this);
     }
 }

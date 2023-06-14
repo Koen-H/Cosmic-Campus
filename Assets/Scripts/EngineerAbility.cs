@@ -27,7 +27,8 @@ public class EngineerAbility : Ability
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit)) ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
         else return;
-
+        player.AttackStopServerRpc();
+        player.engineering = true;
         player.LockPlayer(true);//Disable the player interactions.
 
 

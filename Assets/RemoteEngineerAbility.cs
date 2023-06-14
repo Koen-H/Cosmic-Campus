@@ -91,7 +91,11 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void Control()
     {
         Move();
-        if(Input.GetMouseButtonDown(0) && !exploded) ExplodeServerRpc();
+        if (Input.GetMouseButtonDown(0) && !exploded)
+        {
+            exploded = true;
+            ExplodeServerRpc();
+        }
     }
 
     private void Move()
@@ -201,6 +205,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             yield return new WaitForSeconds(duration);
             CameraManager.MyCamera.TargetPlayer();
             ClientManager.MyClient.playerCharacter.LockPlayer(false);
+            ClientManager.MyClient.playerCharacter.engineering = false;
             DestroyServerRpc();
         }
     }

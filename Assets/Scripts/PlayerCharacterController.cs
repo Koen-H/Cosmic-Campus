@@ -16,13 +16,14 @@ public class PlayerCharacterController : NetworkBehaviour
     //NetworkVariables
     NetworkVariable<float> maxHealth = new(50);
     NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
-    NetworkVariable<bool> isDead = new(false);
+    NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
     public float moveSpeed = 5f;
     public bool canMove = true;
     public bool canAttack = true;
     public bool canAbility = true;
+    public bool engineering = false;
 
     [Tooltip("What enemytype will take critical damage?")]
     public EnemyType damageType = EnemyType.NONE;
@@ -51,7 +52,9 @@ public class PlayerCharacterController : NetworkBehaviour
     private List<GameObject> collectedStudents = new List<GameObject>();
 
     private Animator animator;
-    public Vector3 checkPoint; 
+    public Vector3 checkPoint;
+
+    public Transform centerPoint;
 
     public enum PlayerAnimationState
     {
@@ -142,8 +145,7 @@ public class PlayerCharacterController : NetworkBehaviour
     /// <summary>
     /// Revive the player
     /// </summary>
-    [ServerRpc(RequireOwnership=false)]
-    public void ReviveServerRpc()
+    public void Revive()
     {
         isDead.Value = false;
         health.Value = maxHealth.Value * 0.25f;
@@ -242,18 +244,18 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!interactingNPC) return;
 
-        OnMapNPC student = interactingNPC.Interact(colllectedStudents, this.transform);
-        if(student is StudentNPC)
-        {
-            collectedStudents.Add(interactingNPC.gameObject);
-        }
-        if(student is TeacherNPC)
-        {
-            foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
-            collectedStudents.Clear();
-        }
-        interactingNPC = null;
-        if (student != null) colllectedStudents.Add(student);
+        interactingNPC.InteractServerRpc();//colllectedStudents,  //OnMapNPC student = 
+        /*        if (student is StudentNPC)
+                {
+                    collectedStudents.Add(interactingNPC.gameObject);
+                }
+                if(student is TeacherNPC)
+                {
+                    foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
+                    collectedStudents.Clear();
+                }
+                interactingNPC = null;
+                if (student != null) colllectedStudents.Add(student);*/
     }
 
 
@@ -365,6 +367,7 @@ public class PlayerCharacterController : NetworkBehaviour
     public void ToggleMovement(bool toggle)
     {
         if (isDead.Value) return;
+        if (engineering) return;
         canMove = toggle;
     }
 

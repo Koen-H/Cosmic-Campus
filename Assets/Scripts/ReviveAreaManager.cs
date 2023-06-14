@@ -21,6 +21,7 @@ public class ReviveAreaManager : NetworkBehaviour
     private void OnEnable()
     {
         reviveTime.OnValueChanged += OnReviveTimeChange;
+        if (!IsServer) return;
         reviveTime.Value = totalReviveTime;
     }
 
@@ -54,6 +55,6 @@ public class ReviveAreaManager : NetworkBehaviour
     void OnReviveTimeChange(float prevValue, float newValue)
     {
         displayTimer.text = ((int)newValue).ToString();
-        if (IsOwner && reviveTime.Value < 0) player.ReviveServerRpc();
+        if (IsOwner && reviveTime.Value < 0) player.Revive();
     }
 }

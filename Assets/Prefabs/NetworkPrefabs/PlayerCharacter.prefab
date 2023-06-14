@@ -289,7 +289,7 @@ Transform:
   - {fileID: 3888423456694728645}
   - {fileID: 3888423456043838846}
   m_Father: {fileID: 4730861770734180504}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &3888423456995535246
 SphereCollider:
@@ -349,7 +349,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4730861770734180504}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -522,7 +522,7 @@ Transform:
   - {fileID: 4730861772226633753}
   - {fileID: 7398930437885518176}
   m_Father: {fileID: 4730861770734180504}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -43, z: 0}
 --- !u!114 &7396201856344662211
 MonoBehaviour:
@@ -585,6 +585,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6176791949872961916}
   - {fileID: 4543238060910317374}
   - {fileID: 1059717653454241339}
   - {fileID: 3888423456995535247}
@@ -605,7 +606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunForward:
     m_InternalValue: {x: 0, y: 0, z: 0}
-  moveSpeed: 5
+  moveSpeed: 7
   canMove: 1
   canAttack: 1
   canAbility: 1
@@ -623,6 +624,7 @@ MonoBehaviour:
   currentSpeed: 0
   effectManager: {fileID: 0}
   checkPoint: {x: 0, y: 0, z: 0}
+  centerPoint: {fileID: 6176791949872961916}
   attackRange: 10
   grav: -9.8
 --- !u!114 &8066588647814255692
@@ -644,6 +646,7 @@ MonoBehaviour:
   player: {fileID: 0}
   enemy: {fileID: 0}
   isEnemy: 0
+  IsOwner: 0
 --- !u!114 &4730861770734180506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -791,6 +794,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1059717653454241339}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6059874300470245911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6176791949872961916}
+  m_Layer: 3
+  m_Name: CenterPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6176791949872961916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6059874300470245911}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4730861770734180504}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7572698701476972795
 GameObject:

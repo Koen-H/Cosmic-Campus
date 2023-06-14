@@ -20,9 +20,11 @@ public class Sword : Weapon
         hits.Add(enteredTransform);
         if (enteredTransform.CompareTag("Enemy"))
         {
+            if (!playerController.IsOwner) return;
             Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
             float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
             enemy.TakeDamage(damage, playerController.damageType);
+            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,2f,1f);
         }
     }
 
@@ -37,6 +39,7 @@ public class Sword : Weapon
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
         }
+        ToggleColliders(false);
     }
 
 
@@ -52,7 +55,11 @@ public class Sword : Weapon
         foreach (AttackCollider atCol in attackColliders)
         {
             Collider[] colliders = atCol.GetComponents<Collider>();
-            foreach (Collider collider in colliders) collider.enabled = enabled;
+            foreach (Collider collider in colliders)
+            {
+                collider.gameObject.SetActive(enabled);//The vfx is on this object as a child!
+                collider.enabled = enabled;
+            }
         }
     }
 
@@ -82,7 +89,7 @@ public class Sword : Weapon
         // Then do the same for each of its children
         foreach (Transform childTransform in parentTransform)
         {
-            ResetChildTransforms(childTransform, depth + 1);
+           // ResetChildTransforms(childTransform, depth + 1);
         }
     }
 
@@ -125,14 +132,11 @@ public class Sword : Weapon
 
     public override void Attack()
     {
+        Aim();
         base.Attack();
         //
         ToggleColliders(true);
 
-        //Play the punch attack animation
-
-        //For now...
-        
         weaponAnimation.SetTrigger("SwordSlash");
 
         StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
