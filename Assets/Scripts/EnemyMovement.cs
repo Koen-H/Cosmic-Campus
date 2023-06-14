@@ -90,12 +90,22 @@ public class EnemyMovement : MonoBehaviour
     {
         if (isKnockedBack) Nockback();
         else if (enemy.enemyState != EnemyState.ATTACKING) Move();
+        if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
+    }
+    bool DestinationReached()
+    {
+        if ((transform.position - agent.destination).magnitude <= agent.stoppingDistance)
+        {
+            return true;
+        }
+        return false;
     }
 
     protected virtual void Move()
     {
         //Simple walk towards target
         if (target == null) return;
+        enemy.enemyAnimationState.Value = EnemyAnimationState.RUNNING;
         agent.SetDestination(target.position);
     }
 
@@ -117,7 +127,7 @@ public class EnemyMovement : MonoBehaviour
 
             // Set the destination based on the random direction
             Vector3 targetPosition = transform.position + randomDirection * wanderDistance;
-
+            enemy.enemyAnimationState.Value = EnemyAnimationState.RUNNING;
             // Set the NavMeshAgent destination
             agent.SetDestination(targetPosition);
         }

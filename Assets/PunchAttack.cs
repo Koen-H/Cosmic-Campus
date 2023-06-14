@@ -47,10 +47,12 @@ public class PunchAttack : EnemyAttackBehaviour
         //Play the punch attack animation
 
         //For now...
-        attackAnim = GetComponentInChildren<Animator>();
-        attackAnim.SetTrigger("Animate");
+        enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
 
-        StartCoroutine(AfterAttackAnim(attackAnim.GetCurrentAnimatorStateInfo(0).length));
+      /*  attackAnim = GetComponentInChildren<Animator>();
+        attackAnim.SetTrigger("Animate");*/
+
+        StartCoroutine(AfterAttackAnim(enemy.animator.GetCurrentAnimatorStateInfo(0).length));
     }
 
     void OnAttackColliderEnter(Transform enteredTransform)

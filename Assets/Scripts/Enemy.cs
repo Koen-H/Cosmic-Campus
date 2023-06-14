@@ -68,6 +68,27 @@ public class Enemy : NetworkBehaviour
 
     public EffectManager effectManager;
 
+    [SerializeField] public Animator animator;
+
+
+    [HideInInspector] public NetworkVariable<EnemyAnimationState> enemyAnimationState = new(EnemyAnimationState.IDLE, default, NetworkVariableWritePermission.Owner);
+
+    void OnPlayerStateChanged(EnemyAnimationState pervAnimationState, EnemyAnimationState newAnimationState)
+    {
+        switch (newAnimationState)
+        {
+            case EnemyAnimationState.RUNNING:
+                animator.SetBool("Running", true);
+                break;
+            case EnemyAnimationState.SWORDSLASH:
+                animator.SetTrigger("SwordSlash");
+                break;
+            default:
+                animator.SetBool("Running", false);
+                break;
+        }
+    }
+
 
 
     #region Initialization methods
@@ -87,11 +108,14 @@ public class Enemy : NetworkBehaviour
         if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
     }
 
+
+
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
         enemyType.OnValueChanged+= OnEnemyTypeChange;
+        enemyAnimationState.OnValueChanged += OnPlayerStateChanged;
         SetSOData();
         SetNavMeshData();
         maxHealth = health.Value;
@@ -225,7 +249,9 @@ public class Enemy : NetworkBehaviour
 
         foreach (var bodyPart in bodyParts)
         {
+            Debug.Log("Body parts: " + bodyParts.Count);
             bodyPart.parent = null;
+            bodyPart.gameObject.AddComponent<MeshRenderer>();
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
             bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
@@ -333,3 +359,11 @@ public class Enemy : NetworkBehaviour
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
 public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER }
+
+
+public enum EnemyAnimationState
+{
+    IDLE,
+    RUNNING,
+    SWORDSLASH
+}

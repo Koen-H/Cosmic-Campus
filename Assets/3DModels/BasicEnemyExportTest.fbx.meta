@@ -1,0 +1,438 @@
+fileFormatVersion: 2
+guid: e0c39badbc18db744890d204a0ece0bc
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: R_ENEMY_BASIC.001|R_ENEMY_BASIC_ATTACK
+      takeName: R_ENEMY_BASIC.001|R_ENEMY_BASIC_ATTACK
+      internalID: -7612170066388047073
+      firstFrame: 0
+      lastFrame: 22
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: R_ENEMY_BASIC.001|R_ENEMY_BASIC_WALKING
+      takeName: R_ENEMY_BASIC.001|R_ENEMY_BASIC_WALKING
+      internalID: -3943352444680655658
+      firstFrame: 0
+      lastFrame: 25
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: .001|R_ENEMY_BASIC_NOTWALKING
+      takeName: R_ENEMY_BASIC.001|R_ENEMY_BASIC_WALKING
+      internalID: 4199995843705504675
+      firstFrame: 0
+      lastFrame: 0
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: BasicEnemyExportTest(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Shoulder_R_2.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.48445415, y: 1.1633161, z: -0.045901526}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Shoulder_R.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.46730894, y: 1.5185072, z: -0.024712414}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Shoulder_L_2.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.4851876, y: 1.1955745, z: -0.070363976}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Shoulder_L.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.4748074, y: 1.483337, z: 0.066571176}
+      rotation: {x: 0.18823044, y: 0.7798405, z: -0.05994832, w: 0.5939901}
+      scale: {x: 100.00001, y: 100, z: 100}
+    - name: R_ENEMY_BASIC.001
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Root
+      parentName: R_ENEMY_BASIC.001
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 0.99999803, z: 0.99999815}
+    - name: Pelvis_Control
+      parentName: Root
+      position: {x: -0, y: -0.0000000023841857, z: 0.007844294}
+      rotation: {x: -0.3580307, y: 1.08118724e-14, z: 2.1175824e-21, w: 0.93370986}
+      scale: {x: 1, y: 0.9999982, z: 0.999998}
+    - name: Hips
+      parentName: Pelvis_Control
+      position: {x: -1.7468344e-18, y: -0.00005784571, z: 0.000022748709}
+      rotation: {x: 0.7858159, y: -0.00000007372622, z: -0.00000009367653, w: 0.6184606}
+      scale: {x: 1, y: 1.0000005, z: 1.0000002}
+    - name: Head
+      parentName: Hips
+      position: {x: -1.7468344e-18, y: 0.0043489803, z: 0}
+      rotation: {x: 0.47132432, y: -0.000000105137985, z: -0.00000016855877, w: 0.88196}
+      scale: {x: 1, y: 1.0000013, z: 1.0000018}
+    - name: Jaw
+      parentName: Head
+      position: {x: -6.391934e-17, y: 2.9802322e-10, z: -1.862645e-10}
+      rotation: {x: 0.42327994, y: 0.1654805, z: 0.07733106, w: 0.88739514}
+      scale: {x: 0.9999998, y: 1.0000074, z: 1.0000037}
+    - name: Jaw_end
+      parentName: Jaw
+      position: {x: -0, y: 0.0039998624, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Collar.L
+      parentName: Hips
+      position: {x: -0.00040717507, y: 0.0032039755, z: 0.00073663983}
+      rotation: {x: -0.18702616, y: 0.0826373, z: 0.60938144, w: 0.7660591}
+      scale: {x: 1.0000012, y: 1.0000007, z: 1.0000012}
+    - name: Shoulder_1.L
+      parentName: Collar.L
+      position: {x: -0.0000035411624, y: 0.0029732408, z: -0.00022689364}
+      rotation: {x: 0.10290855, y: -0.39861238, z: -0.08983754, w: 0.9068888}
+      scale: {x: 1.0000074, y: 0.9999875, z: 1.0000101}
+    - name: Shoulder_2.L
+      parentName: Shoulder_1.L
+      position: {x: -2.0489097e-10, y: 0.002850696, z: 3.352761e-10}
+      rotation: {x: 0.15746468, y: -0.19248183, z: -0.5661099, w: 0.7859232}
+      scale: {x: 0.9999946, y: 1.000005, z: 0.99999857}
+    - name: Shoulder_2.L_end
+      parentName: Shoulder_2.L
+      position: {x: -0, y: 0.0037285837, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: UpperArm.L
+      parentName: Shoulder_1.L
+      position: {x: -0.001322975, y: 0.003641299, z: 0.00059102464}
+      rotation: {x: -0.0944395, y: 0.7666509, z: 0.17034382, w: 0.6118093}
+      scale: {x: 1.0000037, y: 1.0000049, z: 1.0000036}
+    - name: Arm.L.001
+      parentName: UpperArm.L
+      position: {x: 1.3038516e-10, y: 0.0024965727, z: -2.2118911e-10}
+      rotation: {x: 0.074664116, y: -0.03653329, z: -0.0968423, w: 0.9918227}
+      scale: {x: 1.0000021, y: 1.0000051, z: 0.9999966}
+    - name: Arm.L.002
+      parentName: Arm.L.001
+      position: {x: -0, y: 0.005187506, z: 6.705522e-10}
+      rotation: {x: 0.19785388, y: 0.044983763, z: 0.12982072, w: 0.9705549}
+      scale: {x: 0.9999964, y: 1.0000073, z: 0.9999956}
+    - name: Arm.L.002_end
+      parentName: Arm.L.002
+      position: {x: -0, y: 0.0052431826, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Pelvis.L
+      parentName: Hips
+      position: {x: -0.00038357492, y: 0.000005066281, z: -0.00005922325}
+      rotation: {x: 0.04924974, y: 0.22049467, z: 0.844216, w: 0.48606163}
+      scale: {x: 1.0000012, y: 1.0000005, z: 1.0000001}
+    - name: Foot.L
+      parentName: Pelvis.L
+      position: {x: -0.00013898316, y: 0.001652505, z: -0.000014068671}
+      rotation: {x: 0.14561734, y: 0.2357952, z: 0.21330644, w: 0.9368546}
+      scale: {x: 0.99999046, y: 1.0000123, z: 1.0000035}
+    - name: Foot.L_end
+      parentName: Foot.L
+      position: {x: -0, y: 0.0024989177, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Collar.R
+      parentName: Hips
+      position: {x: 0.00040717545, y: 0.0032039755, z: 0.00073664}
+      rotation: {x: -0.18702619, y: -0.08263714, z: -0.6093814, w: 0.7660592}
+      scale: {x: 1.0000013, y: 1.0000007, z: 1.0000013}
+    - name: Shoulder_1.R
+      parentName: Collar.R
+      position: {x: 0.0000035404307, y: 0.002973241, z: -0.00022689287}
+      rotation: {x: 0.10290851, y: 0.39861268, z: 0.08983782, w: 0.9068886}
+      scale: {x: 1.0000056, y: 0.9999853, z: 1.0000098}
+    - name: Shoulder_2.R
+      parentName: Shoulder_1.R
+      position: {x: -9.0338287e-10, y: 0.0028506955, z: 4.656613e-10}
+      rotation: {x: 0.15746471, y: 0.1924817, z: 0.56611013, w: 0.78592306}
+      scale: {x: 0.9999957, y: 1.000006, z: 1.0000027}
+    - name: Shoulder_2.R_end
+      parentName: Shoulder_2.R
+      position: {x: -0, y: 0.0037285837, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: UpperArm.R
+      parentName: Shoulder_1.R
+      position: {x: 0.0013229756, y: 0.0036412978, z: 0.00059102493}
+      rotation: {x: 0.09444033, y: 0.766651, z: 0.17034385, w: -0.611809}
+      scale: {x: 1.0000036, y: 1.0000035, z: 1.0000031}
+    - name: Arm.R.001
+      parentName: UpperArm.R
+      position: {x: -1.8626451e-11, y: 0.0024965752, z: 1.466833e-10}
+      rotation: {x: 0.07466417, y: 0.036532994, z: 0.09684239, w: 0.99182266}
+      scale: {x: 0.9999991, y: 0.9999998, z: 0.9999968}
+    - name: Arm.R.002
+      parentName: Arm.R.001
+      position: {x: 2.9802322e-10, y: 0.005187508, z: 0.0000000010151416}
+      rotation: {x: 0.19785343, y: -0.044983644, z: -0.12982117, w: 0.970555}
+      scale: {x: 1.0000035, y: 1.000015, z: 0.9999984}
+    - name: Arm.R.002_end
+      parentName: Arm.R.002
+      position: {x: -0, y: 0.0052431826, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Pelvis.R
+      parentName: Hips
+      position: {x: 0.00038357492, y: 0.0000050662866, z: -0.000059223392}
+      rotation: {x: -0.04924947, y: 0.22049464, z: 0.8442161, w: -0.48606154}
+      scale: {x: 1.0000037, y: 1.0000043, z: 1.0000004}
+    - name: Foot.R
+      parentName: Pelvis.R
+      position: {x: 0.00013898352, y: 0.0016525049, z: -0.000014068744}
+      rotation: {x: 0.14561723, y: -0.23579505, z: -0.21330652, w: 0.93685466}
+      scale: {x: 0.99999326, y: 1.0000154, z: 1.0000035}
+    - name: Foot.R_end
+      parentName: Foot.R
+      position: {x: -0, y: 0.0024989177, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: IK.L
+      parentName: Root
+      position: {x: -0.008380565, y: -0.00031379817, z: 0.0002540249}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 0.9999982, z: 0.999998}
+    - name: IK.L_end
+      parentName: IK.L
+      position: {x: -0, y: 0.007862255, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: IK.R
+      parentName: Root
+      position: {x: 0.008380565, y: -0.00031379817, z: 0.0002540249}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 0.9999982, z: 0.999998}
+    - name: IK.R_end
+      parentName: IK.R
+      position: {x: -0, y: 0.007862255, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Leg_R.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.17230555, y: 0.60822177, z: 0.13135663}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Leg_L.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.20092194, y: 0.6233845, z: 0.14136933}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Jaw.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.0067468435, y: 1.1084576, z: 0.25908187}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Head.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.004753776, y: 1.2534561, z: 0.23208268}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Body.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0, y: 1.0107741, z: -0.030513734}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_R_3.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.7394217, y: 0.82063144, z: 0.020445757}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_R_2.003
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.7073818, y: 1.1867979, z: 0.006304741}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_R.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: 0.8068376, y: 0.29938677, z: -0.009089768}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_L_3.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.7073818, y: 1.1867979, z: 0.006304741}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_L_2.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.7394217, y: 0.82063144, z: 0.020445757}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Arms_L.002
+      parentName: BasicEnemyExportTest(Clone)
+      position: {x: -0.8068376, y: 0.29938677, z: -0.009089768}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
