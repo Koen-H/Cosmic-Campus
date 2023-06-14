@@ -43,14 +43,22 @@ public class MatChanger : MonoBehaviour
     /// <summary>
     /// Tell the MatChanger to change the material to the other.
     /// </summary>
-    public void ChangeMaterial(EnemyType enemyType)
+    public void ChangeMaterial(EnemyType enemyType, bool instant = false)
     {
         if (coroutine != null) StopCoroutine(coroutine);
-        coroutine = StartCoroutine(ChangeEmissionColor(SelectTargetColor(enemyType)));
-
+        if(!instant) coroutine = StartCoroutine(ChangeEmissionColor(SelectTargetColor(enemyType)));
+        else
+        {
+            Color newColor = SelectTargetColor(enemyType);
+            for (int i = 0; i < myMaterials.Length; i++)
+            {
+                myMaterials[i].SetColor("_EmissiveColor", newColor * myEmissionIntensity[i]);
+            }
+        }
 
         //coroutine = StartCoroutine(ChangeMaterialOverTime(currentMaterials, SelectTargetMat(enemyType), time));
     }
+
 
     //private Material[] SelectTargetMat(EnemyType enemyType)
     //{

@@ -12,6 +12,7 @@ public class Enemy : NetworkBehaviour
 {
     [Header("Global Enemy Variables")]
     [SerializeField] public GameObject avatar;
+    [SerializeField] private GameObject enemyDebrisDrops;
     [SerializeField] public Transform centerPoint;
     //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
@@ -104,6 +105,7 @@ public class Enemy : NetworkBehaviour
     private void Start()
     {
         healthBarOriginalRotation = healthBar.transform.rotation;
+        enemyDebrisDrops.SetActive(false);
         if (IsOwner) enemyType.Value = enemyTypeInsp;
         if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
     }
@@ -246,13 +248,16 @@ public class Enemy : NetworkBehaviour
     }
     void FallApart()
     {
-        List<Transform> bodyParts = GetChildren(avatar.transform);
+        enemyDebrisDrops.SetActive(true);
+        List<Transform> bodyParts = GetChildren(enemyDebrisDrops.transform);
+        MatChanger[] matChangers = enemyDebrisDrops.GetComponentsInChildren<MatChanger>();
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemyType.Value, true);
 
         foreach (var bodyPart in bodyParts)
         {
             Debug.Log("Body parts: " + bodyParts.Count);
             bodyPart.parent = null;
-            bodyPart.gameObject.AddComponent<MeshRenderer>();
+            //bodyPart.gameObject.AddComponent<MeshRenderer>();
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
             bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
