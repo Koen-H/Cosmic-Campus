@@ -50,17 +50,17 @@ public class LobbyManager : MonoBehaviour
         return clients.Count;
     }
 
-    public void CreateCharacters()
+    public void CreateCharacters(Vector3 spawnLoaction)
     {
 
         if (spawnLocation == null) spawnLocation = this.gameObject;
         foreach (KeyValuePair<ulong, NetworkClient> client in NetworkManager.Singleton.ConnectedClients)
         {
             
-            GameObject obj = Instantiate(playerObj, spawnLocation.transform.position, Quaternion.LookRotation(spawnLocation.transform.forward));
+            GameObject obj = Instantiate(playerObj, spawnLoaction, Quaternion.LookRotation(Vector3.forward));
             ClientManager clientManager = client.Value.PlayerObject.GetComponent<ClientManager>();
             clientManager.playerCharacter = obj.GetComponent<PlayerCharacterController>();
-            clientManager.playerCharacter.checkPoint = spawnLocation.transform.position;
+            clientManager.playerCharacter.checkPoint = spawnLoaction;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);

@@ -55,6 +55,8 @@ public class RoomGenerator : NetworkBehaviour
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = 0;
 
+    public Vector3 initialSpawnLocation; 
+
     //List<Transform> obstacles = new List<Transform>();
 
     private static RoomGenerator instance;
@@ -400,6 +402,8 @@ public class RoomGenerator : NetworkBehaviour
         allEnemies = new List<EnemyNPC>();
         for (int i = 0; i < path.Count - 1; i++)
         {
+            if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
+            Debug.Log("BRuhh: " + initialSpawnLocation);
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
             List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);

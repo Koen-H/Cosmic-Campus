@@ -26,10 +26,15 @@ public class GameManager : NetworkBehaviour
 
     public void InitalizeLevel()
     {
+        StartCoroutine(GenerateNextFrame());
+        
+    }
+    IEnumerator GenerateNextFrame()
+    {
         levelGenerator.SetSeed();
         levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
-
-        LobbyManager.Instance.CreateCharacters();
+        yield return new WaitForFixedUpdate();
+        LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
         ToggleLoadingScreenClientRpc(false);
     }
 

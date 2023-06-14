@@ -8,7 +8,7 @@ public class OnTestSceneEnter : MonoBehaviour
     private void Start()
     {
         if (!NetworkManager.Singleton.IsServer) return;
-        LobbyManager.Instance.CreateCharacters();
+        LobbyManager.Instance.CreateCharacters(Vector3.one);
 
     }
 }
