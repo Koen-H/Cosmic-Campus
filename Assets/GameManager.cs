@@ -26,8 +26,8 @@ public class GameManager : NetworkBehaviour
 
     public void InitalizeLevel()
     {
-        //levelGenerator.SetSeed();
-        levelGenerator.GenerateMapClientRpc(0);
+        levelGenerator.SetSeed();
+        levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
 
         LobbyManager.Instance.CreateCharacters();
         ToggleLoadingScreenClientRpc(false);

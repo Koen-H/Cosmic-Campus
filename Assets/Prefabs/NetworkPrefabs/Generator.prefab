@@ -46,15 +46,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
+  randomSeed: 1
   drawingDelay: 3
   numberOfPyramids: 1
   numberOfRooms: 12
   roomPrefabs:
   - {fileID: 8178778973823242893, guid: 349d365e89453d34197024ffc3d057f8, type: 3}
   - {fileID: 4109838769310283684, guid: 92766a586a5f0704694040885e148807, type: 3}
-  forwardOffset: 30
-  rightOffset: 20
-  randomXOffset: 10
+  forwardOffset: 10
+  rightOffset: 5
+  randomXOffset: 5
   numberOfBranches: 6
   maxDepthOfBranch: 1
   ittiriations: 1

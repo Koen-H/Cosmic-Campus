@@ -1968,7 +1968,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2ea1a5c8f7f04d7488821b08db7dce0c, type: 2}
+  - {fileID: 2100000, guid: b5b7b4ea6fc285842bd173a6bcfd16fa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3184,6 +3184,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrelInteractable
       objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}
 --- !u!4 &1358670842065116541 stripped
@@ -3713,6 +3718,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Resistance
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653488424175384500, guid: 680ad6e15567aeb4daa2e2a18891588a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 680ad6e15567aeb4daa2e2a18891588a, type: 3}
@@ -4490,6 +4500,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Healing
       objectReference: {fileID: 0}
+    - target: {fileID: 4524513494032429871, guid: 09b6e54c5efe74e4c80a47746861ae5b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09b6e54c5efe74e4c80a47746861ae5b, type: 3}
 --- !u!4 &7116322299786907919 stripped
@@ -4683,6 +4698,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PowerUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6945073020281660956, guid: 7215da10ebea0cb4080be344a12da197,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7721997366248209574, guid: 7215da10ebea0cb4080be344a12da197,
         type: 3}
@@ -4940,6 +4960,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MininCart
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: acdc56ed057002a40b92e733d52535b9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: acdc56ed057002a40b92e733d52535b9,
         type: 3}
@@ -5459,6 +5484,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrelInteractable (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}
 --- !u!4 &9171754969480653855 stripped
@@ -5635,6 +5665,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Speed
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435848589570230171, guid: daaa99fa8acdcc64bbd749c8a8c65d7b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daaa99fa8acdcc64bbd749c8a8c65d7b, type: 3}
