@@ -54,6 +54,8 @@ public class RoomGenerator : NetworkBehaviour
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = 0;
 
+    //List<Transform> obstacles = new List<Transform>();
+
     private static RoomGenerator instance;
     public static RoomGenerator Instance
     {
@@ -172,10 +174,11 @@ public class RoomGenerator : NetworkBehaviour
     {
         for (int i = 0; i < surfaces.Count; i++)
         {
-            if (surfaces[i].gameObject.layer != 6) continue;
-            surfaces[i].BuildNavMesh();
+                surfaces[i].BuildNavMesh();
+            if (surfaces[i].gameObject.layer == 6)
+            {
+            }
         }
-        // set to ture 
     }
     void SplineDemo()
     {
@@ -269,14 +272,6 @@ public class RoomGenerator : NetworkBehaviour
             GeneratePath(branchedPath, Color.red, out navMeshSurfaces, out allEnemies);
             foreach (var branch in branchedPath) allBranches.Add(branch);
         }
-
-/*        foreach (var teacher in allTeachers)
-        {
-            foreach (var student in teacher.dependency)
-            {
-                Debug.DrawLine(student.position, teacher.position, new Color(255, 137, 0), drawingDelay * 1.5f);
-            }
-        }*/
     }
     private OnMapNPC InitializeNPCs(Room branchingPoint, List<Room> branchedPath, bool drawTeacher, out List<Room> outQuestNPC)
     {
@@ -407,8 +402,21 @@ public class RoomGenerator : NetworkBehaviour
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
+        ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[path.Count - 1].layerNumber;
         lateRoomEnemiesToSpawn.Add(room);
+    }
+    void ApplyNavMeshModifierToChildren(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.CompareTag("Interactable")) continue; 
+            child.gameObject.layer = 6;
+            if (child.childCount > 0)
+            {
+                ApplyNavMeshModifierToChildren(child);
+            }
+        }
     }
 
     private void SpawnEnemies(List<EnemyNPC> allEnemies)
@@ -433,8 +441,8 @@ public class RoomGenerator : NetworkBehaviour
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
         RoomInfo room = Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+        ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[i].layerNumber;
-        room.gameObject.layer = 6;
         lateRoomEnemiesToSpawn.Add(room);
     }
 
@@ -480,7 +488,6 @@ public class RoomGenerator : NetworkBehaviour
             GameObject newDoor = Instantiate(teacherPrefab.door, this.transform.parent);
             newDoor.transform.position = room.exit.position;
             newDoor.transform.rotation = Quaternion.LookRotation(-room.exit.normal, Vector3.up);
-            //teacher.doorAnimation = newDoor.GetComponent<Animator>();
 
             int doorId = doorKeys.Count; 
 
@@ -631,7 +638,6 @@ public class RoomGenerator : NetworkBehaviour
         RoomInfo roomInfo = roomPrefabs[randInt];
         initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0, new Door(roomInfo.GetEntrancePosition() + origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition() + origin, roomInfo.normalExit), roomInfo) };
         roomLayers.Add(initialLayer);
-        //Debug.Log("SHuthirsfu" + initialLayer.roomPositions[0].origin);
         return initialLayer;
     }
 
