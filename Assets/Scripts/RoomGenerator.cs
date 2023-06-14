@@ -404,6 +404,10 @@ public class RoomGenerator : NetworkBehaviour
         {
             if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
             Debug.Log("BRuhh: " + initialSpawnLocation);
+            Vector3 fuck = Vector3.zero;
+            if (i >= 1) fuck = new Vector3(0, 0, forwardOffset - path[i+1].roomPrefab.roomLength);
+            Vector3 roomPosition = path[i+1].GetRoomPosition() - fuck;
+            path[i + 1].SetRoomPosition(roomPosition);
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
             List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
@@ -449,7 +453,21 @@ public class RoomGenerator : NetworkBehaviour
         int randomCount = systemRand.Next(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
-        RoomInfo room = Instantiate(path[i].roomPrefab, path[i].GetRoomPosition(), Quaternion.identity, this.transform);
+        /*        Vector3 fuck = Vector3.zero;
+                if(i >= 1) fuck = new Vector3(0, 0, forwardOffset - path[i-1].roomPrefab.roomLength);
+                Vector3 roomPosition = path[i].GetRoomPosition() - fuck;
+                path[i].SetRoomPosition(roomPosition);*/
+        Vector3 fuck = Vector3.zero;
+        float shit = 0;
+
+        if (i >= 1)
+        {
+            fuck = path[i].GetRoomPosition() - path[i - 1].GetRoomPosition();
+            shit = fuck.z - forwardOffset;
+        }
+        Vector3 roomPosition = path[i].GetRoomPosition() - new Vector3(0, 0, shit);
+        path[i].SetRoomPosition(roomPosition);
+        RoomInfo room = Instantiate(path[i].roomPrefab, roomPosition, Quaternion.identity, this.transform);
         ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[i].layerNumber;
         lateRoomEnemiesToSpawn.Add(room);
@@ -719,6 +737,14 @@ public class Room
         roomPrefab = RoomPrefab;
     }
     public Vector3 GetRoomPosition() { return (origin + variation); }
+    public void SetRoomPosition(Vector3 position) {
+        Vector3 diff = origin + variation - position; 
+        origin = position; 
+        variation = Vector3.zero;
+        exit.position -= diff;
+        entrance.position -= diff;  
+    
+    }
 }
 
 public class Door

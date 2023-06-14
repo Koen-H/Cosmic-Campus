@@ -25,6 +25,8 @@ public class RoomInfo : MonoBehaviour
 
     public List<NetworkObject> potions = new List<NetworkObject>();
 
+    public float roomLength; 
+
 
     private void OnTriggerEnter(Collider other)
     {
