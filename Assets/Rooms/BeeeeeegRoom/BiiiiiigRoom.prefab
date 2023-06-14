@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 1691311761380482118}
   - component: {fileID: 4476265596768122173}
   - component: {fileID: 6735410119546877972}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1011,7 +1011,7 @@ GameObject:
   - component: {fileID: 7439158210468269639}
   - component: {fileID: 1994316962913943311}
   - component: {fileID: 3360022972725712626}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3263,6 +3263,7 @@ Transform:
   - {fileID: 3862403510945793063}
   - {fileID: 5471488737047756854}
   - {fileID: 895609770418267295}
+  - {fileID: 151417622515032270}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6341,7 +6342,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2ea1a5c8f7f04d7488821b08db7dce0c, type: 2}
+  - {fileID: 2100000, guid: b5b7b4ea6fc285842bd173a6bcfd16fa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6788,7 +6789,7 @@ GameObject:
   - component: {fileID: 6452377994889834589}
   - component: {fileID: 6452377994889834578}
   - component: {fileID: 6452377994889834579}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WellWellWell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7149,7 +7150,7 @@ GameObject:
   - component: {fileID: 6452377994295149120}
   - component: {fileID: 6452377994295149121}
   - component: {fileID: 6452377994295149123}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7584,8 +7585,8 @@ GameObject:
   - component: {fileID: 6452377995590716834}
   - component: {fileID: 6452377995459762619}
   - component: {fileID: 6452377995459762616}
-  - component: {fileID: 6452377995459762618}
-  m_Layer: 0
+  - component: {fileID: 4199650962534004791}
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7657,8 +7658,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6452377995459762618
-BoxCollider:
+--- !u!64 &4199650962534004791
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7667,9 +7668,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.059629027, y: 0.31343076, z: 0.07036099}
-  m_Center: {x: -0.004409756, y: 0.011519163, z: -0.0001504309}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4493585093827132993, guid: 1813820ebadbedf4ea07690e05471531, type: 3}
 --- !u!1 &6452377995473680896
 GameObject:
   m_ObjectHideFlags: 0
@@ -8014,7 +8016,7 @@ GameObject:
   - component: {fileID: 6532363494471714562}
   - component: {fileID: 79173129892935153}
   - component: {fileID: 6452377995890581729}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8505,7 +8507,7 @@ GameObject:
   - component: {fileID: 6452377995289137936}
   - component: {fileID: 6452377995289137937}
   - component: {fileID: 6452377995289137939}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: NinjaGotRailed_RockEdition (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9993,6 +9995,106 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &246380538765575046
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6452377994647458907}
+    m_Modifications:
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -17.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -97.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838155, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 53.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838155, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 78.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838155, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838155, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.729244
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838155, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 104321997949838157, guid: e9c0dcba640b21c4282db15c012ea31c,
+        type: 3}
+      propertyPath: m_Name
+      value: Ambience
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e9c0dcba640b21c4282db15c012ea31c, type: 3}
+--- !u!4 &151417622515032270 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 104321997949838152, guid: e9c0dcba640b21c4282db15c012ea31c,
+    type: 3}
+  m_PrefabInstance: {fileID: 246380538765575046}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &632882913784483517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10575,6 +10677,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrelInteractable (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}
 --- !u!4 &2250696143528615492 stripped
@@ -10864,6 +10971,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Healing
+      objectReference: {fileID: 0}
+    - target: {fileID: 4524513494032429871, guid: 09b6e54c5efe74e4c80a47746861ae5b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09b6e54c5efe74e4c80a47746861ae5b, type: 3}
@@ -11634,6 +11746,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrelInteractable
       objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}
 --- !u!4 &4470508594627522463 stripped
@@ -12126,6 +12243,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarrelInteractable (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}
 --- !u!4 &3862403510945793063 stripped
@@ -12315,6 +12437,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Speed
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435848589570230171, guid: daaa99fa8acdcc64bbd749c8a8c65d7b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daaa99fa8acdcc64bbd749c8a8c65d7b, type: 3}
@@ -12535,6 +12662,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Slowness
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737501432810567702, guid: 00b315f6a536f3d44bf58b0faf0d3186,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2971503692816097757, guid: 00b315f6a536f3d44bf58b0faf0d3186,
         type: 3}
@@ -13090,6 +13222,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BarrelInteractable (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8623507124126242760, guid: 53cee264f5da33b4c81b35ab44b2436e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cee264f5da33b4c81b35ab44b2436e, type: 3}

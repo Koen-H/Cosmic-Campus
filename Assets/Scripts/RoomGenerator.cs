@@ -9,6 +9,7 @@ using Unity.Netcode;
 public class RoomGenerator : NetworkBehaviour
 {
     [SerializeField] private int seed;
+    [SerializeField] private bool randomSeed;
     [SerializeField] private float drawingDelay;
     [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
@@ -109,10 +110,14 @@ public class RoomGenerator : NetworkBehaviour
     {
         instance = this;
     }
-
-    public void SetSeed(int newSeed)
+    public int GetSeed()
     {
-        seed = newSeed;
+        return seed;
+    }
+
+    public void SetSeed()
+    {
+        seed = randomSeed ? new Random().Next() : seed;
     }
 
     List<Vector3> SplinePath(Door from, Door to)
