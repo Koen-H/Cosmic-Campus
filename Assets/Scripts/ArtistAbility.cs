@@ -15,9 +15,11 @@ public class ArtistAbility : Ability
     private int paintBucketCapacity = 5;
     private ServerSpawner serverSpawner;
 
+    private GameObject suckFVX;
 
     private void Awake()
     {
+        suckFVX = Resources.Load<GameObject>("Crystal/CrystalGrab");
         paintBucket = new();
         base.Awake();
         if(player.IsOwner) serverSpawner = ServerSpawner.Instance;
@@ -39,7 +41,10 @@ public class ArtistAbility : Ability
             paintBucket.Add(color);
 
             ///Spawn a object at the place that floats towards the player! Obj should change based on color.
-
+            GameObject suckFVXInstance = Instantiate(suckFVX,hit.point, Quaternion.identity);
+            crystalGrabManager crystalGrab = suckFVXInstance.GetComponent<crystalGrabManager>();
+            crystalGrab.trail.GetComponent<Renderer>().material = crystalManager.GetComponent<Renderer>().material;
+            crystalGrab.staffObject = player.centerPoint;
             if (color == ArtistPaintColor.NONE) return;
         }
         else if(paintBucket.Count > 0)

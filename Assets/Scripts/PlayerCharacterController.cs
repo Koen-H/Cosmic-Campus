@@ -23,6 +23,7 @@ public class PlayerCharacterController : NetworkBehaviour
     public bool canMove = true;
     public bool canAttack = true;
     public bool canAbility = true;
+    public bool engineering = false;
 
     [Tooltip("What enemytype will take critical damage?")]
     public EnemyType damageType = EnemyType.NONE;
@@ -51,7 +52,9 @@ public class PlayerCharacterController : NetworkBehaviour
     private List<GameObject> collectedStudents = new List<GameObject>();
 
     private Animator animator;
-    public Vector3 checkPoint; 
+    public Vector3 checkPoint;
+
+    public Transform centerPoint;
 
     public enum PlayerAnimationState
     {
@@ -364,6 +367,7 @@ public class PlayerCharacterController : NetworkBehaviour
     public void ToggleMovement(bool toggle)
     {
         if (isDead.Value) return;
+        if (engineering) return;
         canMove = toggle;
     }
 
