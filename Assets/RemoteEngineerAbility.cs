@@ -32,6 +32,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] float damageIncreasePerObj = 1f;
     [SerializeField] float explosionRange = 2f;
     [SerializeField] float rangeIncreasePerObj = 0.2f;
+    [SerializeField] float maxExplosionRange = 20f;
 
     [SerializeField] GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
 
@@ -91,7 +92,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void Control()
     {
         Move();
-        if (Input.GetMouseButtonDown(0) && !exploded)
+        if (Input.GetMouseButtonDown(1) && !exploded && isBuilding.Value == false)
         {
             exploded = true;
             ExplodeServerRpc();
@@ -187,7 +188,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         electricityVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects / 5;
         objCollector.gameObject.SetActive(false);
         if (!IsOwner) return;
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, (explosionRange + rangeIncreasePerObj * attachedObjects) > maxExplosionRange ? maxExplosionRange : (explosionRange + rangeIncreasePerObj * attachedObjects));
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
         foreach (Collider collider in colliders)
         {
