@@ -29,13 +29,20 @@ public class RoomInfo : MonoBehaviour
 
     public List<NetworkObject> potions = new List<NetworkObject>();
 
+    private void Start()
+    {
+        if(roomLayer == 0 || roomLayer == 1)
+        {
+            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerCharacterController player = other.GetComponent<PlayerCharacterController>();
         if (player)
         {
-            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer);
+            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer + 1);
             player.checkPoint = doorEntrance.position;
         }
 

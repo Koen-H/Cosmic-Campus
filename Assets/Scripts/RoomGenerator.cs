@@ -53,7 +53,7 @@ public class RoomGenerator : NetworkBehaviour
     List<Animator> doorKeys = new List<Animator>();
 
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
-    private int latestEnemyLayer = 0;
+    private int latestEnemyLayer = -1;
 
     public Vector3 initialSpawnLocation; 
 
@@ -88,6 +88,7 @@ public class RoomGenerator : NetworkBehaviour
     {
         if(layer > latestEnemyLayer)
         {
+            if (layer > numberOfRooms) return;
             latestEnemyLayer = layer;
             if (IsServer)
             {
