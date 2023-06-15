@@ -35,6 +35,7 @@ public class GameManager : NetworkBehaviour
         levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
         yield return new WaitForFixedUpdate();
         LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
+        CanvasManager.Instance.LoadGameUI();
         ToggleLoadingScreenClientRpc(false);
     }
 

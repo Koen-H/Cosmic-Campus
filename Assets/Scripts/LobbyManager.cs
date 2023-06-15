@@ -70,13 +70,6 @@ public class LobbyManager : MonoBehaviour
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);
         }
-        InitGameUIClientRpc();
-    }
-
-    [ServerRpc]
-    void InitGameUIClientRpc()
-    {
-        CanvasManager.Instance.LoadGameUI();
     }
 
 }

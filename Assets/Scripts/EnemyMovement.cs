@@ -90,6 +90,7 @@ public class EnemyMovement : MonoBehaviour
     {
         if (isKnockedBack) Nockback();
         else if (enemy.enemyState != EnemyState.ATTACKING) Move();
+        if (!enemy.IsOwner) return;
         if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
     }
     bool DestinationReached()
