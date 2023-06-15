@@ -47,6 +47,7 @@ public class PunchAttack : EnemyAttackBehaviour
         //Play the punch attack animation
 
         //For now...
+        if (!enemy.IsOwner) return;
         enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
 
       /*  attackAnim = GetComponentInChildren<Animator>();

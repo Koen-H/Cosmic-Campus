@@ -55,6 +55,7 @@ public class CanvasManager : MonoBehaviour
             uiItems[i].gameObject.SetActive(true);
             uiItems[i].SetClient(client.Value);
             uiItems[i].LoadCorrectUI();
+            i++;
         }
     }
 }

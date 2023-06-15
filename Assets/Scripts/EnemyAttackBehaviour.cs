@@ -27,6 +27,7 @@ public abstract class EnemyAttackBehaviour : MonoBehaviour
 
     protected virtual void Attack()
     {
+        if (!enemy.IsOwner) return;
         enemy.enemyState = EnemyState.ATTACKING;
         if (!canMoveDuringAttack) agent.isStopped = true;
         
@@ -39,6 +40,7 @@ public abstract class EnemyAttackBehaviour : MonoBehaviour
     }
     protected virtual void AfterAttack()
     {
+        if (!enemy.IsOwner) return;
         enemy.enemyState = EnemyState.IDLING;
         agent.isStopped = false;
     }
