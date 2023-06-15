@@ -108,6 +108,7 @@ public class Enemy : NetworkBehaviour
         enemyDebrisDrops.SetActive(false);
         if (IsOwner) enemyType.Value = enemyTypeInsp;
         if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
+        StartCoroutine(EnemyLogic());
     }
 
 
@@ -302,7 +303,31 @@ public class Enemy : NetworkBehaviour
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 
-    public virtual void Update()
+
+    /*    public void Update()
+        {
+            FixHealthBar();
+            if (enemyState == EnemyState.ATTACKING) return;
+            targetBehaviour.FindTarget();
+            attackBehaviour.TryAttack();
+
+            if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
+            if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
+            if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
+            if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
+        }
+    */
+
+    IEnumerator EnemyLogic()
+    {
+        while (true)
+        {
+            LessThanFixedUpdate();
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    public virtual void LessThanFixedUpdate()
     {
         FixHealthBar();
         if (enemyState == EnemyState.ATTACKING) return;
@@ -314,6 +339,7 @@ public class Enemy : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
         if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
+
 
     public virtual void AttackLogic(Transform target)
     {
