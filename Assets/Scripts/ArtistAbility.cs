@@ -38,6 +38,7 @@ public class ArtistAbility : Ability
             if (paintBucketCapacity == paintBucket.Count) return;//Bucket full!
             CrystalManagerWithShader crystalManager = target.GetComponent<CrystalManagerWithShader>();
             ArtistPaintColor color = crystalManager.GetColor();
+            if (color == ArtistPaintColor.NONE) return;
             paintBucket.Add(color);
 
             ///Spawn a object at the place that floats towards the player! Obj should change based on color.
@@ -45,7 +46,6 @@ public class ArtistAbility : Ability
             crystalGrabManager crystalGrab = suckFVXInstance.GetComponent<crystalGrabManager>();
             crystalGrab.trail.GetComponent<Renderer>().material = crystalManager.GetComponent<Renderer>().material;
             crystalGrab.staffObject = player.centerPoint;
-            if (color == ArtistPaintColor.NONE) return;
         }
         else if(paintBucket.Count > 0)
         {

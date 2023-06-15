@@ -409,7 +409,6 @@ public class RoomGenerator : NetworkBehaviour
         for (int i = 0; i < path.Count - 1; i++)
         {
             if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
-            Debug.Log("BRuhh: " + initialSpawnLocation);
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
 
             Room otherRoom;
