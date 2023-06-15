@@ -293,19 +293,22 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private void CheckIfGrounded()
     {
-        // Cast a ray downwards from the character
+        // Cast a sphere downwards from the character
         RaycastHit hit;
-        if (Physics.Raycast(transform.position + Vector3.up, -Vector3.up, out hit, groundDistance+1))
+        float radius = 0.5f; // Replace this with your sphere radius
+
+        if (Physics.SphereCast(transform.position + Vector3.up, radius, -Vector3.up, out hit, groundDistance + 1))
         {
-            // If the ray hit something, the character is grounded
+            // If the sphere hit something, the character is grounded
             isGrounded = true;
         }
         else
         {
-            // If the ray didn't hit anything, the character is not grounded
+            // If the sphere didn't hit anything, the character is not grounded
             isGrounded = false;
         }
     }
+
 
     /// <summary>
     /// Movement
