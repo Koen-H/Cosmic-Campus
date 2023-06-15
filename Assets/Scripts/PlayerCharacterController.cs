@@ -56,6 +56,9 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public Transform centerPoint;
 
+    protected bool canBeDamaged = true;
+    [SerializeField] float invinsibilityDuration;
+
     public enum PlayerAnimationState
     {
         IDLE,
@@ -105,6 +108,7 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (isDead.Value) return;
+        if (!canBeDamaged) return;
         if (inPercentage) damage = maxHealth.Value * (damage / 100);
         damage = effectManager.ApplyResistanceEffect(damage);
         if (damage >= health.Value) damage = health.Value;
@@ -129,10 +133,18 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled = true;//Enable collider to allow it to be targeted and attacked again.
             //Resurrected animation here!
             playerObj.gameObject.SetActive(true);
+            StartCoroutine(InvinsibilityForTime(invinsibilityDuration));
+
         }
 
         if (!IsOwner) return;
         LockPlayer(isCurrentlyDead);
+    }
+    IEnumerator InvinsibilityForTime(float time)
+    {
+        canBeDamaged = false;
+        yield return new WaitForSeconds(time);
+        canBeDamaged = true;
     }
 
     public void LockPlayer(bool isLocked)

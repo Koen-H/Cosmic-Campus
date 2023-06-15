@@ -610,6 +610,7 @@ MonoBehaviour:
   canMove: 1
   canAttack: 1
   canAbility: 1
+  engineering: 0
   damageType: 0
   playerAvatar: {fileID: 4730861772226633752}
   playerObj: {fileID: 4593242323635163358}
@@ -625,6 +626,7 @@ MonoBehaviour:
   effectManager: {fileID: 0}
   checkPoint: {x: 0, y: 0, z: 0}
   centerPoint: {fileID: 6176791949872961916}
+  invinsibilityDuration: 2
   attackRange: 10
   grav: -9.8
 --- !u!114 &8066588647814255692
