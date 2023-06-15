@@ -405,7 +405,15 @@ public class RoomGenerator : NetworkBehaviour
             if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
             Debug.Log("BRuhh: " + initialSpawnLocation);
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
-            List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
+
+            Room otherRoom;
+            List<Vector3> splinePath;
+            if (!reverse) 
+            {
+                otherRoom = path[i].roomA == path[i + 1] ? path[i].roomB : path[i].roomA;
+                splinePath = SplinePath(otherRoom.entrance, path[i + 1].entrance);
+            }
+            else splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
             GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
         }
