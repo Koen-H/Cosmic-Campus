@@ -137,6 +137,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void LockPlayer(bool isLocked)
     {
+        if (isDead.Value) return;//If dead, you can't change this!
         canMove = !isLocked;
         canAttack = !isLocked;
         canAbility = !isLocked;
