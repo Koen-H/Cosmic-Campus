@@ -16,6 +16,10 @@ public class RoomInfo : MonoBehaviour
     public Transform studentSpawnPoint; 
     public Transform teacherSpawnPoint;
 
+    public Transform doorLeft;
+    public Transform doorRight;
+
+
     public Vector3 GetEntrancePosition() => doorEntrance.position;
     public Vector3 GetExitPosition() =>  doorExit.position;
     public Vector3 GetStudentPosition() => studentSpawnPoint.position;

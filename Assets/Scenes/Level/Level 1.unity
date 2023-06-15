@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 895.718, g: 561.9059, b: 2749.0825, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -274,12 +274,12 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: rightOffset
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: forwardOffset
-      value: 120
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
@@ -289,7 +289,7 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: randomXOffset
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
@@ -300,7 +300,7 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: splineSharpness
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
@@ -325,49 +325,49 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.size
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[0]
       value: 
-      objectReference: {fileID: 8049785582359895414, guid: 2db8d9d6552663d41b048c113878c6d9,
+      objectReference: {fileID: 4841255964358253892, guid: 741e1b7eb9062fa4dbeb3872c2c99206,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[1]
       value: 
-      objectReference: {fileID: 9144258476487417920, guid: b37a5a5f297c59848aeb87e126825a71,
+      objectReference: {fileID: 7408054316407774485, guid: 582232eafa1565d4f8c7626b62f37219,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[2]
       value: 
-      objectReference: {fileID: 4841255964358253892, guid: 741e1b7eb9062fa4dbeb3872c2c99206,
+      objectReference: {fileID: 8372434578970760726, guid: f5893af301a7d61419138b7b7f038d16,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[3]
       value: 
-      objectReference: {fileID: 7408054316407774485, guid: 582232eafa1565d4f8c7626b62f37219,
+      objectReference: {fileID: 5529370965303904924, guid: 3e41c781682afec4a929c3a1a277fbcf,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[4]
       value: 
-      objectReference: {fileID: 8372434578970760726, guid: f5893af301a7d61419138b7b7f038d16,
+      objectReference: {fileID: 3898250558165266356, guid: 845db82b87a98f244a8246b7ec4b5168,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[5]
       value: 
-      objectReference: {fileID: 5529370965303904924, guid: 3e41c781682afec4a929c3a1a277fbcf,
+      objectReference: {fileID: 9144258476487417920, guid: b37a5a5f297c59848aeb87e126825a71,
         type: 3}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.data[6]
       value: 
-      objectReference: {fileID: 3898250558165266356, guid: 845db82b87a98f244a8246b7ec4b5168,
+      objectReference: {fileID: 8049785582359895414, guid: 2db8d9d6552663d41b048c113878c6d9,
         type: 3}
     - target: {fileID: 2991427587043466505, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
