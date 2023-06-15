@@ -189,8 +189,8 @@ public class PlayerCharacterController : NetworkBehaviour
         playerAnimationState.OnValueChanged += OnPlayerStateChanged;
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
+        LobbyManager.Instance.GetClient(OwnerClientId).playerCharacter = this;
         if (!IsOwner) return;
-        ClientManager.MyClient.playerCharacter = this;
         CameraManager.MyCamera.TargetPlayer();
     }
 

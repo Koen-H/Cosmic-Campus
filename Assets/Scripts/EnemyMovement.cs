@@ -35,6 +35,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
+        if (!enemy.IsOwner) return;
         agent.enabled = true;
         if (canWander) StartCoroutine(Wander());
     }
@@ -88,9 +89,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!enemy.IsOwner) return;
         if (isKnockedBack) Nockback();
         else if (enemy.enemyState != EnemyState.ATTACKING) Move();
-        if (!enemy.IsOwner) return;
         if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
     }
     bool DestinationReached()
