@@ -5,6 +5,18 @@ using UnityEngine;
 
 public class Potion : NetworkBehaviour
 {
+    [SerializeField] GameObject potion;
+    public void SpawnPotion()
+    {
+        if(!IsOwner) Destroy(gameObject);
+        else
+        {
+            GameObject instance = Instantiate(potion, this.transform.position, this.transform.rotation);
+            instance.GetComponent<NetworkObject>().Spawn();
+        }
+    }
+
+
     [Tooltip("Can a enemy use this potion?")]
     [SerializeField] bool allowEnemyPikcup;
     private void OnTriggerEnter(Collider other)

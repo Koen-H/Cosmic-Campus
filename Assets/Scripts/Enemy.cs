@@ -255,7 +255,6 @@ public class Enemy : NetworkBehaviour
 
         foreach (var bodyPart in bodyParts)
         {
-            Debug.Log("Body parts: " + bodyParts.Count);
             bodyPart.parent = null;
             //bodyPart.gameObject.AddComponent<MeshRenderer>();
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
