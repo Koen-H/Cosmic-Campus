@@ -440,7 +440,7 @@ public class RoomGenerator : NetworkBehaviour
             }
             else splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
-            GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
+            GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath, reverse);
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
@@ -470,7 +470,7 @@ public class RoomGenerator : NetworkBehaviour
         }
     }
 
-    private void GenerateGeometry(List<Room> path, List<NavMeshSurface> navMeshSurfaces, List<EnemyNPC> allEnemies, int i, List<Vector3> splinePath)
+    private void GenerateGeometry(List<Room> path, List<NavMeshSurface> navMeshSurfaces, List<EnemyNPC> allEnemies, int i, List<Vector3> splinePath, bool branchedPath = true)
     {
         splinePath.Add(splinePath[splinePath.Count - 1] + (splinePath[splinePath.Count - 1] - splinePath[splinePath.Count - 2]));
         Curve newCurve = Instantiate(curveMesh, this.transform);
@@ -479,6 +479,7 @@ public class RoomGenerator : NetworkBehaviour
         newCurve.gameObject.layer = 6;
         newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
+        if (!branchedPath && i == 0) return;
         int randomCount = systemRand.Next(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
