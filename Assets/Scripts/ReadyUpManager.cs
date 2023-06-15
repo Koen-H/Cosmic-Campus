@@ -1,3 +1,4 @@
+using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ public class ReadyUpManager : NetworkBehaviour
     [SerializeField] Button weaponNextButton;
     [SerializeField] TextMeshProUGUI weaponNextButtonText;
 
+    [SerializeField] List<GameObject> disableItemsOnClient = new List<GameObject>();
+    [SerializeField] GameObject lobbyUI;
+
 
     bool weaponsSelected;
 
@@ -34,11 +38,18 @@ public class ReadyUpManager : NetworkBehaviour
     public void StartNetcodeHost()
     {
         NetworkManager.Singleton.StartHost();
+        SteamMatchmaking.OnLobbyEntered += LoadLobby;
     }
 
     public void StartNetcodeClient()
     {
         NetworkManager.Singleton.StartClient();
+    }
+
+    void LoadLobby(Steamworks.Data.Lobby lobby)
+    {
+        foreach(GameObject obj in disableItemsOnClient) obj.SetActive(false);
+        lobbyUI.SetActive(true);
     }
 
     void NewClientJoined(ClientManager newClient)

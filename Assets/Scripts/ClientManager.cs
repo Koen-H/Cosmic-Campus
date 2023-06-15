@@ -10,7 +10,8 @@ public class ClientManager : NetworkBehaviour
     private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //public NetworkVariable<string> playerName = null;
     public NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>("Player", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<ulong> steamId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> usingSteam = new NetworkVariable<bool>(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
     [SerializeField] public PlayerData playerData = null;
 
     public PlayerCharacterController playerCharacter = null;
@@ -51,8 +52,9 @@ public class ClientManager : NetworkBehaviour
             clientId.Value = NetworkManager.Singleton.LocalClientId;
             if (SteamClient.IsLoggedOn == true)
             {
+                usingSteam.Value = true;
                 playerName.Value = SteamClient.Name;
-                steamAccountId.Value = SteamClient.SteamId.AccountId;
+                steamId.Value = SteamClient.SteamId;
 
             }
         }

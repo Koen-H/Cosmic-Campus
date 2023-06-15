@@ -1,5 +1,7 @@
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +31,8 @@ public class PlayerUIItem : MonoBehaviour
     [SerializeField] private Image relatedHealthUI;
     [SerializeField] private Image relatedCooldownUI;
     [SerializeField] private TextMeshProUGUI relatedText;
+
+    [SerializeField] private RawImage playerImage;
 
     float maxHealth;
     float barMult; 
@@ -87,6 +91,22 @@ public class PlayerUIItem : MonoBehaviour
         barMult = 1 / maxHealth;
         UpdateHealthBar(0, relatedClient.playerCharacter.health.Value);
         if (relatedText != null) relatedText.text = relatedClient.playerName.Value.ToString();
+
+    }
+
+    async void LoadSteamAvatar(){
+        if(playerImage == null) return;
+        if(!SteamClient.IsLoggedOn) return;
+        if(!relatedClient.usingSteam.Value) return;
+        var avatarTask = SteamAvatarTest.GetAvatar(relatedClient.steamId.Value);
+
+        await Task.WhenAll(avatarTask);
+        var avatar  = await avatarTask;
+
+        if(avatar != null){
+            Texture2D avatarTexture = SteamAvatarTest.Convert(avatar);
+            playerImage.texture = avatarTexture;
+        }
 
     }
 
