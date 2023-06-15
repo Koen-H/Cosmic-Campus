@@ -126,16 +126,23 @@ public class RoomGenerator : NetworkBehaviour
     {
         //Debug.Log("From : " + from.normal);
         //Debug.Log("To : " + to.normal);
-        int resolution = splineResolution; // Higher numbers make the curve smoother
+
         Vector3 fromDirection = (from.normal + Vector3.forward).normalized * splineSharpness;
         Vector3 toDirection = (to.normal - Vector3.forward).normalized * splineSharpness;
+
+
+        Vector3 p1 = from.position; // Starting point
+        Vector3 d1 = from.position + fromDirection; // First control point
+        Vector3 p2 = to.position; // Ending point
+        Vector3 d2 = to.position + toDirection; // Second control point
+
+        return SplinePath( p1, d1, p2, d2);
+    }
+
+    private List<Vector3> SplinePath( Vector3 p1, Vector3 d1, Vector3 p2,Vector3 d2)
+    {
         List<Vector3> pathPoints = new List<Vector3>();
-
-        Vector3 p0 = from.position; // Starting point
-        Vector3 p1 = from.position + fromDirection; // First control point
-        Vector3 p2 = to.position + toDirection; // Second control point
-        Vector3 p3 = to.position; // Ending point
-
+        int resolution = splineResolution; // Higher numbers make the curve smoother
         // Generate the curve
         for (int i = 0; i <= resolution; i++)
         {
@@ -145,7 +152,7 @@ public class RoomGenerator : NetworkBehaviour
             float uu = u * u;
             float uuu = uu * u;
             float ttt = tt * t;
-            Vector3 point = uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3;
+            Vector3 point = uuu * p1 + 3 * uu * t * d1 + 3 * u * tt * d2 + ttt * p2;
             pathPoints.Add(point);
 
             // Draw the curve
@@ -157,7 +164,7 @@ public class RoomGenerator : NetworkBehaviour
                 float uu2 = u2 * u2;
                 float uuu2 = uu2 * u2;
                 float ttt2 = tt2 * t2;
-                Vector3 point2 = uuu2 * p0 + 3 * uu2 * t2 * p1 + 3 * u2 * tt2 * p2 + ttt2 * p3;
+                Vector3 point2 = uuu2 * p1 + 3 * uu2 * t2 * d1 + 3 * u2 * tt2 * d2 + ttt2 * p2;
                 //Debug.DrawLine(point, point2, Color.blue, drawingDelay);
             }
 
@@ -165,7 +172,6 @@ public class RoomGenerator : NetworkBehaviour
 
         return pathPoints;
     }
-
 
     private void Update()
     {
@@ -411,7 +417,26 @@ public class RoomGenerator : NetworkBehaviour
             if (!reverse) 
             {
                 otherRoom = path[i].roomA == path[i + 1] ? path[i].roomB : path[i].roomA;
-                splinePath = SplinePath(otherRoom.entrance, path[i + 1].entrance);
+
+                Vector3 leftDoor;
+                Vector3 rightDoor;
+                if (otherRoom.GetRoomPosition().x > path[i + 1].GetRoomPosition().x)
+                {
+                    // other's left to path[i+1]'s right
+                    // other room is on the right
+                    leftDoor = otherRoom.roomPrefab.doorLeft.position + otherRoom.GetRoomPosition();
+                    rightDoor = path[i + 1].roomPrefab.doorRight.position + path[i+1].GetRoomPosition();
+                    splinePath = SplinePath(leftDoor, leftDoor + Vector3.right * splineSharpness / 2, rightDoor, rightDoor + Vector3.right * splineSharpness / 2);
+                }
+                else
+                {
+                    // other's right to path[i+1]'s left
+                    // other room is on the left
+                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i + 1].GetRoomPosition();
+                    rightDoor = otherRoom.roomPrefab.doorRight.position + otherRoom.GetRoomPosition();
+                    splinePath = SplinePath(leftDoor, leftDoor + Vector3.right, rightDoor, rightDoor + Vector3.right);
+                }
+                
             }
             else splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
