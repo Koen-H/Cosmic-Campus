@@ -9,7 +9,7 @@ public class ClientManager : NetworkBehaviour
 {
     private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //public NetworkVariable<string> playerName = null;
-    private NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>("Player", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [SerializeField] public PlayerData playerData = null;
 
@@ -53,9 +53,10 @@ public class ClientManager : NetworkBehaviour
             {
                 playerName.Value = SteamClient.Name;
                 steamAccountId.Value = SteamClient.SteamId.AccountId;
-                this.gameObject.name = $"Client ({SteamClient.Name})";
+
             }
         }
+        this.gameObject.name = $"Client ({playerName.Value})";
     }
     private void Start()
     {

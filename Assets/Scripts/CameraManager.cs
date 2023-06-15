@@ -34,8 +34,10 @@ public class CameraManager : MonoBehaviour
 
     public void TargetPlayer()
     {
-        Transform playerTransform =  ClientManager.MyClient.playerCharacter.transform;
+        Transform playerTransform =  ClientManager.MyClient.playerCharacter.centerPoint.transform;
         SetFollowTarg(playerTransform);
         SetLookTarg(playerTransform);
     }
+
+
 }

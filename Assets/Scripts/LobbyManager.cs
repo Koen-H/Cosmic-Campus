@@ -7,7 +7,7 @@ using UnityEngine;
 public class LobbyManager : MonoBehaviour
 {
     [SerializeField] GameObject playerObj;
-    Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
+    private Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
     public static event System.Action<ClientManager> OnNewClientJoined;
     [SerializeField] GameObject spawnLocation;
 
@@ -45,6 +45,11 @@ public class LobbyManager : MonoBehaviour
         return clients[id];
     }
 
+    public Dictionary<ulong,ClientManager> GetClients()
+    {
+        return clients;
+    }
+
     public int ConnectedClientsAmount()
     {
         return clients.Count;
@@ -65,6 +70,13 @@ public class LobbyManager : MonoBehaviour
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);
         }
+        InitGameUIClientRpc();
+    }
+
+    [ServerRpc]
+    void InitGameUIClientRpc()
+    {
+        CanvasManager.Instance.LoadGameUI();
     }
 
 }

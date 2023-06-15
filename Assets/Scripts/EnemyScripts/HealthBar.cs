@@ -19,7 +19,6 @@ public class HealthBar : MonoBehaviour
     private void Start()
     {
         barMult = 1 / maxValue;
-        
     }
 
     public void ResetBar()

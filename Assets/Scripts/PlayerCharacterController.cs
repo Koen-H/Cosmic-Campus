@@ -14,8 +14,8 @@ using static PlayerSO;
 public class PlayerCharacterController : NetworkBehaviour
 {
     //NetworkVariables
-    NetworkVariable<float> maxHealth = new(50);
-    NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> maxHealth = new(50);
+    public NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
     NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
@@ -132,12 +132,12 @@ public class PlayerCharacterController : NetworkBehaviour
         }
 
         if (!IsOwner) return;
-        LockPlayer(isCurrentlyDead);
+        LockPlayer(isCurrentlyDead, true);
     }
 
-    public void LockPlayer(bool isLocked)
+    public void LockPlayer(bool isLocked, bool deadOverride = false)
     {
-        if (isDead.Value) return;//If dead, you can't change this!
+        if (isDead.Value && !deadOverride) return;//If dead, you can't change this!
         canMove = !isLocked;
         canAttack = !isLocked;
         canAbility = !isLocked;
