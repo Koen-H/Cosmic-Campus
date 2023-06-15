@@ -606,7 +606,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunForward:
     m_InternalValue: {x: 0, y: 0, z: 0}
-  moveSpeed: 7
   canMove: 1
   canAttack: 1
   canAbility: 1
@@ -621,7 +620,7 @@ MonoBehaviour:
   playerWeapon: {fileID: 5890912343632651228}
   accelerationTime: 0.5
   decelerationTime: 0.5
-  maxSpeed: 5
+  maxSpeed: 7.5
   currentSpeed: 0
   effectManager: {fileID: 0}
   checkPoint: {x: 0, y: 0, z: 0}

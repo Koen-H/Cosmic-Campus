@@ -19,7 +19,7 @@ public class PlayerCharacterController : NetworkBehaviour
     NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
-    public float moveSpeed = 5f;
+    //public float moveSpeed = 5f;
     public bool canMove = true;
     public bool canAttack = true;
     public bool canAbility = true;
