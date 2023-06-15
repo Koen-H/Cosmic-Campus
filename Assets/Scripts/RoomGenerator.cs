@@ -419,21 +419,21 @@ public class RoomGenerator : NetworkBehaviour
 
                 Vector3 leftDoor;
                 Vector3 rightDoor;
-                if (otherRoom.GetRoomPosition().x > path[i + 1].GetRoomPosition().x)
+                if (otherRoom.GetRoomPosition().x < path[i + 1].GetRoomPosition().x)
                 {
-                    // other's left to path[i+1]'s right
-                    // other room is on the right
-                    leftDoor = otherRoom.roomPrefab.doorLeft.position + otherRoom.GetRoomPosition();
-                    rightDoor = path[i + 1].roomPrefab.doorRight.position + path[i+1].GetRoomPosition();
-                    splinePath = SplinePath(leftDoor, leftDoor + Vector3.right * splineSharpness / 2, rightDoor, rightDoor + Vector3.right * splineSharpness / 2);
+                    // other's right to path's left
+                    // other room is on the Left
+                    rightDoor = otherRoom.roomPrefab.doorRight.position + otherRoom.GetRoomPosition();
+                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i+1].GetRoomPosition();
+                    splinePath = SplinePath(rightDoor, rightDoor + Vector3.right, leftDoor, leftDoor - Vector3.right);
                 }
                 else
                 {
-                    // other's right to path[i+1]'s left
-                    // other room is on the left
-                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i + 1].GetRoomPosition();
-                    rightDoor = otherRoom.roomPrefab.doorRight.position + otherRoom.GetRoomPosition();
-                    splinePath = SplinePath(leftDoor, leftDoor + Vector3.right, rightDoor, rightDoor + Vector3.right);
+                    // path's right to other's left
+                    // other room is on the Right
+                    rightDoor = path[i + 1].roomPrefab.doorRight.position + path[i + 1].GetRoomPosition();
+                    leftDoor = otherRoom.roomPrefab.doorLeft.position + otherRoom.GetRoomPosition();
+                    splinePath = SplinePath(leftDoor, leftDoor - Vector3.right, rightDoor, rightDoor + Vector3.right);
                 }
                 
             }
