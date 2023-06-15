@@ -91,7 +91,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void Control()
     {
         Move();
-        if (Input.GetMouseButtonDown(0) && !exploded)
+        if (Input.GetMouseButtonDown(1) && !exploded && isBuilding.Value == false)
         {
             exploded = true;
             ExplodeServerRpc();
