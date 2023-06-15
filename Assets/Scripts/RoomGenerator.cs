@@ -96,7 +96,7 @@ public class RoomGenerator : NetworkBehaviour
                 {
                     if (room.roomLayer == latestEnemyLayer) {
                         foreach (var spawner in room.enemySpawners) spawner.SpawnEnemy();
-                        foreach (var potion in room.potions) potion.Spawn();
+                        foreach (var potion in room.potions) potion.GetComponent<Potion>().SpawnPotion();//TODO:: Replace list with potion.cs instead of networkobject
                     }
                 }
             }

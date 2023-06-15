@@ -32,7 +32,7 @@ public class Bow : Weapon
             AttackStart();
         }
         if (weaponState != WeaponState.HOLD) return;
-        Aim();
+        Aim(true);
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -41,7 +41,7 @@ public class Bow : Weapon
     public override void OnAttackInputStop()
     {
         if (weaponState != WeaponState.HOLD) return;
-        Aim();
+        Aim(true);
         if (isCharging)
         {
             ShootArrow();
