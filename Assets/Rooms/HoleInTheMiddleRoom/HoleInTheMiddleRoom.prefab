@@ -188,7 +188,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171949837066016196}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -4.03, y: -3.66, z: 0.37}
+  m_LocalPosition: {x: 0.3, y: -3.66, z: -22.5}
   m_LocalScale: {x: 1, y: 1, z: 1.255}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4924,6 +4924,7 @@ MonoBehaviour:
   - {fileID: 8103462142701649475}
   potions:
   - {fileID: 7965631455173700715}
+  roomLength: 100
 --- !u!65 &6739474198767376927
 BoxCollider:
   m_ObjectHideFlags: 0
