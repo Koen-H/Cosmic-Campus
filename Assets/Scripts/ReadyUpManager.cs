@@ -177,8 +177,6 @@ public class ReadyUpManager : NetworkBehaviour
 
     void CheckReady()
     {
-        if (!IsServer) return;
-
         charNextButton.gameObject.SetActive(true);
         weaponNextButton.gameObject.SetActive(true);
 
@@ -196,12 +194,12 @@ public class ReadyUpManager : NetworkBehaviour
         {
             if (!weaponsSelected)
             {
-                charNextButton.interactable = true;
+                if(IsServer)charNextButton.interactable = true;
                 charNextButtonText.text = "Everyone ready!";
             }
             else
             {
-                weaponNextButton.interactable = true;
+                if (IsServer) weaponNextButton.interactable = true;
                 weaponNextButtonText.text = "Everyone ready!";
             }
         }
@@ -215,7 +213,7 @@ public class ReadyUpManager : NetworkBehaviour
             else
             {
                 weaponNextButton.interactable = false;
-                charNextButtonText.text = $"{isReadies}/{clientReady.Count} ready";
+                weaponNextButtonText.text = $"{isReadies}/{clientReady.Count} ready";
             }
         }
     }
@@ -237,6 +235,8 @@ public class ReadyUpManager : NetworkBehaviour
     [ClientRpc]
     void ReadyUpClientRpc(bool ready, ulong receivedClientId)
     {
+        clientReady[receivedClientId] = ready;
+        CheckReady();
         clientItems[receivedClientId].platform.GetComponent<ReadyUpPlatform>().ChangeColor(ready);
     }
 

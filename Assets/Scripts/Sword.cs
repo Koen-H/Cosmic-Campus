@@ -102,7 +102,7 @@ public class Sword : Weapon
         Aim();
         playerController.AttackServerRpc();
         Attack();
-        //playerController.ToggleMovement(false);
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// While the player is holding the input
@@ -112,7 +112,7 @@ public class Sword : Weapon
         if (weaponState != WeaponState.READY) return;
         playerController.AttackServerRpc();
         Attack();
-        //playerController.ToggleMovement(false);
+        playerController.ToggleMovement(false);
     }
     /// <summary>
     /// When the player lets go of the input
