@@ -80,7 +80,7 @@ public class Sword : Weapon
     {
         // Reset the local position, rotation, and scale of the parent first
         parentTransform.localPosition = Vector3.zero;
-        parentTransform.localRotation = Quaternion.EulerAngles(0,-Mathf.PI/2,0);
+        parentTransform.localRotation = Quaternion.EulerAngles(196 * Mathf.Deg2Rad, (-83 + 20) * Mathf.Deg2Rad, (-156 -90) * Mathf.Deg2Rad);
         //parentTransform.localScale = Vector3.one;
 
         // Log the reset operation with depth indication
