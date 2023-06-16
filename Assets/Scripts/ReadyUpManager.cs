@@ -33,12 +33,12 @@ public class ReadyUpManager : NetworkBehaviour
     private void Start()
     {
         LobbyManager.OnNewClientJoined += NewClientJoined;
+        SteamMatchmaking.OnLobbyEntered += LoadLobby;
     }
 
     public void StartNetcodeHost()
     {
         NetworkManager.Singleton.StartHost();
-        SteamMatchmaking.OnLobbyEntered += LoadLobby;
     }
 
     public void StartNetcodeClient()
