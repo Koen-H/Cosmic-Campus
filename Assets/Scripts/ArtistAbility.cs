@@ -28,7 +28,7 @@ public class ArtistAbility : Ability
     public override void Activate(Vector3 origin, Vector3 direction)
     {
         Ray ray = new Ray(origin, direction);
-        LayerMask layerMask = ~LayerMask.GetMask("Decal");
+        LayerMask layerMask = ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("Enemy") | LayerMask.GetMask("Area") | LayerMask.GetMask("Player") | LayerMask.GetMask("UI"));
         RaycastHit hit;
         GameObject target = null;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) target = hit.collider.gameObject;

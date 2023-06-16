@@ -231,7 +231,7 @@ public class Staff : Weapon
                 int layerMask = 1 << 2 | 1 << 3;
                 layerMask = ~layerMask; // Invert the mask to ignore the "IgnoreRaycast" and player layer
 
-                if (Physics.Raycast(from.position, diff.normalized, out hit, diff.magnitude, layerMask)) // Pass the layerMask as a parameter to the Raycast method
+                if (Physics.Raycast(from.position, diff.normalized, out hit, diff.magnitude, ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("UI") | LayerMask.GetMask("Area") | LayerMask.GetMask("Debris") | LayerMask.GetMask("Player")))) // Pass the layerMask as a parameter to the Raycast method
                 {
                     if (!hit.transform.CompareTag("Enemy"))
                     {

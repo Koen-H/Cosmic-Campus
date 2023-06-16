@@ -6,7 +6,7 @@ public class PunchAttack : EnemyAttackBehaviour
 {
 
     [SerializeField, Tooltip("From what distance should we try the attack?")] 
-    float attackRange = 2f;
+    protected float attackRange = 2f;
     Animator attackAnim;
 
 
@@ -40,15 +40,17 @@ public class PunchAttack : EnemyAttackBehaviour
 
     protected override void Attack()
     {
-        base.Attack();
+        Attacked();
         //
         ToggleColliders(true);
 
         //Play the punch attack animation
 
         //For now...
-        if (!enemy.IsOwner) return;
-        enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
+        if (enemy.IsOwner)
+        {
+            enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
+        }
 
       /*  attackAnim = GetComponentInChildren<Animator>();
         attackAnim.SetTrigger("Animate");*/

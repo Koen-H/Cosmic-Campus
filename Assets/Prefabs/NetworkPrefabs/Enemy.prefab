@@ -1100,7 +1100,7 @@ GameObject:
   - component: {fileID: 5828733006822386583}
   - component: {fileID: 1549390999124224954}
   - component: {fileID: 1853999816430095156}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: IK.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2030,7 +2030,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6880509871702667902}
   - component: {fileID: 6913687221059783418}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Avatar
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -2257,7 +2257,6 @@ GameObject:
   - component: {fileID: 6880509872615113896}
   - component: {fileID: 173293622072896792}
   - component: {fileID: 2709977735729543836}
-  - component: {fileID: 6751595306529879877}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -2431,31 +2430,11 @@ MonoBehaviour:
   forceTypeMatch: 0
   health:
     m_InternalValue: 10
-  effectManager: {fileID: 0}
+  effectManager: {fileID: 2709977735729543836}
   animator: {fileID: 7715964056141395901}
   enemyAnimationState:
     m_InternalValue: 0
 --- !u!114 &2709977735729543836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6880509872615113898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87e50ac8593d37d418f226018ea74c63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allEffects: []
-  attackEffects: []
-  movementEffects: []
-  resistanceEffects: []
-  player: {fileID: 0}
-  enemy: {fileID: 0}
-  isEnemy: 0
-  IsOwner: 0
---- !u!114 &6751595306529879877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

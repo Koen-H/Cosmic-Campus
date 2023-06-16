@@ -27,10 +27,15 @@ public abstract class EnemyAttackBehaviour : MonoBehaviour
 
     protected virtual void Attack()
     {
+
+        return;
+    }
+
+    protected void Attacked()
+    {
         if (!enemy.IsOwner) return;
         enemy.enemyState = EnemyState.ATTACKING;
         if (!canMoveDuringAttack) agent.isStopped = true;
-        
     }
 
     protected IEnumerator AfterAttackAnim(float seconds)

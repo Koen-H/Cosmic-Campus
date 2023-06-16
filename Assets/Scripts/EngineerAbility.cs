@@ -23,9 +23,9 @@ public class EngineerAbility : Ability
     {
         if (!player.IsOwner) return;
         //base.Activate(origin, direction);
-        Ray ray = new Ray(origin, direction);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit)) ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
+        LayerMask layerMask = ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("Enemy") | LayerMask.GetMask("Area") | LayerMask.GetMask("Player") | LayerMask.GetMask("UI"));
+        if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity, layerMask)) ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
         else return;
         player.AttackStopServerRpc();
         player.engineering = true;

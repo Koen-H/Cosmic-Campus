@@ -91,7 +91,7 @@ public class PlayerUIItem : MonoBehaviour
         barMult = 1 / maxHealth;
         UpdateHealthBar(0, relatedClient.playerCharacter.health.Value);
         if (relatedText != null) relatedText.text = relatedClient.playerName.Value.ToString();
-
+        LoadSteamAvatar();
     }
 
     async void LoadSteamAvatar(){

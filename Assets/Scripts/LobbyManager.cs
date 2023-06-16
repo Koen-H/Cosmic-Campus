@@ -55,6 +55,11 @@ public class LobbyManager : MonoBehaviour
         return clients.Count;
     }
 
+    public void CreateCharactersZerozero()
+    {
+        CreateCharacters(Vector3.zero);
+    }
+
     public void CreateCharacters(Vector3 spawnLoaction)
     {
 
