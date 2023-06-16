@@ -261,6 +261,7 @@ public class Enemy : NetworkBehaviour
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
             bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
+            bodyPart.gameObject.layer = LayerMask.NameToLayer("Debris");
         }
     }
     List<Transform> GetChildren(Transform parent)
@@ -299,7 +300,6 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     void FixHealthBar()
     {
-        //TODO: Fix.
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 

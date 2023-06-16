@@ -21,6 +21,7 @@ public class PunchAttack : EnemyAttackBehaviour
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
         }
+        ToggleColliders(false);
     }
     private void OnDisable()
     {

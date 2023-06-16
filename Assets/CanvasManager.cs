@@ -7,6 +7,17 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
+
+    [Header("Prompts")]
+    [SerializeField] TextMeshProUGUI revivePrompt;
+
+
+    [SerializeField] TextMeshProUGUI engineerPrompt;
+
+
+
+
+
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
     [SerializeField] TextMeshProUGUI loadingHint;
@@ -57,5 +68,16 @@ public class CanvasManager : MonoBehaviour
             uiItems[i].LoadCorrectUI();
             i++;
         }
+    }
+
+    public void ToggleRevive(bool toggle)
+    {
+        revivePrompt.gameObject.SetActive(toggle);
+    }
+
+    public void SetEngineerPrompt(string prompt, bool enabled = true) {
+        engineerPrompt.text = prompt;
+        engineerPrompt.gameObject.SetActive(enabled);
+
     }
 }

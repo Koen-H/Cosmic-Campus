@@ -257,6 +257,7 @@ public class ReadyUpManager : NetworkBehaviour
 
     public void StartGame()
     {
+        SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
         EnableLoadingScreenClientRpc();
         NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
     }

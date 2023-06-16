@@ -31,6 +31,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
+    [SerializeField] HealthBar healthBar;
     [SerializeField] ReviveAreaManager myReviveArea;
     public ReviveAreaManager otherReviveArea;
 
@@ -172,11 +173,11 @@ public class PlayerCharacterController : NetworkBehaviour
         otherReviveArea = reviveArea;
         if(otherReviveArea != null)
         {
-            //TODO: show ui option for revive
+            CanvasManager.Instance.ToggleRevive(true);
         }
         else
         {
-            //TODO: Hide that option for revive
+            CanvasManager.Instance.ToggleRevive(false);
         }
     }
 
@@ -192,6 +193,8 @@ public class PlayerCharacterController : NetworkBehaviour
         LobbyManager.Instance.GetClient(OwnerClientId).playerCharacter = this;
         if (!IsOwner) return;
         CameraManager.MyCamera.TargetPlayer();
+        healthBar.SetMaxValue(maxHealth.Value);
+        healthBar.UpdateBar((int)health.Value);
     }
 
     void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
@@ -211,7 +214,8 @@ public class PlayerCharacterController : NetworkBehaviour
     }
     void OnHealthChange(float prevHealth, float newHealth)
     {
-        healthText.text = health.Value.ToString();
+        //healthText.text = health.Value.ToString();
+        healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
             Debug.Log("Take damage!");
@@ -235,6 +239,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void Update()
     {
+        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
         if (canMove) Move();
