@@ -1,4 +1,5 @@
 using Discord;
+using System.Collections;
 using UnityEngine;
 
 public class DiscordManager : MonoBehaviour
@@ -13,11 +14,12 @@ public class DiscordManager : MonoBehaviour
 
     private long time;
 
-    private static bool instanceExists;
     public Discord.Discord discord;
 
-    private static DiscordManager instance;
+    public float randomUpdatesInterval = 20;
+    public bool randomUpdates = false;
 
+    private static DiscordManager instance;
     public static DiscordManager Instance
     {
         get
@@ -28,16 +30,15 @@ public class DiscordManager : MonoBehaviour
     }
 
 
-
     void Awake()
     {
         // Transition the GameObject between scenes, destroy any duplicates
-        if (!instanceExists)
+        if (instance == null)
         {
-            instanceExists = true;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (FindObjectsOfType(GetType()).Length > 1)
+        else
         {
             Destroy(gameObject);
         }
@@ -47,7 +48,7 @@ public class DiscordManager : MonoBehaviour
     {
         // Log in with the Application ID
         discord = new Discord.Discord(applicationID, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
-        UpdateStatus();
+        UpdateStatus(details,state, largeText,largeImage);
     }
 
     void Update()
@@ -63,13 +64,20 @@ public class DiscordManager : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    void OnApplicationQuit()
     {
-        UpdateStatus();
+        if (discord == null) return;
+        discord.Dispose();
     }
 
-    void UpdateStatus()
+    public void UpdateStatus(string newDetails = "", string newState = "", string newLargeText = "", string newLargeImage = "game_logo")
     {
+        this.details = newDetails;
+        this.state = newState;
+        this.largeText = newLargeText;
+        this.largeImage = newLargeImage;
+
+
         // Update Status every frame
         try
         {
@@ -99,5 +107,39 @@ public class DiscordManager : MonoBehaviour
             // If updating the status fails, Destroy the GameObject
             Destroy(gameObject);
         }
+    }
+
+    public void ToggleRandomUpdates(bool toggle)
+    {
+        randomUpdates= toggle;
+        if(randomUpdates) StartCoroutine(RandomUpdates());
+    }
+
+
+    IEnumerator RandomUpdates()
+    {
+        int options = 3;
+        int r = Random.Range(0, options);
+        switch (r)
+        {
+            case 0://Golems killed
+                UpdateStatus("Fighting golems", $"Golems killed: {ClientManager.MyClient.golemsKilled.Value}");
+                break;
+            case 1://Show current health
+                UpdateStatus("Chuckles in danger", $"Current Health: {ClientManager.MyClient.playerCharacter.health.Value}");
+                break;
+            case 2://Mark mom jokes
+                UpdateStatus("Oh hi Mark!", $"Your Mom Jokes: Too many");
+                break;
+            default:
+                UpdateStatus("Jumping in blackholes", $"Times died: {ClientManager.MyClient.timesDied.Value}");
+                break;
+
+        }
+
+
+        yield return new WaitForSeconds(randomUpdatesInterval);
+        if (randomUpdates) StartCoroutine(RandomUpdates());
+
     }
 }

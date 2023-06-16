@@ -64,6 +64,9 @@ public class Enemy : NetworkBehaviour
         }
     }
 
+
+    private ulong lastClientDamageID;
+
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
 
@@ -189,7 +192,7 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false , ServerRpcParams serverRpcParams = default)
     {
         float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
         if (enemyType.Value != EnemyType.NONE)
@@ -213,6 +216,7 @@ public class Enemy : NetworkBehaviour
         }
         totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
         health.Value -= totalDamage;
+        lastClientDamageID = serverRpcParams.Receive.SenderClientId;
     }
 
     /// <summary>
@@ -245,7 +249,7 @@ public class Enemy : NetworkBehaviour
 
         //if (IsOwner) StartCoroutine(LateDestroy());
         if (IsOwner) Destroy(this.gameObject);
-        gameObject.SetActive(false);
+        LobbyManager.Instance.GetClient(lastClientDamageID).golemsKilled.Value++;
     }
     void FallApart()
     {

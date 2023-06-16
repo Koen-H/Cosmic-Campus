@@ -112,10 +112,7 @@ public class ReadyUpManager : NetworkBehaviour
                 playerRoleData = GameData.Instance.engineerData;
                 break;
             default:
-                Debug.Log("no value!?");
                 try {
-                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRole.Value);
-                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData);
                     playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;}
                 catch { return; }
                 break;
@@ -179,7 +176,6 @@ public class ReadyUpManager : NetworkBehaviour
     {
         charNextButton.gameObject.SetActive(true);
         weaponNextButton.gameObject.SetActive(true);
-
         int isReadies = 0;
         foreach (KeyValuePair<ulong, bool> entry in clientReady)
         {
@@ -216,6 +212,8 @@ public class ReadyUpManager : NetworkBehaviour
                 weaponNextButtonText.text = $"{isReadies}/{clientReady.Count} ready";
             }
         }
+        DiscordManager.Instance.UpdateStatus("Waiting for friends", $"{isReadies}/{clientReady.Count} ready");
+
     }
 
     void UnreadyAll()

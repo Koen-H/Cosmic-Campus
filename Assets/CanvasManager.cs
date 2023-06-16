@@ -78,6 +78,5 @@ public class CanvasManager : MonoBehaviour
     public void SetEngineerPrompt(string prompt, bool enabled = true) {
         engineerPrompt.text = prompt;
         engineerPrompt.gameObject.SetActive(enabled);
-
     }
 }

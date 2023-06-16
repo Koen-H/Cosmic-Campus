@@ -75,6 +75,8 @@ public class LobbyManager : MonoBehaviour
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
             networkObj.SpawnWithOwnership(client.Value.ClientId);
         }
+
+        DiscordManager.Instance.ToggleRandomUpdates(true);
     }
 
 }

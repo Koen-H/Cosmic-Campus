@@ -127,6 +127,7 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
+            if (IsOwner) ClientManager.MyClient.timesDied.Value++;
         }
         else
         {

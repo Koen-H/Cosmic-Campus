@@ -49,7 +49,6 @@ public class GameManager : NetworkBehaviour
     public void LoadGameUIClientRpc()
     {
         CanvasManager.Instance.LoadGameUI();
-
     }
 
 
