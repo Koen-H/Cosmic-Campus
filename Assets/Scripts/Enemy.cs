@@ -248,8 +248,11 @@ public class Enemy : NetworkBehaviour
     {
 
         //if (IsOwner) StartCoroutine(LateDestroy());
-        if (IsOwner) Destroy(this.gameObject);
-        LobbyManager.Instance.GetClient(lastClientDamageID).golemsKilled.Value++;
+        if (IsOwner)
+        {
+            Destroy(this.gameObject);
+            LobbyManager.Instance.GetClient(lastClientDamageID).golemsKilled.Value++;
+        }
     }
     void FallApart()
     {

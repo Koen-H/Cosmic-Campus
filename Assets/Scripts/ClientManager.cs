@@ -16,7 +16,7 @@ public class ClientManager : NetworkBehaviour
     [SerializeField] public PlayerData playerData = null;
 
     [Header("Statistics")]
-    public NetworkVariable<int> golemsKilled = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> golemsKilled = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> timesDied = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public PlayerCharacterController playerCharacter = null;

@@ -96,4 +96,9 @@ public class CanvasManager : MonoBehaviour
             
         }
     }
+
+    public void SetCooldown(float value)
+    {
+        uiItems[0].SetCooldown(value);
+    }
 }

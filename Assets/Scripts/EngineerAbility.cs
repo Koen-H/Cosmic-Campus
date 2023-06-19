@@ -15,7 +15,7 @@ public class EngineerAbility : Ability
     public void Update()
     {
         if (!player.IsOwner) return;
-        if (Input.GetMouseButtonDown(1) && canUse)  // 1 is the right mouse button
+        if (Input.GetMouseButtonDown(1) && !onCooldown)  // 1 is the right mouse button
         {
             if (!player.canAbility) return;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

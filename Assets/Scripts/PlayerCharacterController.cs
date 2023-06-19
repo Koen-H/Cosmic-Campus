@@ -193,10 +193,11 @@ public class PlayerCharacterController : NetworkBehaviour
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         LobbyManager.Instance.GetClient(OwnerClientId).playerCharacter = this;
-        if (!IsOwner) return;
-        CameraManager.MyCamera.TargetPlayer();
         healthBar.SetMaxValue(maxHealth.Value);
         healthBar.UpdateBar((int)health.Value);
+        if (!IsOwner) return;
+        CameraManager.MyCamera.TargetPlayer();
+
     }
 
     void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
@@ -389,6 +390,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void ToggleMovement(bool toggle)
     {
+        Debug.Log("Toggled move to" + toggle);
         if (isDead.Value) return;
         if (engineering) return;
         canMove = toggle;

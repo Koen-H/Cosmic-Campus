@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.Burst.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 using static UnityEngine.UI.Image;
 
 public class Ability : MonoBehaviour
@@ -10,6 +11,7 @@ public class Ability : MonoBehaviour
     public float interactionRange = 5f;
     [SerializeField] protected float cooldown;
     protected bool canUse = true;
+    protected bool onCooldown = false;
 
     protected PlayerCharacterController player;
 
@@ -31,7 +33,7 @@ public class Ability : MonoBehaviour
 
     public void AbilityInput()
     {
-        if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
+        if (Input.GetMouseButtonUp(1) && onCooldown)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (GetTarget(ray.origin, ray.direction) != null)
@@ -95,8 +97,18 @@ public class Ability : MonoBehaviour
 
     protected IEnumerator Cooldown(float time)
     {
-        canUse = false;
-        yield return new WaitForSeconds(time);
-        canUse = true;
+        //Calculate on cooldown, incase we have a special effects that decreases the cooldown.
+        onCooldown = true;
+        float barMult = 1 / time;
+
+        while(time > 0)
+        {
+            float xValue = time * barMult;
+            if (time < 0) xValue = 0;
+            CanvasManager.Instance.SetCooldown(xValue);
+            time -= 0.1f;
+            yield return new WaitForSeconds(0.1f);
+        }
+        onCooldown = false;
     }
 }

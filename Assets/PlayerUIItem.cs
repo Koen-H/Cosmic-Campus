@@ -51,18 +51,21 @@ public class PlayerUIItem : MonoBehaviour
             case PlayerRole.ARTIST:
             {
                     relatedHealthUI = artistHealthUI;
+                    relatedCooldownUI = artistHealthUI;
                     uiItems = artistUI;
                     break;
             }
             case PlayerRole.DESIGNER:
             {
                     relatedHealthUI = designerHealthUI;
+                    relatedCooldownUI = designerCooldownUI;
                     uiItems = designerUI;
                     break;
                 }
             case PlayerRole.ENGINEER:
                 {
                     relatedHealthUI = engineerHealthUI;
+                    relatedCooldownUI = engineerCooldownUI;
                     uiItems = engineerUI;
                     break;
                 }
@@ -117,6 +120,11 @@ public class PlayerUIItem : MonoBehaviour
         if (newHealth < 0) xValue = 0;
         relatedHealthUI.fillAmount = xValue;
 
+    }
+
+    public void SetCooldown(float value)
+    {
+        relatedCooldownUI.fillAmount = value;
     }
 
 }

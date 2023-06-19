@@ -26,7 +26,7 @@ public class DesignerAbility : Ability
     public override void Activate(Vector3 origin, Vector3 direction)
     {
         //base.Activate(origin,direction); //there was a reason why i didnt have base in here
-        if (!canUse) return;
+        if (onCooldown) return;
 
         canUse = false;
         target = GetTarget(origin,direction);
