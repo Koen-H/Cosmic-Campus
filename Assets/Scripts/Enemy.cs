@@ -337,11 +337,6 @@ public class Enemy : NetworkBehaviour
         if (enemyState == EnemyState.ATTACKING) return;
         targetBehaviour.FindTarget();
         attackBehaviour.TryAttack();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
 
 
