@@ -15,7 +15,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI engineerPrompt;
 
 
-
+    [SerializeField] List<ArtistUIAbility> artistUIAbilities;
 
 
     [SerializeField] GameObject loadingScreen;
@@ -78,5 +78,22 @@ public class CanvasManager : MonoBehaviour
     public void SetEngineerPrompt(string prompt, bool enabled = true) {
         engineerPrompt.text = prompt;
         engineerPrompt.gameObject.SetActive(enabled);
+    }
+
+
+    public void UpdateArtistUI(List<ArtistPaintColor> paintBucket)
+    {
+        for(int i = 0; i < artistUIAbilities.Count; i++)
+        {
+            if(paintBucket.Count > i)
+            {
+                artistUIAbilities[i].UpdateImage(paintBucket[i]);
+            }
+            else
+            {
+                artistUIAbilities[i].UpdateImage(ArtistPaintColor.NONE);
+            }
+            
+        }
     }
 }

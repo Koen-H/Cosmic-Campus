@@ -13,11 +13,11 @@ public class Ability : MonoBehaviour
 
     protected PlayerCharacterController player;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         player = GetComponent<PlayerCharacterController>();
     }
-    private void Update()
+    protected virtual void Update()
     {
         if (!player.IsOwner) return;
         if (!player.canAbility) return;//Until ability is refactored
@@ -88,13 +88,14 @@ public class Ability : MonoBehaviour
         if (target == null) return;
 
 
-        canUse = false;
-        Debug.Log("Activated ability on " + target.name);
-        StartCoroutine(Cooldown(cooldown));
+        //canUse = false;
+        //Debug.Log("Activated ability on " + target.name);
+        //StartCoroutine(Cooldown(cooldown));
     }
 
-    IEnumerator Cooldown(float time)
+    protected IEnumerator Cooldown(float time)
     {
+        canUse = false;
         yield return new WaitForSeconds(time);
         canUse = true;
     }

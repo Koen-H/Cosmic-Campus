@@ -16,6 +16,13 @@ public class DesignerAbility : Ability
 
     Vector3 offset = new Vector3(0,2.5f,2);
 
+    protected override void Awake()
+    {
+        base.Awake();
+        cooldown = 5;
+    }
+
+
     public override void Activate(Vector3 origin, Vector3 direction)
     {
         //base.Activate(origin,direction); //there was a reason why i didnt have base in here
@@ -48,13 +55,8 @@ public class DesignerAbility : Ability
         //    target.transform.localScale.y / 2,
         //    target.transform.position.z
         //);
-        canUse = true;
         target = null;
+        StartCoroutine(Cooldown(cooldown));
     }
 
-    IEnumerator Cooldown(float time)
-    {
-        yield return new WaitForSeconds(time);
-        canUse = true;
-    }
 }

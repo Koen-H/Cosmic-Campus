@@ -100,6 +100,7 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     private void Heal(float percentage)
     {
+        if (isDead.Value) return;//We don't heal when we are dead. Thats not how it works!
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
