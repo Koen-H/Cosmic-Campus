@@ -56,7 +56,7 @@ public class RangeEnemy : PunchAttack
         if (enemy.IsOwner)
         {
             enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;//Replace with shoot?
-            ShootClientRpc();
+            ShootClientRpc(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint.position);
         }
 
         //Todo: trail?
@@ -67,9 +67,9 @@ public class RangeEnemy : PunchAttack
 
 
     [ClientRpc]
-    void ShootClientRpc()
+    void ShootClientRpc(Vector3 lookAtPos)
     {
-        projectileSpawner.transform.LookAt(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint);
+        projectileSpawner.transform.LookAt(lookAtPos);
         EnemyProjectile projectileInstance = Instantiate(projectile.gameObject, projectileSpawner.transform.position, projectileSpawner.transform.rotation).GetComponent<EnemyProjectile>();
         projectileInstance.GetComponent<Rigidbody>().AddForce(projectileInstance.transform.forward * projectileSpeed);
         projectileInstance.damage = projectileDamage;
