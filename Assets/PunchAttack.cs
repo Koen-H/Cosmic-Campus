@@ -53,15 +53,15 @@ public class PunchAttack : EnemyAttackBehaviour
             enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
         }
 
-      /*  attackAnim = GetComponentInChildren<Animator>();
-        attackAnim.SetTrigger("Animate");*/
+        /*  attackAnim = GetComponentInChildren<Animator>();
+          attackAnim.SetTrigger("Animate");*/
 
-        StartCoroutine(AfterAttackAnim(enemy.animator.GetCurrentAnimatorStateInfo(0).length));
+        float attackAnimDuration = 0.917f;
+        StartCoroutine(AfterAttackAnim(attackAnimDuration));
     }
 
     void OnAttackColliderEnter(Transform enteredTransform)
     {
-        if (!IsOwner) return;
         if (hits.Contains(enteredTransform)) return;
         hits.Add(enteredTransform);
         if (enteredTransform.TryGetComponent(out PlayerCharacterController player))

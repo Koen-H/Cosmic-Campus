@@ -54,11 +54,16 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private Animator animator;
     public Vector3 checkPoint;
+    int checkPointRespawns = 0;
 
     public Transform centerPoint;
 
     protected bool canBeDamaged = true;
     [SerializeField] float invinsibilityDuration;
+
+    bool usingCart = false;
+    [SerializeField] GameObject cartObject;
+    [SerializeField] float cartSpeed;
 
     public enum PlayerAnimationState
     {
@@ -158,6 +163,9 @@ public class PlayerCharacterController : NetworkBehaviour
         canAbility = !isLocked;
     }
 
+
+
+
     /// <summary>
     /// Revive the player
     /// </summary>
@@ -250,6 +258,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
+        if (Input.GetKeyDown(KeyCode.Space)) ToggleCartClientRpc(!usingCart);
         DeathCheck();
     }
 
@@ -260,6 +269,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void Respawn()
     {
         transform.position = checkPoint;
+        checkPointRespawns++;
     }
     void CheckNPCInteraction()
     {
@@ -331,6 +341,21 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+    [ServerRpc]
+    void ToggleCartServerRpc(bool toggle)
+    {
+        ToggleCartClientRpc(toggle);
+    }
+
+    [ClientRpc]
+    void ToggleCartClientRpc(bool toggle)
+    {
+        usingCart = toggle;
+        cartObject.SetActive(toggle);
+        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}");
+    }
+
+
     /// <summary>
     /// Movement
     /// </summary>
@@ -352,7 +377,9 @@ public class PlayerCharacterController : NetworkBehaviour
         if (movementDirection != Vector3.zero)
         {
             // If there is input, accelerate the object
-            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+            float highSpeed = usingCart ? cartSpeed : maxSpeed;
+
+            currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
             playerAnimationState.Value = PlayerAnimationState.RUNNING;
         }
         else
