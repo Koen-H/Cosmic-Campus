@@ -39,14 +39,12 @@ public class ServersManager : MonoBehaviour
         //SteamGameNetworkManager.Instance.UpdateRichPresenceStatus("Fixing bugs from Thomas");
         //SteamFriends.SetRichPresence("steam_display", "Fixing bugs from Thomas");
         //Debug.Log(SteamFriends.GetRichPresence("steam_display"));
-        LoadFriendServers();
         for (int i = serverList.transform.childCount - 1; i >= 0; i--)
         {
             GameObject childObject = serverList.transform.GetChild(i).gameObject;
             Destroy(childObject);
         }
-
-
+        LoadFriendServers();
         LobbyQuery lobbyQuery = new LobbyQuery();
         lobbyQuery.FilterDistanceClose();
         lobbyQuery.WithSlotsAvailable(1);

@@ -61,6 +61,7 @@ public class PunchAttack : EnemyAttackBehaviour
 
     void OnAttackColliderEnter(Transform enteredTransform)
     {
+        if (!IsOwner) return;
         if (hits.Contains(enteredTransform)) return;
         hits.Add(enteredTransform);
         if (enteredTransform.TryGetComponent(out PlayerCharacterController player))

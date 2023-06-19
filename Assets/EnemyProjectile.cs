@@ -15,7 +15,7 @@ public class EnemyProjectile : MonoBehaviour
         if (attached) return;
         if (other.tag == "Player")
         {
-            if (enemy.IsOwner)
+            //if (enemy.IsOwner)
                 other.transform.GetComponent<PlayerCharacterController>().TakeDamage(damage);
             Destroy(this.gameObject);
         }
