@@ -75,7 +75,8 @@ public class RoomGenerator : NetworkBehaviour
             }
         }
     }
-
+    private string inputCheatCode = "";
+    private const string cheatCode = "killenemies";
 
 
     //public override void OnNetworkSpawn() {
@@ -181,9 +182,50 @@ public class RoomGenerator : NetworkBehaviour
             if (!IsServer) return;
             GenerateMapClientRpc(seed);//TODO: Replace with random seed?
         }
-        //ResetRooms();
-        // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
+        CheckCheatCodes();
     }
+    void CheckCheatCodes()
+    {
+        foreach (char c in Input.inputString)
+        {
+            if (c == '\b')  // backspace character
+            {
+                Debug.Log("backspace Pressed");
+                if (inputCheatCode.Length != 0)
+                {
+                    inputCheatCode = inputCheatCode.Substring(0, inputCheatCode.Length - 1);
+                }
+            }
+            else if ((c == '\n') || (c == '\r')) // newline or return
+            {
+                // maybe you want to do something when the player hits return?
+                Debug.Log("Enter Pressed"); 
+            }
+            else
+            {
+                inputCheatCode += c;
+
+                // Check if the cheat code was entered
+                if (inputCheatCode.Contains(cheatCode))
+                {
+                    KillAllEnemies();
+                    Debug.Log("CHEAT CODE ACTIVATED ");
+                    // Remove cheatCode from inputCheatCode, keeping any characters that were entered after the cheat code
+                    int index = inputCheatCode.IndexOf(cheatCode);
+                    inputCheatCode = inputCheatCode.Substring(index + cheatCode.Length);
+                }
+            }
+        }
+    }
+
+    private void KillAllEnemies()
+    {
+        foreach (var enemy in spawnedEnemies)
+        {
+            Destroy(enemy.gameObject);
+        }
+    }
+
     void BakeNavMesh(List<NavMeshSurface> surfaces)
     {
         for (int i = 0; i < surfaces.Count; i++)

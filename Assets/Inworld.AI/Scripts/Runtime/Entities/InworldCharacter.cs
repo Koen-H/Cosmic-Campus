@@ -312,6 +312,7 @@ namespace Inworld
             if (!Data || string.IsNullOrEmpty(agentID))
             {
                 InworldAI.LogError($"Error: Cannot Register {CharacterName}!");
+                InworldAI.LogError($"Error: Cannot DATA {Data}! and {agentID}");
                 return;
             }
             InworldAI.Log($"Register {CharacterName}: {agentID}");
