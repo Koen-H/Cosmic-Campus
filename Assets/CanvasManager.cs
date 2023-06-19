@@ -49,7 +49,6 @@ public class CanvasManager : MonoBehaviour
 
     public void LoadGameUI()
     {
-        Debug.Log("Loading game ui1");
         gameUI.SetActive(true);
         Dictionary<ulong,ClientManager> clients = LobbyManager.Instance.GetClients();
 

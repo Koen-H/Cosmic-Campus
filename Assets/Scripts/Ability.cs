@@ -33,7 +33,7 @@ public class Ability : MonoBehaviour
 
     public void AbilityInput()
     {
-        if (Input.GetMouseButtonUp(1) && onCooldown)  // 1 is the right mouse button
+        if (Input.GetMouseButtonUp(1) && !onCooldown)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (GetTarget(ray.origin, ray.direction) != null)
@@ -43,7 +43,7 @@ public class Ability : MonoBehaviour
                 return;
             }
         }
-        if (Input.GetMouseButtonUp(1) && !canUse)
+        if (Input.GetMouseButtonUp(1) && !canUse && !onCooldown)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -53,7 +53,7 @@ public class Ability : MonoBehaviour
                 return;
             }
         }
-        if (Input.GetMouseButtonUp(1) && !canUse)
+        if (Input.GetMouseButtonUp(1) && !canUse && !onCooldown)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

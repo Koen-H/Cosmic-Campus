@@ -977,7 +977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2146854314577241737
 Transform:
   m_ObjectHideFlags: 0
@@ -1755,6 +1755,7 @@ MonoBehaviour:
   bgSprite: {fileID: 1171269140256144006}
   barSprite: {fileID: 4947389634624454406}
   fadeDuration: 1
+  dontFade: 0
 --- !u!1 &4543817532712963759
 GameObject:
   m_ObjectHideFlags: 0
@@ -4767,7 +4768,7 @@ PrefabInstance:
     - target: {fileID: 7798281632908249474, guid: 526c1df7117223a4f991217eb979540a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7798281632908249475, guid: 526c1df7117223a4f991217eb979540a,
         type: 3}
