@@ -9,8 +9,11 @@ using Inworld.Util;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
+
 namespace Inworld.Audio
 {
     /// <summary>
@@ -193,20 +196,65 @@ namespace Inworld.Audio
                 return;
             if (InworldController.Instance.CurrentCharacter != Character)
                 return;
-            AudioClip audioClip = WavUtility.ToAudioClip(m_CurrentAudioChunk.Chunk.ToByteArray());
-            if (audioClip)
+
+            // Save the audio data as an MP3 file
+            byte[] mp3Data = m_CurrentAudioChunk.Chunk.ToByteArray();
+            string mp3Path = Application.persistentDataPath + "/tempAudio.mp3";
+            File.WriteAllBytes(mp3Path, mp3Data);
+
+            // Start a coroutine to load the MP3 file
+            StartCoroutine(LoadSongCoroutine(mp3Path));
+        }
+
+        IEnumerator LoadSongCoroutine(string path)
+        {
+            string url = string.Format("file://{0}", path);
+            UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                _CurrentAudioLength = audioClip.length;
-                if (Character && Character.PlaybackSource)
+                Debug.Log(www.error);
+            }
+            else
+            {
+                AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+
+                if (audioClip && Character && Character.PlaybackSource && !Character.PlaybackSource.isPlaying)
                 {
+                    _CurrentAudioLength = audioClip.length;
                     Character.PlaybackSource.volume = 1f;
                     Character.PlaybackSource.PlayOneShot(audioClip, 1f);
+
+                    if (m_CurrentAudioChunk != null && m_CurrentAudioChunk.PacketId != null)
+                    {
+                        StartUtterance(m_CurrentAudioChunk.PacketId);
+                        InworldController.Instance.TTSStart(Character.ID);
+                        OnAudioStarted?.Invoke();
+                    }
+                    else
+                    {
+                        Debug.LogError("Current audio chunk or packet id is null");
+                    }
+
+                    // After playing the audio clip, wait for it to finish before dequeuing and processing the next audio chunk
+                    yield return new WaitForSeconds(audioClip.length);
+
+                    if (m_AudioChunksQueue.TryDequeue(out m_CurrentAudioChunk))
+                    {
+                        // Save the audio data as an MP3 file
+                        byte[] nextMp3Data = m_CurrentAudioChunk.Chunk.ToByteArray();
+                        string nextMp3Path = Application.persistentDataPath + "/tempAudio.mp3";
+                        File.WriteAllBytes(nextMp3Path, nextMp3Data);
+
+                        // Start a coroutine to load the next MP3 file
+                        StartCoroutine(LoadSongCoroutine(nextMp3Path));
+                    }
                 }
             }
-            StartUtterance(m_CurrentAudioChunk.PacketId);
-            InworldController.Instance.TTSStart(Character.ID);
-            OnAudioStarted?.Invoke();
         }
+
+
         bool IsAudioChunkAvailable(PacketId packetID)
         {
             string interactionID = packetID?.InteractionId;

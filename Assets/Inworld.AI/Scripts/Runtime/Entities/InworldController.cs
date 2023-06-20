@@ -33,7 +33,7 @@ namespace Inworld
         #region Inspector Variables
         [SerializeField] bool m_AutoStart;
         [SerializeField] InworldSceneData m_Data;
-        [SerializeField] GameObject m_InworldPlayer;
+        [SerializeField] public GameObject m_InworldPlayer;
         [SerializeField] AudioCapture m_Capture;
         #endregion
 

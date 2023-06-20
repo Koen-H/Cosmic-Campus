@@ -35,6 +35,10 @@ public class CanvasManager : MonoBehaviour
         loadingScreen.SetActive(toggle);
         if (toggle) loadingHint.text = "Please do not jump off the map";
     }
+    public GameObject GetGameUI()
+    {
+        return gameUI;
+    } 
 
     public void LoadGameUI()
     {

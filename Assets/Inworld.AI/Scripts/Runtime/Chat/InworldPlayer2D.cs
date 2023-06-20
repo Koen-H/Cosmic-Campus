@@ -16,7 +16,7 @@ namespace Inworld.Sample
     public class InworldPlayer2D : MonoBehaviour
     {
         #region Inspector Variables
-        [SerializeField] protected GameObject m_GlobalChatCanvas;
+        [SerializeField] public GameObject m_GlobalChatCanvas;
         [SerializeField] RectTransform m_ContentRT;
         [SerializeField] ChatBubble m_BubbleLeft;
         [SerializeField] ChatBubble m_BubbleRight;

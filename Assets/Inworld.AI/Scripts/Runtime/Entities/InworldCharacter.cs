@@ -60,6 +60,16 @@ namespace Inworld
                 }
             }
         }
+/*        private void Start()
+        {
+            PlaybackSource.clip = Microphone.Start("Stereo Mix (Realtek High Definition Audio)", true, 10, 44100);
+            PlaybackSource.loop = true;
+            while (!(Microphone.GetPosition(null) > 0))
+            {
+
+            }
+        }*/
+
         /// <summary>
         ///     Returns Unity Event of Interaction.
         /// </summary>
