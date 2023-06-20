@@ -55,22 +55,22 @@ public class DesignerAbility : Ability
     }
 
 
-    public void PutDown(Vector3 clickPoint)
-    {
-        player.playerObj.transform.LookAt(new Vector3(clickPoint.x,transform.position.y , clickPoint.z));
-        ObjectSlamManager objectSlamManager = target.AddComponent<ObjectSlamManager>();
-        objectSlamManager.playerController = player;
-        Debug.Log("put down");
-        // Place target on the ground
-        target.transform.parent = null;
-        target.transform.position = new Vector3(clickPoint.x, target.transform.position.y, clickPoint.z);
-        //target.transform.position = new Vector3(
-        //    target.transform.position.x,
-        //    target.transform.localScale.y / 2,
-        //    target.transform.position.z
-        //);
-        target = null;
-        StartCoroutine(Cooldown(cooldown));
-    }
+    //public void PutDown(Vector3 clickPoint)
+    //{
+    //    player.playerObj.transform.LookAt(new Vector3(clickPoint.x,transform.position.y , clickPoint.z));
+    //    ObjectSlamManager objectSlamManager = target.AddComponent<ObjectSlamManager>();
+    //    objectSlamManager.playerController = player;
+    //    Debug.Log("put down");
+    //    // Place target on the ground
+    //    target.transform.parent = null;
+    //    target.transform.position = new Vector3(clickPoint.x, target.transform.position.y, clickPoint.z);
+    //    //target.transform.position = new Vector3(
+    //    //    target.transform.position.x,
+    //    //    target.transform.localScale.y / 2,
+    //    //    target.transform.position.z
+    //    //);
+    //    target = null;
+    //    StartCoroutine(Cooldown(cooldown));
+    //}
 
 }

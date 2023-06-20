@@ -512,8 +512,8 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         //Commented this line, please uncomment when the deactivate is modular!
         //if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
-        DesignerAbility bruh = (DesignerAbility)ability;
-        bruh.PutDown(clickPoint);
+        //DesignerAbility bruh = (DesignerAbility)ability;
+        //bruh.PutDown(clickPoint);
     }
 
 
