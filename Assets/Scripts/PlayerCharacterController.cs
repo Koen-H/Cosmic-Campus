@@ -147,6 +147,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
         }
 
+        if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
         if (!IsOwner) return;
         LockPlayer(isCurrentlyDead, true);
     }
@@ -424,7 +425,6 @@ public class PlayerCharacterController : NetworkBehaviour
 
     public void ToggleMovement(bool toggle)
     {
-        Debug.Log("Toggled move to" + toggle);
         if (isDead.Value) return;
         if (engineering) return;
         canMove = toggle;

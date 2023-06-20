@@ -8,7 +8,7 @@ public class NetworkObjectSpawner : MonoBehaviour
 
     [SerializeField] bool spawnOnNetwork;
 
-    [SerializeField] GameObject networkObject;//Enemy to spawn.
+    [SerializeField] GameObject networkObject;//Network Object
 
     private void Update()
     {
@@ -28,7 +28,7 @@ public class NetworkObjectSpawner : MonoBehaviour
 
     public void SpawnObject()
     {
-        NetworkObject enemy = Instantiate(networkObject, transform.position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
-        enemy.Spawn();
+        NetworkObject netObj = Instantiate(networkObject, transform.position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
+        netObj.Spawn(true);
     }
 }

@@ -105,7 +105,7 @@ public class Ability : MonoBehaviour
         {
             float xValue = time * barMult;
             if (time < 0) xValue = 0;
-            CanvasManager.Instance.SetCooldown(xValue);
+            CanvasManager.Instance.SetCooldown(1 - xValue);
             time -= 0.1f;
             yield return new WaitForSeconds(0.1f);
         }

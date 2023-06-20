@@ -20,6 +20,7 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject gameOverUI;
     [SerializeField] TextMeshProUGUI loadingHint;
     private static CanvasManager _instance;
     public static CanvasManager Instance
@@ -46,6 +47,17 @@ public class CanvasManager : MonoBehaviour
         loadingScreen.SetActive(toggle);
         if (toggle) loadingHint.text = "Please do not jump off the map";
     }
+
+    public void ToggleGameOverScreen(bool toggle)
+    {
+        gameOverUI.SetActive(toggle);
+    }
+
+    public void ToggleGameUI(bool toggle)
+    {
+        gameUI.SetActive(toggle);
+    }
+
 
     public void LoadGameUI()
     {
