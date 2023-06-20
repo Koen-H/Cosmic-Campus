@@ -18,6 +18,7 @@ public class DiscordManager : MonoBehaviour
 
     public float randomUpdatesInterval = 20;
     public bool randomUpdates = false;
+    bool usingDiscord = true;
 
     private static DiscordManager instance;
     public static DiscordManager Instance
@@ -56,11 +57,12 @@ public class DiscordManager : MonoBehaviour
         // Destroy the GameObject if Discord isn't running
         try
         {
-            discord.RunCallbacks();
+            if(usingDiscord) discord.RunCallbacks();
         }
         catch
         {
-            Destroy(gameObject);
+            usingDiscord = false;
+            //Destroy(gameObject);
         }
     }
 
@@ -72,6 +74,7 @@ public class DiscordManager : MonoBehaviour
 
     public void UpdateStatus(string newDetails = "", string newState = "", string newLargeText = "", string newLargeImage = "game_logo")
     {
+        if (!usingDiscord) return;
         this.details = newDetails;
         this.state = newState;
         this.largeText = newLargeText;
@@ -118,6 +121,7 @@ public class DiscordManager : MonoBehaviour
 
     IEnumerator RandomUpdates()
     {
+        if (!usingDiscord) yield return null;
         int options = 3;
         int r = Random.Range(0, options);
         switch (r)

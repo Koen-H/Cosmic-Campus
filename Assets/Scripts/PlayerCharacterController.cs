@@ -61,7 +61,8 @@ public class PlayerCharacterController : NetworkBehaviour
     protected bool canBeDamaged = true;
     [SerializeField] float invinsibilityDuration;
 
-    bool usingCart = false;
+    [HideInInspector] NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+    float cartLoad = 0;
     [SerializeField] GameObject cartObject;
     [SerializeField] float cartSpeed;
 
@@ -116,6 +117,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;
         if (isDead.Value) return;
         if (!canBeDamaged) return;
+        if (usingCart.Value) usingCart.Value = false;
         if (inPercentage) damage = maxHealth.Value * (damage / 100);
         damage = effectManager.ApplyResistanceEffect(damage);
         if (damage >= health.Value) damage = health.Value;
@@ -198,6 +200,7 @@ public class PlayerCharacterController : NetworkBehaviour
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
         playerAnimationState.OnValueChanged += OnPlayerStateChanged;
+        usingCart.OnValueChanged += ToggleCart;
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         LobbyManager.Instance.GetClient(OwnerClientId).playerCharacter = this;
@@ -258,8 +261,18 @@ public class PlayerCharacterController : NetworkBehaviour
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-        if (Input.GetKeyDown(KeyCode.Space)) ToggleCartClientRpc(!usingCart);
         DeathCheck();
+        LoadCart();
+    }
+
+    void LoadCart()
+    {
+        if (isDead.Value) cartLoad = 0;
+        if (Input.GetKey(KeyCode.Space)) cartLoad += Time.deltaTime;
+        else cartLoad = 0;
+        if (cartLoad >= 5) usingCart.Value = true;
+        if (usingCart.Value && Input.GetKeyDown(KeyCode.Space)) usingCart.Value = false;
+
     }
 
     void DeathCheck()
@@ -341,17 +354,11 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
-    [ServerRpc]
-    void ToggleCartServerRpc(bool toggle)
+    void ToggleCart(bool old, bool toggle)
     {
-        ToggleCartClientRpc(toggle);
-    }
-
-    [ClientRpc]
-    void ToggleCartClientRpc(bool toggle)
-    {
-        usingCart = toggle;
         cartObject.SetActive(toggle);
+        //Cart pose OR idle!
+        //TODO:: Change anim
         if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}");
     }
 
@@ -377,7 +384,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (movementDirection != Vector3.zero)
         {
             // If there is input, accelerate the object
-            float highSpeed = usingCart ? cartSpeed : maxSpeed;
+            float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
 
             currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
             playerAnimationState.Value = PlayerAnimationState.RUNNING;
