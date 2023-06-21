@@ -63,6 +63,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     [HideInInspector] NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
     float cartLoad = 0;
+    [SerializeField] private float cartEnterTime = 3;
     [SerializeField] GameObject cartObject;
     [SerializeField] float cartSpeed;
 
@@ -247,12 +248,20 @@ public class PlayerCharacterController : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
-        if (npc) interactingNPC = npc;
+        if (npc)
+        {
+            interactingNPC = npc;
+            if (!interactingNPC.isFollowing.Value) CanvasManager.Instance.ToggleInteract(true);
+        }
     }
     private void OnTriggerExit(Collider other)
     {
         QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
-        if (npc) interactingNPC = null;
+        if (npc)
+        {
+            interactingNPC = null;
+            CanvasManager.Instance.ToggleInteract(false);
+        }
     }
 
     void Update()
@@ -274,7 +283,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (isDead.Value) cartLoad = 0;
         if (Input.GetKey(KeyCode.Space)) cartLoad += Time.deltaTime;
         else cartLoad = 0;
-        if (cartLoad >= 5) usingCart.Value = true;
+        if (cartLoad >= cartEnterTime) usingCart.Value = true;
         if (usingCart.Value && Input.GetKeyDown(KeyCode.Space)) usingCart.Value = false;
 
     }

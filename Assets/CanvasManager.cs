@@ -13,6 +13,7 @@ public class CanvasManager : MonoBehaviour
 
 
     [SerializeField] TextMeshProUGUI engineerPrompt;
+    [SerializeField] TextMeshProUGUI interactPrompt;
 
 
     [SerializeField] List<ArtistUIAbility> artistUIAbilities;
@@ -93,6 +94,11 @@ public class CanvasManager : MonoBehaviour
     public void SetEngineerPrompt(string prompt, bool enabled = true) {
         engineerPrompt.text = prompt;
         engineerPrompt.gameObject.SetActive(enabled);
+    }
+
+    public void ToggleInteract(bool toggle)
+    {
+        interactPrompt.gameObject.SetActive(toggle);
     }
 
 

@@ -41,7 +41,21 @@ public class ObjectSlamManager : NetworkBehaviour
             SinkObject();
         }
     }
-    private void OnCollisionEnter(Collision collision)
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!hasFallen)
+        {
+            if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("RainbowRoad"))
+            {
+                hasFallen = true;
+                GroundSlam();
+
+            }
+        }
+    }
+
+    private void OnCollisionEnter (Collision collision)
     {
         //if (collision.gameObject.CompareTag("Enemy"))
         //{

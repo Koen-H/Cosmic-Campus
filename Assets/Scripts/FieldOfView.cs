@@ -13,9 +13,7 @@ public class FieldOfView : EnemyTargettingBehaviour
 
         if(target != null)
         {
-            if (!target.isDead.Value)
-            {
-                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange)
+                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange && !target.isDead.Value)//If the target is still in range and not dead
                 {
                     // Visualization
                     Debug.DrawLine(transform.position, target.transform.position, Color.green, 0.01f);
@@ -27,7 +25,6 @@ public class FieldOfView : EnemyTargettingBehaviour
                     target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
                 }
                 SetEnemyTarget();
-            }
         }
         return;
     }
@@ -91,6 +88,7 @@ public class FieldOfView : EnemyTargettingBehaviour
                     if (hit.distance < closestDistance)
                     {
                         closest = hit.collider.GetComponent<PlayerCharacterController>();
+                        if (closest.isDead.Value) continue;
                         closestDistance = hit.distance;
                     }
                 }
