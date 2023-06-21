@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2542911849853341590}
   - component: {fileID: 2542911849853341593}
   - component: {fileID: 965328296461197108}
-  - component: {fileID: 7400703801725791710}
-  - component: {fileID: 2714218798014506748}
   - component: {fileID: -3912245895121505945}
+  - component: {fileID: -3643424810616825176}
+  - component: {fileID: 2714218798014506748}
   m_Layer: 15
   m_Name: cart
   m_TagString: Interactable
@@ -102,7 +102,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.6459464, y: 0.3462041, z: 0.8557327}
   m_Center: {x: 1.0495916e-13, y: 0.4170613, z: -0.0000014051427}
---- !u!114 &7400703801725791710
+--- !u!114 &-3912245895121505945
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -111,7 +111,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 2542911849853341595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: d5ae8fcffdb8e424cbd32c5dc3c0a4dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  collider: {fileID: 3160278407523434193}
+--- !u!114 &-3643424810616825176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2542911849853341595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d915f230efedd0499c999868aa15ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 1
@@ -144,20 +158,6 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &-3912245895121505945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2542911849853341595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5ae8fcffdb8e424cbd32c5dc3c0a4dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
-  collider: {fileID: 3160278407523434193}
 --- !u!1 &3160278407523434193
 GameObject:
   m_ObjectHideFlags: 0

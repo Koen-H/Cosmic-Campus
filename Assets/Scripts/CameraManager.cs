@@ -48,16 +48,23 @@ public class CameraManager : MonoBehaviour
     public void ShakeCamera(float intensity, float time)
     {
         m_MultiChannelPerlin.m_AmplitudeGain = intensity;
-        m_MultiChannelPerlin.m_FrequencyGain = intensity;
-        if(shake != null) StopCoroutine(shake);
-        shake = StartCoroutine(Shaking(time));
+        //m_MultiChannelPerlin.m_FrequencyGain = intensity;
+        if (shake != null) StopCoroutine(shake);
+        shake = StartCoroutine(Shaking(intensity, time));
     }
-    
-    IEnumerator Shaking(float time)
+
+    IEnumerator Shaking(float intensity, float time)
     {
-        yield return new WaitForSeconds(time);
+        float decreasePerSecond = intensity / time;
+
+        while (m_MultiChannelPerlin.m_AmplitudeGain > 0)
+        {
+            m_MultiChannelPerlin.m_AmplitudeGain -= decreasePerSecond * Time.deltaTime;
+            yield return null;
+        }
+
         m_MultiChannelPerlin.m_AmplitudeGain = 0;
-        m_MultiChannelPerlin.m_FrequencyGain = 0;
+        //m_MultiChannelPerlin.m_FrequencyGain = 0;
     }
 
 }

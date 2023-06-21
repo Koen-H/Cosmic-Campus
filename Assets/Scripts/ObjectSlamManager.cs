@@ -8,7 +8,7 @@ public class ObjectSlamManager : NetworkBehaviour
     public PlayerCharacterController playerController;
     Rigidbody rb;
     private bool hasFallen = false;
-    float raycastDistance = 3;
+    float slamDistance = 3;
     float damage = 40;
     float nockback = 20;
     GameObject slamObjVFX, slamExtraVFX;
@@ -27,7 +27,7 @@ public class ObjectSlamManager : NetworkBehaviour
         collider.SetActive(false);
         if (!TryGetComponent(out rb)) rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = false;
-        raycastDistance *= transform.lossyScale.z;
+        //raycastDistance *= transform.lossyScale.z;
         //TODO: Make damage better/correct?
         damage += transform.lossyScale.z;
         slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
@@ -59,7 +59,7 @@ public class ObjectSlamManager : NetworkBehaviour
     {
         rb.isKinematic = true;
         collider.SetActive(true);
-        CameraManager.MyCamera.ShakeCamera(2,2);
+        CameraManager.MyCamera.ShakeCamera(2,0.5f);
         StartCoroutine(SinkCountdown(1));
         //Do fancy particle stuff
         //GameObject slamObjVFXinstance = Instantiate(slamObjVFX, transform.position, Quaternion.identity);
@@ -70,19 +70,32 @@ public class ObjectSlamManager : NetworkBehaviour
         if (IsOwner)
         {
 
-            Collider[] colliders = Physics.OverlapSphere(transform.position, raycastDistance);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, slamDistance);
             foreach (Collider collider in colliders)
             {
                 if (collider.CompareTag("Enemy"))
                 {
                     Enemy enemy = collider.GetComponentInParent<Enemy>();
-                        enemy.TakeDamage(damage, EnemyType.ENGINEER);//Hardcoded engineer, because it's a engineer ability
+                    enemy.TakeDamage(damage, EnemyType.DESIGNER);//Hardcoded engineer, because it's a engineer ability
                     Vector3 knockbackDirection = enemy.transform.position - transform.position;
                     float knockbackForce = nockback;
                     float knockbackDuration = 0.5f;
 
                     EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
                     enemyMovement.ApplyKnockback(knockbackDirection, knockbackForce, knockbackDuration);
+                }
+
+                if (collider.CompareTag("Player"))
+                {
+                    PlayerCharacterController player = collider.GetComponent<PlayerCharacterController>();
+
+                    Vector3 knockbackDirection = player.transform.position - transform.position;
+                    Debug.Log(knockbackDirection.magnitude);
+                    //if (knockbackDirection.magnitude > slamDistance / 2) return;
+                    knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);
+                    float knockbackForce = 25;
+                    float knockbackDuration = 0.5f;
+                    player.ApplyKnockback(knockbackDirection.normalized,knockbackForce,knockbackDuration);
                 }
             }
 
