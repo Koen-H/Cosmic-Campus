@@ -82,7 +82,8 @@ public class ObjectSlamManager : NetworkBehaviour
                     float knockbackDuration = 0.5f;
 
                     EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
-                    enemyMovement.ApplyKnockback(knockbackDirection, knockbackForce, knockbackDuration);
+                    knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);
+                    enemyMovement.ApplyKnockback(knockbackDirection.normalized, knockbackForce, knockbackDuration);
                 }
 
                 if (collider.CompareTag("Player"))
@@ -90,7 +91,6 @@ public class ObjectSlamManager : NetworkBehaviour
                     PlayerCharacterController player = collider.GetComponent<PlayerCharacterController>();
 
                     Vector3 knockbackDirection = player.transform.position - transform.position;
-                    Debug.Log(knockbackDirection.magnitude);
                     //if (knockbackDirection.magnitude > slamDistance / 2) return;
                     knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);
                     float knockbackForce = 25;
