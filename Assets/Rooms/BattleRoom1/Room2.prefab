@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 6871783035272524052}
   m_Layer: 6
   m_Name: Platform
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -2205,7 +2205,7 @@ MonoBehaviour:
   - {fileID: 6318153045321873621}
   - {fileID: 8616117545833738122}
   - {fileID: 3743522329602423085}
-  potions: []
+  networkObjectSpawners: []
 --- !u!65 &6796217468128165828
 BoxCollider:
   m_ObjectHideFlags: 0

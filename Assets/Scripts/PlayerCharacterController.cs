@@ -86,6 +86,9 @@ public class PlayerCharacterController : NetworkBehaviour
     private bool isGrounded;
     private float groundDistance = 0.2f;
 
+
+    private bool knockedBack = false;
+
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -257,7 +260,7 @@ public class PlayerCharacterController : NetworkBehaviour
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
-        if (canMove) Move();
+        if (canMove && !knockedBack) Move();
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
@@ -407,6 +410,35 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+    public void ApplyKnockback(Vector3 direction, float force, float duration)
+    {
+        ApplyKnockbackServerRpc(direction, force, duration);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void ApplyKnockbackServerRpc(Vector3 direction, float force, float duration)
+    {
+        ApplyKnockbackClientRpc(direction, force, duration);
+    }
+
+    [ClientRpc]
+    private void ApplyKnockbackClientRpc(Vector3 direction, float force, float duration)
+    {
+        if (!IsOwner) return;
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.velocity = direction * force;
+        knockedBack= true;
+        StartCoroutine(KnockbackReset(duration));
+    }
+
+    private IEnumerator KnockbackReset(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        rigidbody.velocity = Vector3.zero;
+        knockedBack= false;
+    }
+
+
     /// <summary>
     /// Creates the character visually by loading the selected data from playerdata stored in MyClient
     /// </summary>
@@ -513,8 +545,8 @@ public class PlayerCharacterController : NetworkBehaviour
     {
         //Commented this line, please uncomment when the deactivate is modular!
         //if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
-        DesignerAbility bruh = (DesignerAbility)ability;
-        bruh.PutDown(clickPoint);
+        //DesignerAbility bruh = (DesignerAbility)ability;
+        //bruh.PutDown(clickPoint);
     }
 
 

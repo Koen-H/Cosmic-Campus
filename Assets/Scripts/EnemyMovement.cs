@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : NetworkBehaviour
 {
     private NavMeshAgent agent;
     private Enemy enemy;
@@ -57,6 +57,7 @@ public class EnemyMovement : MonoBehaviour
     public void ApplyKnockback(Vector3 direction, float force, float duration)
     {
         if (!canBeNockedBack) return;
+        Debug.Log("KnockedBack");
         ApplyNockbackServerRpc(direction, force, duration);
     }
 
@@ -68,6 +69,7 @@ public class EnemyMovement : MonoBehaviour
         knockbackDuration = duration;
         knockbackTimer = 0f;
         isKnockedBack = true;
+        Debug.Log("KnockedBackServer!");
     }
 
     private void Nockback()
