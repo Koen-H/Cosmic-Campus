@@ -10,18 +10,25 @@ public class FieldOfView : EnemyTargettingBehaviour
 
     public override void FindTarget()
     {
-        if (target != null && Vector3.Distance(transform.position, target.position) <= trackingRange)
-        {
-            // Visualization
-            Debug.DrawLine(transform.position, target.position, Color.green, 0.01f);
 
-            //AttackLogic(currentTarget);
-        }
-        else
+        if(target != null)
         {
-            target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
+            if (!target.isDead.Value)
+            {
+                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange)
+                {
+                    // Visualization
+                    Debug.DrawLine(transform.position, target.transform.position, Color.green, 0.01f);
+
+                    //AttackLogic(currentTarget);
+                }
+                else
+                {
+                    target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
+                }
+                SetEnemyTarget();
+            }
         }
-        SetEnemyTarget();
         return;
     }
 
@@ -52,9 +59,9 @@ public class FieldOfView : EnemyTargettingBehaviour
     //    }
     //}
 
-    Transform FindClosestPlayer(float angle, float range, int amount, Transform transform)
+    PlayerCharacterController FindClosestPlayer(float angle, float range, int amount, Transform transform)
     {
-        Transform closest = null;
+        PlayerCharacterController closest = null;
         float closestDistance = range;
 
         // The step size between each raycast
@@ -83,7 +90,7 @@ public class FieldOfView : EnemyTargettingBehaviour
                     // Check if this player is closer than the previous closest player
                     if (hit.distance < closestDistance)
                     {
-                        closest = hit.collider.transform;
+                        closest = hit.collider.GetComponent<PlayerCharacterController>();
                         closestDistance = hit.distance;
                     }
                 }

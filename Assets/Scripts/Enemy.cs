@@ -51,9 +51,9 @@ public class Enemy : NetworkBehaviour
 
     [Header("Targetting")]
     private EnemyTargettingBehaviour targetBehaviour;
-    public event System.Action<Transform> OnTargetChange;
-    private Transform currentTarget;
-    public Transform CurrentTarget
+    public event System.Action<PlayerCharacterController> OnTargetChange;
+    private PlayerCharacterController currentTarget;
+    public PlayerCharacterController CurrentTarget
     {
         get { return currentTarget; }
         set
@@ -337,8 +337,8 @@ public class Enemy : NetworkBehaviour
     public virtual void LessThanFixedUpdate()
     {
         FixHealthBar();
-        if (enemyState == EnemyState.ATTACKING) return;
         targetBehaviour.FindTarget();
+        if (enemyState == EnemyState.ATTACKING) return;
         attackBehaviour.TryAttack();
     }
 

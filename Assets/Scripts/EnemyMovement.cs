@@ -9,7 +9,7 @@ public class EnemyMovement : NetworkBehaviour
 {
     private NavMeshAgent agent;
     private Enemy enemy;
-    private Transform target;
+    private PlayerCharacterController target;
 
     
     [SerializeField] bool canWander = true;
@@ -45,7 +45,7 @@ public class EnemyMovement : NetworkBehaviour
         enemy.OnTargetChange -= OnTargetChange;
     }
 
-    void OnTargetChange(Transform newTarget)
+    void OnTargetChange(PlayerCharacterController newTarget)
     {
         target = newTarget;
     }
@@ -110,7 +110,7 @@ public class EnemyMovement : NetworkBehaviour
         //Simple walk towards target
         if (target == null) return;
         enemy.enemyAnimationState.Value = EnemyAnimationState.RUNNING;
-        agent.SetDestination(target.position);
+        agent.SetDestination(target.transform.position);
     }
 
     /// <summary>

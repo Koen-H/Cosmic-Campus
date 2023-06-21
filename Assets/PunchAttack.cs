@@ -33,9 +33,9 @@ public class PunchAttack : EnemyAttackBehaviour
 
     public override void TryAttack()
     {
-        Transform currentTarget = enemy.CurrentTarget;
+        PlayerCharacterController currentTarget = enemy.CurrentTarget;
         if (currentTarget == null) return;
-        if ((currentTarget.position - transform.position).magnitude < attackRange) Attack();
+        if ((currentTarget.transform.position - transform.position).magnitude < attackRange) Attack();
         return;
     }
 

@@ -30,16 +30,16 @@ public class RangeEnemy : PunchAttack
 
     public override void TryAttack()
     {
-        Transform currentTarget = enemy.CurrentTarget;
+        PlayerCharacterController currentTarget = enemy.CurrentTarget;
         if (currentTarget == null) return;
-        if ((currentTarget.position - transform.position).magnitude < attackRange)
+        if ((currentTarget.transform.position - transform.position).magnitude < attackRange)
         {
             //We are punching on close distance!
             base.Attack();
         }
         else
         {
-            Vector3 toTarget = currentTarget.position - transform.position;
+            Vector3 toTarget = currentTarget.transform.position - transform.position;
             float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
 
             if (dotProduct > 0 && toTarget.magnitude < rangedAttackRange)
