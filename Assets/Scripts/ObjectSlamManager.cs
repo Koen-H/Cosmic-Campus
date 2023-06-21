@@ -11,7 +11,7 @@ public class ObjectSlamManager : NetworkBehaviour
     float slamDistance = 3;
     float damage = 40;
     float nockback = 20;
-    GameObject slamObjVFX, slamExtraVFX;
+    //GameObject slamObjVFX, slamExtraVFX;
     List<Enemy> directHits = new List<Enemy>();
 
     float dropSpeed = 0.1f;
@@ -21,23 +21,16 @@ public class ObjectSlamManager : NetworkBehaviour
     bool isSinking = false;
 
     [SerializeField] GameObject collider;
+    [SerializeField] GameObject vfxSpawnpoint;
+    [SerializeField] ParticleSystem vfxPrefab;
 
     private void Awake()
     {
         collider.SetActive(false);
         if (!TryGetComponent(out rb)) rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = false;
-        //raycastDistance *= transform.lossyScale.z;
-        //TODO: Make damage better/correct?
-        damage += transform.lossyScale.z;
-        slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
-        slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner) return;
-        playerController = ClientManager.MyClient.playerCharacter;
+        //slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
+        //slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
     }
 
     private void Update()
@@ -57,8 +50,12 @@ public class ObjectSlamManager : NetworkBehaviour
         //}
         if (!hasFallen)
         {
+            if (collision.gameObject.CompareTag("Ground"))
+            {
             hasFallen = true;
             GroundSlam();
+
+            }
         }
 
     }
@@ -66,6 +63,7 @@ public class ObjectSlamManager : NetworkBehaviour
     {
         rb.isKinematic = true;
         collider.SetActive(true);
+        Instantiate(vfxPrefab, vfxSpawnpoint.transform.position, Quaternion.identity);
         CameraManager.MyCamera.ShakeCamera(2,0.5f);
         StartCoroutine(SinkCountdown(1));
         //Do fancy particle stuff
@@ -76,17 +74,17 @@ public class ObjectSlamManager : NetworkBehaviour
         //If the current client is the owner, we deal the damage
         if (IsOwner)
         {
-            Debug.Log("DOING THINGS");
             Collider[] colliders = Physics.OverlapSphere(transform.position, slamDistance);
             foreach (Collider collider in colliders)
             {
                 if (collider.CompareTag("Enemy"))
                 {
                     Enemy enemy = collider.GetComponentInParent<Enemy>();
-                    enemy.TakeDamage(damage, EnemyType.DESIGNER);//Hardcoded engineer, because it's a engineer ability
+                    enemy.TakeDamage(playerController.effectManager.ApplyAttackEffect(damage), EnemyType.DESIGNER);//Hardcoded engineer, because it's a engineer ability
                     Vector3 knockbackDirection = enemy.transform.position - transform.position;
                     float knockbackForce = nockback;
                     float knockbackDuration = 0.5f;
+                    Debug.Log("DOING THINGS");
 
                     EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
                     knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);

@@ -95,7 +95,8 @@ public class ServerSpawner : NetworkBehaviour
 
         Vector3 spawnSpot = new Vector3(instanceLocation.x, instanceLocation.y + 5, instanceLocation.z);
         NetworkObject instance = Instantiate(designerObjects[randomIndex], spawnSpot, Quaternion.identity);
-        instance.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+        instance.GetComponent<ObjectSlamManager>().playerController = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter;
+        //instance.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
 
 
     } 
