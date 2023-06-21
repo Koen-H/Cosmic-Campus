@@ -21,6 +21,7 @@ public class PunchAttack : EnemyAttackBehaviour
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
         }
+        ToggleColliders(false);
     }
     private void OnDisable()
     {
@@ -52,10 +53,11 @@ public class PunchAttack : EnemyAttackBehaviour
             enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
         }
 
-      /*  attackAnim = GetComponentInChildren<Animator>();
-        attackAnim.SetTrigger("Animate");*/
+        /*  attackAnim = GetComponentInChildren<Animator>();
+          attackAnim.SetTrigger("Animate");*/
 
-        StartCoroutine(AfterAttackAnim(enemy.animator.GetCurrentAnimatorStateInfo(0).length));
+        float attackAnimDuration = 0.917f;
+        StartCoroutine(AfterAttackAnim(attackAnimDuration));
     }
 
     void OnAttackColliderEnter(Transform enteredTransform)

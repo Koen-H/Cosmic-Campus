@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class RangeEnemy : PunchAttack
@@ -55,17 +56,26 @@ public class RangeEnemy : PunchAttack
         if (enemy.IsOwner)
         {
             enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;//Replace with shoot?
+            ShootClientRpc(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint.position);
         }
-        projectileSpawner.transform.LookAt(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint);
-        EnemyProjectile projectileInstance = Instantiate(projectile.gameObject,projectileSpawner.transform.position, projectileSpawner.transform.rotation).GetComponent<EnemyProjectile>();
+
+        //Todo: trail?
+        float attackAnimLength = 0.917f; 
+        StartCoroutine(AfterAttackAnim(attackAnimLength));
+
+    }
+
+
+    [ClientRpc]
+    void ShootClientRpc(Vector3 lookAtPos)
+    {
+        projectileSpawner.transform.LookAt(lookAtPos);
+        EnemyProjectile projectileInstance = Instantiate(projectile.gameObject, projectileSpawner.transform.position, projectileSpawner.transform.rotation).GetComponent<EnemyProjectile>();
         projectileInstance.GetComponent<Rigidbody>().AddForce(projectileInstance.transform.forward * projectileSpeed);
         projectileInstance.damage = projectileDamage;
         projectileInstance.enemy = enemy;
         MatChanger[] matChangers = projectileInstance.GetComponentsInChildren<MatChanger>();
-        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemy.enemyType.Value,true);
-        //Todo: trail?
-        StartCoroutine(AfterAttackAnim(enemy.animator.GetCurrentAnimatorStateInfo(0).length));
-
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemy.enemyType.Value, true);
     }
 
 

@@ -96,7 +96,7 @@ public class RoomGenerator : NetworkBehaviour
                 {
                     if (room.roomLayer == latestEnemyLayer) {
                         foreach (var spawner in room.enemySpawners) spawner.SpawnEnemy();
-                        foreach (var potion in room.potions) potion.GetComponent<Potion>().SpawnPotion();//TODO:: Replace list with potion.cs instead of networkobject
+                        foreach (var networkObject in room.networkObjectSpawners) networkObject.SpawnObject();//TODO:: Replace list with potion.cs instead of networkobject
                     }
                 }
             }
@@ -492,7 +492,7 @@ public class RoomGenerator : NetworkBehaviour
     public void SpawnEnemy(Vector3 position, float hightOffset)
     {
         NetworkObject enemy = Instantiate(enemyPrefab, position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
-        enemy.Spawn();
+        enemy.Spawn(true);
         spawnedEnemies.Add(enemy.gameObject);
     }
     private List<EnemyNPC> InitiateEnemyOnPath(List<Vector3> path, int count)
@@ -523,7 +523,7 @@ public class RoomGenerator : NetworkBehaviour
             {
                 QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + room.roomPrefab.GetStudentPosition(), Quaternion.identity, this.transform);
                 student.self = room.roomNpc;
-                student.GetComponent<NetworkObject>().Spawn();
+                student.GetComponent<NetworkObject>().Spawn(true);
             }
         }
         if (room.roomNpc is TeacherNPC)
@@ -542,7 +542,7 @@ public class RoomGenerator : NetworkBehaviour
                 teacher.self = room.roomNpc;
                 teacher.doorNormal = room.exit.normal;
                 teacher.doorPosition = room.exit.position;
-                teacher.GetComponent<NetworkObject>().Spawn();
+                teacher.GetComponent<NetworkObject>().Spawn(true);
                 teacher.doorId = doorId;
 
             }

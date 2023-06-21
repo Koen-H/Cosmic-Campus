@@ -31,6 +31,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
     [SerializeField] TextMeshPro healthText;
+    [SerializeField] HealthBar healthBar;
     [SerializeField] ReviveAreaManager myReviveArea;
     public ReviveAreaManager otherReviveArea;
 
@@ -53,11 +54,17 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private Animator animator;
     public Vector3 checkPoint;
+    int checkPointRespawns = 0;
 
     public Transform centerPoint;
 
     protected bool canBeDamaged = true;
     [SerializeField] float invinsibilityDuration;
+
+    [HideInInspector] NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+    float cartLoad = 0;
+    [SerializeField] GameObject cartObject;
+    [SerializeField] float cartSpeed;
 
     public enum PlayerAnimationState
     {
@@ -99,6 +106,7 @@ public class PlayerCharacterController : NetworkBehaviour
     /// </summary>
     private void Heal(float percentage)
     {
+        if (isDead.Value) return;//We don't heal when we are dead. Thats not how it works!
         float addedHealth = maxHealth.Value * (percentage / 100);
         if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
         else health.Value += addedHealth;
@@ -109,6 +117,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;
         if (isDead.Value) return;
         if (!canBeDamaged) return;
+        if (usingCart.Value) usingCart.Value = false;
         if (inPercentage) damage = maxHealth.Value * (damage / 100);
         damage = effectManager.ApplyResistanceEffect(damage);
         if (damage >= health.Value) damage = health.Value;
@@ -126,6 +135,7 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
+            if (IsOwner) ClientManager.MyClient.timesDied.Value++;
         }
         else
         {
@@ -137,6 +147,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
         }
 
+        if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
         if (!IsOwner) return;
         LockPlayer(isCurrentlyDead, true);
     }
@@ -155,6 +166,9 @@ public class PlayerCharacterController : NetworkBehaviour
         canAbility = !isLocked;
     }
 
+
+
+
     /// <summary>
     /// Revive the player
     /// </summary>
@@ -172,11 +186,11 @@ public class PlayerCharacterController : NetworkBehaviour
         otherReviveArea = reviveArea;
         if(otherReviveArea != null)
         {
-            //TODO: show ui option for revive
+            CanvasManager.Instance.ToggleRevive(true);
         }
         else
         {
-            //TODO: Hide that option for revive
+            CanvasManager.Instance.ToggleRevive(false);
         }
     }
 
@@ -187,11 +201,15 @@ public class PlayerCharacterController : NetworkBehaviour
         InitCharacter(OwnerClientId);
         health.OnValueChanged += OnHealthChange;
         playerAnimationState.OnValueChanged += OnPlayerStateChanged;
+        usingCart.OnValueChanged += ToggleCart;
         isDead.OnValueChanged += InjurePlayer;
         myReviveArea.gameObject.SetActive(false);
         LobbyManager.Instance.GetClient(OwnerClientId).playerCharacter = this;
+        healthBar.SetMaxValue(maxHealth.Value);
+        healthBar.UpdateBar((int)health.Value);
         if (!IsOwner) return;
         CameraManager.MyCamera.TargetPlayer();
+
     }
 
     void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
@@ -211,7 +229,8 @@ public class PlayerCharacterController : NetworkBehaviour
     }
     void OnHealthChange(float prevHealth, float newHealth)
     {
-        healthText.text = health.Value.ToString();
+        //healthText.text = health.Value.ToString();
+        healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
             Debug.Log("Take damage!");
@@ -235,6 +254,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void Update()
     {
+        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
         if (canMove) Move();
@@ -243,6 +263,17 @@ public class PlayerCharacterController : NetworkBehaviour
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
         DeathCheck();
+        LoadCart();
+    }
+
+    void LoadCart()
+    {
+        if (isDead.Value) cartLoad = 0;
+        if (Input.GetKey(KeyCode.Space)) cartLoad += Time.deltaTime;
+        else cartLoad = 0;
+        if (cartLoad >= 5) usingCart.Value = true;
+        if (usingCart.Value && Input.GetKeyDown(KeyCode.Space)) usingCart.Value = false;
+
     }
 
     void DeathCheck()
@@ -252,6 +283,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void Respawn()
     {
         transform.position = checkPoint;
+        checkPointRespawns++;
     }
     void CheckNPCInteraction()
     {
@@ -323,6 +355,15 @@ public class PlayerCharacterController : NetworkBehaviour
     }
 
 
+    void ToggleCart(bool old, bool toggle)
+    {
+        cartObject.SetActive(toggle);
+        //Cart pose OR idle!
+        //TODO:: Change anim
+        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}");
+    }
+
+
     /// <summary>
     /// Movement
     /// </summary>
@@ -344,7 +385,9 @@ public class PlayerCharacterController : NetworkBehaviour
         if (movementDirection != Vector3.zero)
         {
             // If there is input, accelerate the object
-            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, Time.deltaTime / accelerationTime);
+            float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
+
+            currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
             playerAnimationState.Value = PlayerAnimationState.RUNNING;
         }
         else

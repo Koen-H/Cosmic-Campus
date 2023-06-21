@@ -64,6 +64,9 @@ public class Enemy : NetworkBehaviour
         }
     }
 
+
+    private ulong lastClientDamageID;
+
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
 
@@ -189,7 +192,7 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false , ServerRpcParams serverRpcParams = default)
     {
         float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
         if (enemyType.Value != EnemyType.NONE)
@@ -213,6 +216,7 @@ public class Enemy : NetworkBehaviour
         }
         totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
         health.Value -= totalDamage;
+        lastClientDamageID = serverRpcParams.Receive.SenderClientId;
     }
 
     /// <summary>
@@ -244,8 +248,11 @@ public class Enemy : NetworkBehaviour
     {
 
         //if (IsOwner) StartCoroutine(LateDestroy());
-        if (IsOwner) Destroy(this.gameObject);
-        gameObject.SetActive(false);
+        if (IsOwner)
+        {
+            Destroy(this.gameObject);
+            LobbyManager.Instance.GetClient(lastClientDamageID).golemsKilled.Value++;
+        }
     }
     void FallApart()
     {
@@ -261,6 +268,7 @@ public class Enemy : NetworkBehaviour
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
             bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
+            bodyPart.gameObject.layer = LayerMask.NameToLayer("Debris");
         }
     }
     List<Transform> GetChildren(Transform parent)
@@ -299,7 +307,6 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     void FixHealthBar()
     {
-        //TODO: Fix.
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 
@@ -333,11 +340,6 @@ public class Enemy : NetworkBehaviour
         if (enemyState == EnemyState.ATTACKING) return;
         targetBehaviour.FindTarget();
         attackBehaviour.TryAttack();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
 
 

@@ -7,8 +7,20 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
+
+    [Header("Prompts")]
+    [SerializeField] TextMeshProUGUI revivePrompt;
+
+
+    [SerializeField] TextMeshProUGUI engineerPrompt;
+
+
+    [SerializeField] List<ArtistUIAbility> artistUIAbilities;
+
+
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject gameOverUI;
     [SerializeField] TextMeshProUGUI loadingHint;
     private static CanvasManager _instance;
     public static CanvasManager Instance
@@ -40,9 +52,19 @@ public class CanvasManager : MonoBehaviour
         return gameUI;
     } 
 
+    public void ToggleGameOverScreen(bool toggle)
+    {
+        gameOverUI.SetActive(toggle);
+    }
+
+    public void ToggleGameUI(bool toggle)
+    {
+        gameUI.SetActive(toggle);
+    }
+
+
     public void LoadGameUI()
     {
-        Debug.Log("Loading game ui1");
         gameUI.SetActive(true);
         Dictionary<ulong,ClientManager> clients = LobbyManager.Instance.GetClients();
 
@@ -61,5 +83,37 @@ public class CanvasManager : MonoBehaviour
             uiItems[i].LoadCorrectUI();
             i++;
         }
+    }
+
+    public void ToggleRevive(bool toggle)
+    {
+        revivePrompt.gameObject.SetActive(toggle);
+    }
+
+    public void SetEngineerPrompt(string prompt, bool enabled = true) {
+        engineerPrompt.text = prompt;
+        engineerPrompt.gameObject.SetActive(enabled);
+    }
+
+
+    public void UpdateArtistUI(List<ArtistPaintColor> paintBucket)
+    {
+        for(int i = 0; i < artistUIAbilities.Count; i++)
+        {
+            if(paintBucket.Count > i)
+            {
+                artistUIAbilities[i].UpdateImage(paintBucket[i]);
+            }
+            else
+            {
+                artistUIAbilities[i].UpdateImage(ArtistPaintColor.NONE);
+            }
+            
+        }
+    }
+
+    public void SetCooldown(float value)
+    {
+        uiItems[0].SetCooldown(value);
     }
 }

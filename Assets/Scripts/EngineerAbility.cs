@@ -5,12 +5,17 @@ using UnityEngine;
 public class EngineerAbility : Ability
 {
 
+    protected override void Awake()
+    {
+        base.Awake();
+        cooldown = 10;
+    }
 
     //TODO: Make Ability good with playerchar so I can remove update in here!
     public void Update()
     {
         if (!player.IsOwner) return;
-        if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
+        if (Input.GetMouseButtonDown(1) && !onCooldown)  // 1 is the right mouse button
         {
             if (!player.canAbility) return;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -30,7 +35,7 @@ public class EngineerAbility : Ability
         player.AttackStopServerRpc();
         player.engineering = true;
         player.LockPlayer(true);//Disable the player interactions.
-
+        StartCoroutine(Cooldown(cooldown));
 
         //GameObject target = GetTarget(origin, direction);
         //target.transform.forward = player.playerObj.transform.forward;

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class EnemyAttackBehaviour : MonoBehaviour
+public abstract class EnemyAttackBehaviour : NetworkBehaviour
 {
     protected Enemy enemy;
 

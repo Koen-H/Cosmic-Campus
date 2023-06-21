@@ -21,6 +21,16 @@ public class Sword : Weapon
         if (enteredTransform.CompareTag("Enemy"))
         {
             if (!playerController.IsOwner) return;
+            //Temporary for testing
+            float heal = weaponData.damageHeal.GetRandomValue();
+            if (playerController.health.Value + heal > playerController.maxHealth.Value)
+            {
+                heal = playerController.maxHealth.Value - playerController.health.Value;
+            }
+            playerController.health.Value += heal;
+
+
+
             Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
             float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
             enemy.TakeDamage(damage, playerController.damageType);
@@ -139,8 +149,9 @@ public class Sword : Weapon
         ToggleColliders(true);
 
         weaponAnimation.SetTrigger("SwordSlash");
-
-        StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
+       // AnimatorClipInfo[] clips = weaponAnimation.GetCurrentAnimatorClipInfo(0);
+        //Debug.Log();//.GetCurrentAnimatorStateInfo(0)
+        StartCoroutine(AfterAnim(1.083f/2));
     }
     IEnumerator AfterAnim(float duration)
     {

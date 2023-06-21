@@ -73,8 +73,10 @@ public class LobbyManager : MonoBehaviour
             clientManager.playerCharacter.checkPoint = spawnLoaction;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
-            networkObj.SpawnWithOwnership(client.Value.ClientId);
+            networkObj.SpawnWithOwnership(client.Value.ClientId,true);
         }
+
+        DiscordManager.Instance.ToggleRandomUpdates(true);
     }
 
 }

@@ -27,7 +27,7 @@ public class RoomInfo : MonoBehaviour
 
     public List<EnemySpawner> enemySpawners= new List<EnemySpawner>();
 
-    public List<NetworkObject> potions = new List<NetworkObject>();
+    public List<NetworkObjectSpawner> networkObjectSpawners = new List<NetworkObjectSpawner>();
 
     private void Start()
     {

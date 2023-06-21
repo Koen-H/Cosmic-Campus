@@ -29,6 +29,6 @@ public class EnemySpawner : MonoBehaviour
     public void SpawnEnemy()
     {
         NetworkObject enemy = Instantiate(enemyPrefab,transform.position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
-        enemy.Spawn();
+        enemy.Spawn(true);
     }
 }

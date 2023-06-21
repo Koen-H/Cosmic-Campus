@@ -16,6 +16,8 @@ public class HealthBar : MonoBehaviour
     Coroutine coBg; 
     Coroutine coBar;
 
+    [SerializeField] bool dontFade = false;
+
     private void Start()
     {
         barMult = 1 / maxValue;
@@ -45,6 +47,7 @@ public class HealthBar : MonoBehaviour
         if (value < 0) xValue = 0;
         bar.transform.localScale = new Vector3(xValue, bar.transform.localScale.y, bar.transform.localScale.z);
 
+        if (dontFade) return;
         coBg = StartCoroutine(FadeInOut(bgSprite, fadeDuration));
         coBar = StartCoroutine(FadeInOut(barSprite, fadeDuration));
     }
