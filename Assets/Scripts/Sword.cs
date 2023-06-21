@@ -21,10 +21,20 @@ public class Sword : Weapon
         if (enteredTransform.CompareTag("Enemy"))
         {
             if (!playerController.IsOwner) return;
+            //Temporary for testing
+            float heal = weaponData.damageHeal.GetRandomValue();
+            if (playerController.health.Value + heal > playerController.maxHealth.Value)
+            {
+                heal = playerController.maxHealth.Value - playerController.health.Value;
+            }
+            playerController.health.Value += heal;
+
+
+
             Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
             float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
             enemy.TakeDamage(damage, playerController.damageType);
-            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,2f,1f);
+            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,5f,2f);
         }
     }
 
@@ -80,7 +90,8 @@ public class Sword : Weapon
     {
         // Reset the local position, rotation, and scale of the parent first
         parentTransform.localPosition = Vector3.zero;
-        parentTransform.localRotation = Quaternion.EulerAngles(0,-Mathf.PI/2,0);
+        //Vector3(10.699996, 169, 58.6)
+        parentTransform.localRotation = Quaternion.Euler(169, -11, -121);// Set(169, -11, -121,0);//   new Vector3(10.699996f, 169f, 58.6f); Quaternion.EulerAngles(196 * Mathf.Deg2Rad, (-83 + 20) * Mathf.Deg2Rad, (-156 -90) * Mathf.Deg2Rad);
         //parentTransform.localScale = Vector3.one;
 
         // Log the reset operation with depth indication
@@ -138,8 +149,9 @@ public class Sword : Weapon
         ToggleColliders(true);
 
         weaponAnimation.SetTrigger("SwordSlash");
-
-        StartCoroutine(AfterAnim(weaponAnimation.GetCurrentAnimatorStateInfo(0).length));
+       // AnimatorClipInfo[] clips = weaponAnimation.GetCurrentAnimatorClipInfo(0);
+        //Debug.Log();//.GetCurrentAnimatorStateInfo(0)
+        StartCoroutine(AfterAnim(1.083f/2));
     }
     IEnumerator AfterAnim(float duration)
     {

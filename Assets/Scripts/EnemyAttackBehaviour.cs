@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class EnemyAttackBehaviour : MonoBehaviour
+public abstract class EnemyAttackBehaviour : NetworkBehaviour
 {
     protected Enemy enemy;
 
@@ -27,9 +28,15 @@ public abstract class EnemyAttackBehaviour : MonoBehaviour
 
     protected virtual void Attack()
     {
+
+        return;
+    }
+
+    protected void Attacked()
+    {
+        if (!enemy.IsOwner) return;
         enemy.enemyState = EnemyState.ATTACKING;
         if (!canMoveDuringAttack) agent.isStopped = true;
-        
     }
 
     protected IEnumerator AfterAttackAnim(float seconds)
@@ -39,6 +46,7 @@ public abstract class EnemyAttackBehaviour : MonoBehaviour
     }
     protected virtual void AfterAttack()
     {
+        if (!enemy.IsOwner) return;
         enemy.enemyState = EnemyState.IDLING;
         agent.isStopped = false;
     }

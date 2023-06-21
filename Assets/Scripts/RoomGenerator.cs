@@ -9,6 +9,7 @@ using Unity.Netcode;
 public class RoomGenerator : NetworkBehaviour
 {
     [SerializeField] private int seed;
+    [SerializeField] private bool randomSeed;
     [SerializeField] private float drawingDelay;
     [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
@@ -52,7 +53,9 @@ public class RoomGenerator : NetworkBehaviour
     List<Animator> doorKeys = new List<Animator>();
 
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
-    private int latestEnemyLayer = 0;
+    private int latestEnemyLayer = -1;
+
+    public Vector3 initialSpawnLocation; 
 
     //List<Transform> obstacles = new List<Transform>();
 
@@ -85,6 +88,7 @@ public class RoomGenerator : NetworkBehaviour
     {
         if(layer > latestEnemyLayer)
         {
+            if (layer > numberOfRooms) return;
             latestEnemyLayer = layer;
             if (IsServer)
             {
@@ -92,7 +96,7 @@ public class RoomGenerator : NetworkBehaviour
                 {
                     if (room.roomLayer == latestEnemyLayer) {
                         foreach (var spawner in room.enemySpawners) spawner.SpawnEnemy();
-                        foreach (var potion in room.potions) potion.Spawn();
+                        foreach (var networkObject in room.networkObjectSpawners) networkObject.SpawnObject();//TODO:: Replace list with potion.cs instead of networkobject
                     }
                 }
             }
@@ -109,26 +113,37 @@ public class RoomGenerator : NetworkBehaviour
     {
         instance = this;
     }
-
-    public void SetSeed(int newSeed)
+    public int GetSeed()
     {
-        seed = newSeed;
+        return seed;
+    }
+
+    public void SetSeed()
+    {
+        seed = randomSeed ? new Random().Next() : seed;
     }
 
     List<Vector3> SplinePath(Door from, Door to)
     {
         //Debug.Log("From : " + from.normal);
         //Debug.Log("To : " + to.normal);
-        int resolution = splineResolution; // Higher numbers make the curve smoother
+
         Vector3 fromDirection = (from.normal + Vector3.forward).normalized * splineSharpness;
         Vector3 toDirection = (to.normal - Vector3.forward).normalized * splineSharpness;
+
+
+        Vector3 p1 = from.position; // Starting point
+        Vector3 d1 = from.position + fromDirection; // First control point
+        Vector3 p2 = to.position; // Ending point
+        Vector3 d2 = to.position + toDirection; // Second control point
+
+        return SplinePath( p1, d1, p2, d2);
+    }
+
+    private List<Vector3> SplinePath( Vector3 p1, Vector3 d1, Vector3 p2,Vector3 d2)
+    {
         List<Vector3> pathPoints = new List<Vector3>();
-
-        Vector3 p0 = from.position; // Starting point
-        Vector3 p1 = from.position + fromDirection; // First control point
-        Vector3 p2 = to.position + toDirection; // Second control point
-        Vector3 p3 = to.position; // Ending point
-
+        int resolution = splineResolution; // Higher numbers make the curve smoother
         // Generate the curve
         for (int i = 0; i <= resolution; i++)
         {
@@ -138,7 +153,7 @@ public class RoomGenerator : NetworkBehaviour
             float uu = u * u;
             float uuu = uu * u;
             float ttt = tt * t;
-            Vector3 point = uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3;
+            Vector3 point = uuu * p1 + 3 * uu * t * d1 + 3 * u * tt * d2 + ttt * p2;
             pathPoints.Add(point);
 
             // Draw the curve
@@ -150,7 +165,7 @@ public class RoomGenerator : NetworkBehaviour
                 float uu2 = u2 * u2;
                 float uuu2 = uu2 * u2;
                 float ttt2 = tt2 * t2;
-                Vector3 point2 = uuu2 * p0 + 3 * uu2 * t2 * p1 + 3 * u2 * tt2 * p2 + ttt2 * p3;
+                Vector3 point2 = uuu2 * p1 + 3 * uu2 * t2 * d1 + 3 * u2 * tt2 * d2 + ttt2 * p2;
                 //Debug.DrawLine(point, point2, Color.blue, drawingDelay);
             }
 
@@ -158,7 +173,6 @@ public class RoomGenerator : NetworkBehaviour
 
         return pathPoints;
     }
-
 
     private void Update()
     {
@@ -395,10 +409,38 @@ public class RoomGenerator : NetworkBehaviour
         allEnemies = new List<EnemyNPC>();
         for (int i = 0; i < path.Count - 1; i++)
         {
+            if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
-            List<Vector3> splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
+
+            Room otherRoom;
+            List<Vector3> splinePath;
+            if (!reverse) 
+            {
+                otherRoom = path[i].roomA == path[i + 1] ? path[i].roomB : path[i].roomA;
+
+                Vector3 leftDoor;
+                Vector3 rightDoor;
+                if (otherRoom.GetRoomPosition().x < path[i + 1].GetRoomPosition().x)
+                {
+                    // other's right to path's left
+                    // other room is on the Left
+                    rightDoor = otherRoom.roomPrefab.doorRight.position + otherRoom.GetRoomPosition();
+                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i+1].GetRoomPosition();
+                    splinePath = SplinePath(rightDoor, rightDoor + Vector3.right, leftDoor, leftDoor - Vector3.right);
+                }
+                else
+                {
+                    // path's right to other's left
+                    // other room is on the Right
+                    rightDoor = path[i + 1].roomPrefab.doorRight.position + path[i + 1].GetRoomPosition();
+                    leftDoor = otherRoom.roomPrefab.doorLeft.position + otherRoom.GetRoomPosition();
+                    splinePath = SplinePath(leftDoor, leftDoor - Vector3.right, rightDoor, rightDoor + Vector3.right);
+                }
+                
+            }
+            else splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
-            GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath);
+            GenerateGeometry(path, navMeshSurfaces, allEnemies, i, splinePath, reverse);
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
@@ -428,15 +470,17 @@ public class RoomGenerator : NetworkBehaviour
         }
     }
 
-    private void GenerateGeometry(List<Room> path, List<NavMeshSurface> navMeshSurfaces, List<EnemyNPC> allEnemies, int i, List<Vector3> splinePath)
+    private void GenerateGeometry(List<Room> path, List<NavMeshSurface> navMeshSurfaces, List<EnemyNPC> allEnemies, int i, List<Vector3> splinePath, bool branchedPath = true)
     {
         splinePath.Add(splinePath[splinePath.Count - 1] + (splinePath[splinePath.Count - 1] - splinePath[splinePath.Count - 2]));
         Curve newCurve = Instantiate(curveMesh, this.transform);
         newCurve.points = splinePath;
         newCurve.Apply();
         newCurve.gameObject.layer = 6;
+        newCurve.gameObject.tag = "RainbowRoad";
         newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
+        if (!branchedPath && i == 0) return;
         int randomCount = systemRand.Next(0, maxEnemiesOnPath + 1);
         List<EnemyNPC> newEnemies = InitiateEnemyOnPath(splinePath, randomCount);
         foreach (var enemy in newEnemies) allEnemies.Add(enemy);
@@ -449,7 +493,7 @@ public class RoomGenerator : NetworkBehaviour
     public void SpawnEnemy(Vector3 position, float hightOffset)
     {
         NetworkObject enemy = Instantiate(enemyPrefab, position, Quaternion.LookRotation(transform.forward)).GetComponent<NetworkObject>();
-        enemy.Spawn();
+        enemy.Spawn(true);
         spawnedEnemies.Add(enemy.gameObject);
     }
     private List<EnemyNPC> InitiateEnemyOnPath(List<Vector3> path, int count)
@@ -480,7 +524,7 @@ public class RoomGenerator : NetworkBehaviour
             {
                 QuestStudentNPC student = Instantiate(studentPrefab, room.GetRoomPosition() + room.roomPrefab.GetStudentPosition(), Quaternion.identity, this.transform);
                 student.self = room.roomNpc;
-                student.GetComponent<NetworkObject>().Spawn();
+                student.GetComponent<NetworkObject>().Spawn(true);
             }
         }
         if (room.roomNpc is TeacherNPC)
@@ -499,7 +543,7 @@ public class RoomGenerator : NetworkBehaviour
                 teacher.self = room.roomNpc;
                 teacher.doorNormal = room.exit.normal;
                 teacher.doorPosition = room.exit.position;
-                teacher.GetComponent<NetworkObject>().Spawn();
+                teacher.GetComponent<NetworkObject>().Spawn(true);
                 teacher.doorId = doorId;
 
             }

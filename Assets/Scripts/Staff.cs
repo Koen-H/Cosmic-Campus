@@ -10,6 +10,11 @@ public class Staff : Weapon
     List<ParticleTravelDistance> beams = new List<ParticleTravelDistance>();
     bool isBeaming = false;
 
+
+    private void Start()
+    {
+        weaponAnimation = GetComponentInChildren<Animator>();
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -55,6 +60,8 @@ public class Staff : Weapon
     void DestoryAllBeams()
     {
         isBeaming = false;
+        weaponAnimation.SetBool("Staffing", false);
+
         while (beams.Count > 0)
         {
             Destroy(beams[0].gameObject);
@@ -66,6 +73,8 @@ public class Staff : Weapon
     public override void Attack()
     {
         isBeaming = true;
+        weaponAnimation.SetBool("Staffing", true);
+
         FindClosestEnemy();
     }
 
@@ -231,7 +240,7 @@ public class Staff : Weapon
                 int layerMask = 1 << 2 | 1 << 3;
                 layerMask = ~layerMask; // Invert the mask to ignore the "IgnoreRaycast" and player layer
 
-                if (Physics.Raycast(from.position, diff.normalized, out hit, diff.magnitude, layerMask)) // Pass the layerMask as a parameter to the Raycast method
+                if (Physics.Raycast(from.position, diff.normalized, out hit, diff.magnitude, ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("UI") | LayerMask.GetMask("Area") | LayerMask.GetMask("Debris") | LayerMask.GetMask("Player")))) // Pass the layerMask as a parameter to the Raycast method
                 {
                     if (!hit.transform.CompareTag("Enemy"))
                     {

@@ -1,23 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class RangeEnemy : Enemy
+public class RangeEnemy : PunchAttack
 {
-    //[SerializeField] ArrowManager arrow;
-    //[SerializeField] float arrowForce;
-    //[SerializeField] float arrowDamage;
-
-    //public override void Update()
-    //{
-    //    base.Update();
-
-    //    if (currentTarget)
-    //    {
-    //        transform.forward = (currentTarget.position - transform.position).normalized;
-    //    }
-    //}
-
+    [SerializeField] EnemyProjectile projectile;
+    [SerializeField] float projectileSpeed;
+    [SerializeField] float projectileDamage;
+    [SerializeField] GameObject projectileSpawner;
+    [SerializeField] float rangedAttackRange;
 
     //public override void AttackLogic(Transform target)
     //{
@@ -28,13 +20,63 @@ public class RangeEnemy : Enemy
     //        ArrowManager arrowManager = newArrow.GetComponent<ArrowManager>();
     //        arrowManager.damage = arrowDamage;
     //        arrowManager.rangeEnemy = this;
-            
+
 
     //        StartCoroutine(AttackCoolDown(attackCooldown));
     //        //Attack(target);
     //        canAttack = false;
     //    }
     //}
+
+    public override void TryAttack()
+    {
+        PlayerCharacterController currentTarget = enemy.CurrentTarget;
+        if (currentTarget == null) return;
+        if ((currentTarget.transform.position - transform.position).magnitude < attackRange)
+        {
+            //We are punching on close distance!
+            base.Attack();
+        }
+        else
+        {
+            Vector3 toTarget = currentTarget.transform.position - transform.position;
+            float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
+
+            if (dotProduct > 0 && toTarget.magnitude < rangedAttackRange)
+            {
+                Attack();
+            }
+        }
+        return;
+    }
+
+    protected override void Attack()
+    {
+        Attacked();
+        if (enemy.IsOwner)
+        {
+            enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;//Replace with shoot?
+            ShootClientRpc(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint.position);
+        }
+
+        //Todo: trail?
+        float attackAnimLength = 0.917f; 
+        StartCoroutine(AfterAttackAnim(attackAnimLength));
+
+    }
+
+
+    [ClientRpc]
+    void ShootClientRpc(Vector3 lookAtPos)
+    {
+        projectileSpawner.transform.LookAt(lookAtPos);
+        EnemyProjectile projectileInstance = Instantiate(projectile.gameObject, projectileSpawner.transform.position, projectileSpawner.transform.rotation).GetComponent<EnemyProjectile>();
+        projectileInstance.GetComponent<Rigidbody>().AddForce(projectileInstance.transform.forward * projectileSpeed);
+        projectileInstance.damage = projectileDamage;
+        projectileInstance.enemy = enemy;
+        MatChanger[] matChangers = projectileInstance.GetComponentsInChildren<MatChanger>();
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemy.enemyType.Value, true);
+    }
 
 
 }

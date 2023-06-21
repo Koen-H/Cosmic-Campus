@@ -9,9 +9,15 @@ public class ClientManager : NetworkBehaviour
 {
     private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //public NetworkVariable<string> playerName = null;
-    private NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<uint> steamAccountId = new NetworkVariable<uint>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>("Player", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<ulong> steamId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> usingSteam = new NetworkVariable<bool>(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+
     [SerializeField] public PlayerData playerData = null;
+
+    [Header("Statistics")]
+    public NetworkVariable<int> golemsKilled = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> timesDied = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public PlayerCharacterController playerCharacter = null;
 
@@ -51,11 +57,13 @@ public class ClientManager : NetworkBehaviour
             clientId.Value = NetworkManager.Singleton.LocalClientId;
             if (SteamClient.IsLoggedOn == true)
             {
+                usingSteam.Value = true;
                 playerName.Value = SteamClient.Name;
-                steamAccountId.Value = SteamClient.SteamId.AccountId;
-                this.gameObject.name = $"Client ({SteamClient.Name})";
+                steamId.Value = SteamClient.SteamId;
+
             }
         }
+        this.gameObject.name = $"Client ({playerName.Value})";
     }
     private void Start()
     {

@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : NetworkBehaviour
 {
     private NavMeshAgent agent;
     private Enemy enemy;
-    private Transform target;
+    private PlayerCharacterController target;
 
     
     [SerializeField] bool canWander = true;
@@ -35,6 +35,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
+        if (!enemy.IsOwner) return;
         agent.enabled = true;
         if (canWander) StartCoroutine(Wander());
     }
@@ -44,7 +45,7 @@ public class EnemyMovement : MonoBehaviour
         enemy.OnTargetChange -= OnTargetChange;
     }
 
-    void OnTargetChange(Transform newTarget)
+    void OnTargetChange(PlayerCharacterController newTarget)
     {
         target = newTarget;
     }
@@ -56,6 +57,7 @@ public class EnemyMovement : MonoBehaviour
     public void ApplyKnockback(Vector3 direction, float force, float duration)
     {
         if (!canBeNockedBack) return;
+        Debug.Log("KnockedBack");
         ApplyNockbackServerRpc(direction, force, duration);
     }
 
@@ -67,6 +69,7 @@ public class EnemyMovement : MonoBehaviour
         knockbackDuration = duration;
         knockbackTimer = 0f;
         isKnockedBack = true;
+        Debug.Log("KnockedBackServer!");
     }
 
     private void Nockback()
@@ -88,15 +91,26 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!enemy.IsOwner) return;
         if (isKnockedBack) Nockback();
         else if (enemy.enemyState != EnemyState.ATTACKING) Move();
+        if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
+    }
+    bool DestinationReached()
+    {
+        if ((transform.position - agent.destination).magnitude <= agent.stoppingDistance)
+        {
+            return true;
+        }
+        return false;
     }
 
     protected virtual void Move()
     {
         //Simple walk towards target
         if (target == null) return;
-        agent.SetDestination(target.position);
+        enemy.enemyAnimationState.Value = EnemyAnimationState.RUNNING;
+        agent.SetDestination(target.transform.position);
     }
 
     /// <summary>
@@ -117,7 +131,7 @@ public class EnemyMovement : MonoBehaviour
 
             // Set the destination based on the random direction
             Vector3 targetPosition = transform.position + randomDirection * wanderDistance;
-
+            enemy.enemyAnimationState.Value = EnemyAnimationState.RUNNING;
             // Set the NavMeshAgent destination
             agent.SetDestination(targetPosition);
         }

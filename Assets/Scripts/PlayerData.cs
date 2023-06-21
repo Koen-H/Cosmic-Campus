@@ -20,10 +20,6 @@ public class PlayerData : NetworkBehaviour
         playerRole.OnValueChanged += SelectPlayerRoleData;
         SelectPlayerRoleData(PlayerRole.UNSET,playerRole.Value);
     }
-    private void Start()
-    {
-        Debug.Log(playerRole.Value + "VALAEUDADSAKD");
-    }
 
     public override void OnNetworkDespawn()
     {

@@ -32,6 +32,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] float damageIncreasePerObj = 1f;
     [SerializeField] float explosionRange = 2f;
     [SerializeField] float rangeIncreasePerObj = 0.2f;
+    [SerializeField] float maxExplosionRange = 20f;
 
     [SerializeField] GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
 
@@ -48,6 +49,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             //Get the camera to focus on this object!
             CameraManager.MyCamera.SetFollowTarg(transform);
             CameraManager.MyCamera.SetLookTarg(transform);
+            CanvasManager.Instance.SetEngineerPrompt("Hold Right click to charge!");
         }
     }
 
@@ -58,7 +60,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             Destroy(chargingVFX);
             boilingVFX.GetComponent<ParticleSystem>().Play();
             rigidbody.isKinematic = false;
-            StartCoroutine(ExplosionCountdown());
+            if(IsOwner)StartCoroutine(ExplosionCountdown());
         }
     }
 
@@ -91,7 +93,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
     public void Control()
     {
         Move();
-        if (Input.GetMouseButtonDown(0) && !exploded)
+        if ((Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0)) && !exploded && isBuilding.Value == false)
         {
             exploded = true;
             ExplodeServerRpc();
@@ -175,19 +177,22 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [ServerRpc]
     public void ExplodeServerRpc()
     {
+        exploded = true;
         ExplodeClientRpc();
     }
     
     [ClientRpc]
     public void ExplodeClientRpc()
     {
+        exploded = true;
         GameObject explosionVFXinstance = Instantiate(explosionVFX, transform.position, Quaternion.identity);
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;
         GameObject electricityVFXinstance = Instantiate(electricityVFX, transform.position, Quaternion.identity);
         electricityVFXinstance.GetComponent<ParticleSystem>().startSpeed *= attachedObjects / 5;
         objCollector.gameObject.SetActive(false);
         if (!IsOwner) return;
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange + rangeIncreasePerObj * attachedObjects);
+        CanvasManager.Instance.SetEngineerPrompt(" ", false);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, (explosionRange + rangeIncreasePerObj * attachedObjects) > maxExplosionRange ? maxExplosionRange : (explosionRange + rangeIncreasePerObj * attachedObjects));
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
         foreach (Collider collider in colliders)
         {
@@ -206,7 +211,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.TargetPlayer();
             ClientManager.MyClient.playerCharacter.LockPlayer(false);
             ClientManager.MyClient.playerCharacter.engineering = false;
-            DestroyServerRpc();
+            CanvasManager.Instance.SetEngineerPrompt(" ",false);
+           DestroyServerRpc();
         }
     }
 
@@ -224,7 +230,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
     {
         while(timeTillExplosion > 0)
         {
-            Debug.Log(timeTillExplosion);
+            if (exploded) yield return null;
+            CanvasManager.Instance.SetEngineerPrompt($"{timeTillExplosion}");
             yield return new WaitForSeconds(1);
             timeTillExplosion--;
         }

@@ -12,6 +12,7 @@ public class Enemy : NetworkBehaviour
 {
     [Header("Global Enemy Variables")]
     [SerializeField] public GameObject avatar;
+    [SerializeField] private GameObject enemyDebrisDrops;
     [SerializeField] public Transform centerPoint;
     //TODO: Replace with slider?
     [SerializeField] TextMeshPro healthText;
@@ -50,9 +51,9 @@ public class Enemy : NetworkBehaviour
 
     [Header("Targetting")]
     private EnemyTargettingBehaviour targetBehaviour;
-    public event System.Action<Transform> OnTargetChange;
-    private Transform currentTarget;
-    public Transform CurrentTarget
+    public event System.Action<PlayerCharacterController> OnTargetChange;
+    private PlayerCharacterController currentTarget;
+    public PlayerCharacterController CurrentTarget
     {
         get { return currentTarget; }
         set
@@ -63,10 +64,34 @@ public class Enemy : NetworkBehaviour
         }
     }
 
+
+    private ulong lastClientDamageID;
+
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
 
     public EffectManager effectManager;
+
+    [SerializeField] public Animator animator;
+
+
+    [HideInInspector] public NetworkVariable<EnemyAnimationState> enemyAnimationState = new(EnemyAnimationState.IDLE, default, NetworkVariableWritePermission.Owner);
+
+    void OnPlayerStateChanged(EnemyAnimationState pervAnimationState, EnemyAnimationState newAnimationState)
+    {
+        switch (newAnimationState)
+        {
+            case EnemyAnimationState.RUNNING:
+                animator.SetBool("Running", true);
+                break;
+            case EnemyAnimationState.SWORDSLASH:
+                animator.SetTrigger("SwordSlash");
+                break;
+            default:
+                animator.SetBool("Running", false);
+                break;
+        }
+    }
 
 
 
@@ -83,15 +108,20 @@ public class Enemy : NetworkBehaviour
     private void Start()
     {
         healthBarOriginalRotation = healthBar.transform.rotation;
+        enemyDebrisDrops.SetActive(false);
         if (IsOwner) enemyType.Value = enemyTypeInsp;
         if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
+        StartCoroutine(EnemyLogic());
     }
+
+
 
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
         enemyType.OnValueChanged+= OnEnemyTypeChange;
+        enemyAnimationState.OnValueChanged += OnPlayerStateChanged;
         SetSOData();
         SetNavMeshData();
         maxHealth = health.Value;
@@ -109,6 +139,7 @@ public class Enemy : NetworkBehaviour
         health.OnValueChanged -= OnHealthChange;
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
+        FallApart();
     }
     void SetSOData()
     {
@@ -161,7 +192,7 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false , ServerRpcParams serverRpcParams = default)
     {
         float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
         if (enemyType.Value != EnemyType.NONE)
@@ -185,6 +216,7 @@ public class Enemy : NetworkBehaviour
         }
         totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
         health.Value -= totalDamage;
+        lastClientDamageID = serverRpcParams.Receive.SenderClientId;
     }
 
     /// <summary>
@@ -215,20 +247,28 @@ public class Enemy : NetworkBehaviour
     private void Die()
     {
 
-        FallApart(); 
-        if (IsOwner) StartCoroutine(LateDestroy());
-        gameObject.SetActive(false);
+        //if (IsOwner) StartCoroutine(LateDestroy());
+        if (IsOwner)
+        {
+            Destroy(this.gameObject);
+            LobbyManager.Instance.GetClient(lastClientDamageID).golemsKilled.Value++;
+        }
     }
     void FallApart()
     {
-        List<Transform> bodyParts = GetChildren(avatar.transform);
+        enemyDebrisDrops.SetActive(true);
+        List<Transform> bodyParts = GetChildren(enemyDebrisDrops.transform);
+        MatChanger[] matChangers = enemyDebrisDrops.GetComponentsInChildren<MatChanger>();
+        foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemyType.Value, true);
 
         foreach (var bodyPart in bodyParts)
         {
             bodyPart.parent = null;
+            //bodyPart.gameObject.AddComponent<MeshRenderer>();
             bodyPart.gameObject.AddComponent<BoxCollider>(); 
             bodyPart.gameObject.AddComponent<Rigidbody>().mass = 0.01f;
             bodyPart.tag = "Debris";
+            bodyPart.gameObject.layer = LayerMask.NameToLayer("Debris");
         }
     }
     List<Transform> GetChildren(Transform parent)
@@ -267,22 +307,41 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     void FixHealthBar()
     {
-        //TODO: Fix.
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
 
-    public virtual void Update()
+
+    /*    public void Update()
+        {
+            FixHealthBar();
+            if (enemyState == EnemyState.ATTACKING) return;
+            targetBehaviour.FindTarget();
+            attackBehaviour.TryAttack();
+
+            if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
+            if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
+            if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
+            if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
+        }
+    */
+
+    IEnumerator EnemyLogic()
+    {
+        while (true)
+        {
+            LessThanFixedUpdate();
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    public virtual void LessThanFixedUpdate()
     {
         FixHealthBar();
-        if (enemyState == EnemyState.ATTACKING) return;
         targetBehaviour.FindTarget();
+        if (enemyState == EnemyState.ATTACKING) return;
         attackBehaviour.TryAttack();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
     }
+
 
     public virtual void AttackLogic(Transform target)
     {
@@ -333,3 +392,11 @@ public class Enemy : NetworkBehaviour
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
 public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER }
+
+
+public enum EnemyAnimationState
+{
+    IDLE,
+    RUNNING,
+    SWORDSLASH
+}
