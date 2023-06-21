@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6884726234392993405}
   m_Layer: 0
   m_Name: Rock_Interactable
-  m_TagString: Interactable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5011997484139897490}
-  - {fileID: 8863013914588157746}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -146,78 +145,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 289301614986012343, guid: c2992583d7787514d8bc9f201f0db3f5, type: 3}
---- !u!1001 &7407777626270139821
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 3616128716858834029}
-    m_Modifications:
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031816891839025890, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-        type: 3}
-      propertyPath: m_Name
-      value: DesignerPickUp
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c, type: 3}
---- !u!4 &8863013914588157746 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2031816891839025823, guid: 0e43df1ca4fc95a438fdfeb3575b2e5c,
-    type: 3}
-  m_PrefabInstance: {fileID: 7407777626270139821}
-  m_PrefabAsset: {fileID: 0}
