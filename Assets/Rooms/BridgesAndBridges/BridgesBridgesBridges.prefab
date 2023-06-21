@@ -10613,6 +10613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2992069288633750752}
   - component: {fileID: 8092225906547739414}
+  - component: {fileID: 9105435685363467196}
   m_Layer: 0
   m_Name: BridgesBridgesBridges
   m_TagString: Untagged
@@ -10682,6 +10683,19 @@ MonoBehaviour:
   - {fileID: 3813578625474959536}
   - {fileID: 7481280177217499596}
   networkObjectSpawners: []
+--- !u!65 &9105435685363467196
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992069288633750767}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8.51, y: 4.01, z: 1.18}
+  m_Center: {x: -30.12, y: 4.91, z: -37.28}
 --- !u!1 &4786843896463637381
 GameObject:
   m_ObjectHideFlags: 0
@@ -17467,7 +17481,7 @@ PrefabInstance:
     - target: {fileID: 7123664642981276385, guid: 7874264af01085d45818cb7a6e72fbae,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -176.92915
+      value: -180.8
       objectReference: {fileID: 0}
     - target: {fileID: 7123664642981276385, guid: 7874264af01085d45818cb7a6e72fbae,
         type: 3}
@@ -17477,7 +17491,7 @@ PrefabInstance:
     - target: {fileID: 7123664642981276385, guid: 7874264af01085d45818cb7a6e72fbae,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 157.93025
+      value: 138.05
       objectReference: {fileID: 0}
     - target: {fileID: 7123664642981276385, guid: 7874264af01085d45818cb7a6e72fbae,
         type: 3}
