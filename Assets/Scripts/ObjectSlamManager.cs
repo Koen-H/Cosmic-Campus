@@ -33,6 +33,13 @@ public class ObjectSlamManager : NetworkBehaviour
         slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
         slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
     }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) return;
+        playerController = ClientManager.MyClient.playerCharacter;
+    }
+
     private void Update()
     {
         if(!hasFallen) rb.velocity += Vector3.down * dropSpeed;
@@ -69,7 +76,7 @@ public class ObjectSlamManager : NetworkBehaviour
         //If the current client is the owner, we deal the damage
         if (IsOwner)
         {
-
+            Debug.Log("DOING THINGS");
             Collider[] colliders = Physics.OverlapSphere(transform.position, slamDistance);
             foreach (Collider collider in colliders)
             {
@@ -85,8 +92,7 @@ public class ObjectSlamManager : NetworkBehaviour
                     knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);
                     enemyMovement.ApplyKnockback(knockbackDirection.normalized, knockbackForce, knockbackDuration);
                 }
-
-                if (collider.CompareTag("Player"))
+                else if (collider.CompareTag("Player"))
                 {
                     PlayerCharacterController player = collider.GetComponent<PlayerCharacterController>();
 
