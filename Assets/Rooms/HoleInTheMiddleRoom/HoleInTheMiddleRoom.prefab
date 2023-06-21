@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 171949837066016203}
   m_Layer: 6
   m_Name: Room
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4925,8 +4925,7 @@ MonoBehaviour:
   - {fileID: 8103462142933844354}
   - {fileID: 8103462144508736536}
   - {fileID: 8103462142701649475}
-  potions:
-  - {fileID: 7965631455173700715}
+  networkObjectSpawners: []
 --- !u!65 &6739474198767376927
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6489,18 +6488,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 171949837151998063}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7965631455173700715 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7847936787454360580, guid: f0b98b4e78c3f164ca0ba23f5a42c1eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 171949837151998063}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &171949837290403867
 PrefabInstance:
   m_ObjectHideFlags: 0
