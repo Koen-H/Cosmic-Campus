@@ -10,6 +10,11 @@ public class Staff : Weapon
     List<ParticleTravelDistance> beams = new List<ParticleTravelDistance>();
     bool isBeaming = false;
 
+
+    private void Start()
+    {
+        weaponAnimation = GetComponentInChildren<Animator>();
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -55,6 +60,8 @@ public class Staff : Weapon
     void DestoryAllBeams()
     {
         isBeaming = false;
+        weaponAnimation.SetBool("Staffing", false);
+
         while (beams.Count > 0)
         {
             Destroy(beams[0].gameObject);
@@ -66,6 +73,8 @@ public class Staff : Weapon
     public override void Attack()
     {
         isBeaming = true;
+        weaponAnimation.SetBool("Staffing", true);
+
         FindClosestEnemy();
     }
 

@@ -10,6 +10,11 @@ public class Bow : Weapon
     private bool isCharging;
     private float chargeStartTime;
 
+
+    private void Start()
+    {
+        weaponAnimation = GetComponentInChildren<Animator>();
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -59,6 +64,7 @@ public class Bow : Weapon
     public override void AttackStart()
     {
         StartCharge();
+        weaponAnimation.SetBool("Bowing", true);
     }
     private void StartCharge()
     {
@@ -70,6 +76,8 @@ public class Bow : Weapon
 
     private void ShootArrow()
     {
+        weaponAnimation.SetBool("Bowing", false);
+
         float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
         chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
         isCharging = false;

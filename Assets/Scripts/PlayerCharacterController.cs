@@ -428,6 +428,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (isDead.Value) return;
         if (engineering) return;
         canMove = toggle;
+        if (toggle == false) animator.SetBool("Running", false);
     }
 
     public void InitWeapon()
