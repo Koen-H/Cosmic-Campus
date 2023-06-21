@@ -349,22 +349,22 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: seed
-      value: 253627927
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
-        type: 3}
-      propertyPath: randomSeed
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
+      propertyPath: randomSeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
+        type: 3}
       propertyPath: rightOffset
-      value: 30
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: forwardOffset
-      value: 100
+      value: 130
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
@@ -410,7 +410,7 @@ PrefabInstance:
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
       propertyPath: roomPrefabs.Array.size
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
@@ -452,7 +452,13 @@ PrefabInstance:
         type: 3}
       propertyPath: roomPrefabs.Array.data[6]
       value: 
-      objectReference: {fileID: 8049785582359895414, guid: 2db8d9d6552663d41b048c113878c6d9,
+      objectReference: {fileID: 998769184976669026, guid: 38aac7d5c87ca1746b1c3fb40504e32e,
+        type: 3}
+    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
+        type: 3}
+      propertyPath: roomPrefabs.Array.data[7]
+      value: 
+      objectReference: {fileID: 8092225906547739414, guid: 957861caa2015d74c8a254c0f03013a8,
         type: 3}
     - target: {fileID: 2991427587043466505, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
