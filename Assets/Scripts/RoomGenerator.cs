@@ -477,6 +477,7 @@ public class RoomGenerator : NetworkBehaviour
         newCurve.points = splinePath;
         newCurve.Apply();
         newCurve.gameObject.layer = 6;
+        newCurve.gameObject.tag = "RainbowRoad";
         newCurve.gameObject.AddComponent<MeshCollider>();
         navMeshSurfaces.Add(newCurve.gameObject.AddComponent<NavMeshSurface>());
         if (!branchedPath && i == 0) return;

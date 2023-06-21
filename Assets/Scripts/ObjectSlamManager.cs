@@ -50,7 +50,7 @@ public class ObjectSlamManager : NetworkBehaviour
         //}
         if (!hasFallen)
         {
-            if (collision.gameObject.CompareTag("Ground"))
+            if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("RainbowRoad"))
             {
             hasFallen = true;
             GroundSlam();
