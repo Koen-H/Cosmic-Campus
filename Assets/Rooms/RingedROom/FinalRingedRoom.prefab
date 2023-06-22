@@ -5471,6 +5471,7 @@ Transform:
   - {fileID: 2335531694626586329}
   - {fileID: 2335531693705794767}
   - {fileID: 2335531693725841339}
+  - {fileID: 7989835146440097003}
   m_Father: {fileID: 4892446176194324374}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -9406,7 +9407,9 @@ MonoBehaviour:
   - {fileID: 3599169355541855083}
   - {fileID: 3599169355170517373}
   - {fileID: 3599169355186237961}
+  - {fileID: 8200027809324920109}
   networkObjectSpawners: []
+  cmgtTransformSpawnpoints: []
 --- !u!65 &4005183826158342702
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9420,6 +9423,53 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 9.19, y: 11.53, z: 1}
   m_Center: {x: -2.24, y: 1.88, z: -23.6}
+--- !u!1 &5664755881019520682
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7989835146440097003}
+  - component: {fileID: 8200027809324920109}
+  m_Layer: 0
+  m_Name: EnemySpawner (13)
+  m_TagString: Untagged
+  m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7989835146440097003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664755881019520682}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.329, y: 0.16705269, z: -0.012}
+  m_LocalScale: {x: 0.06404022, y: 0.08782407, z: 0.08506463}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4892446175794415229}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8200027809324920109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664755881019520682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
+  enemyPrefab: {fileID: 8452948688450350668, guid: 352943c0c054f064d9b7acdbb2bc4351,
+    type: 3}
 --- !u!1 &5956430088270406769
 GameObject:
   m_ObjectHideFlags: 0
