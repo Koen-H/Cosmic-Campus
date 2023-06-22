@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PunchAttack : EnemyAttackBehaviour
@@ -35,6 +36,9 @@ public class PunchAttack : EnemyAttackBehaviour
     {
         PlayerCharacterController currentTarget = enemy.CurrentTarget;
         if (currentTarget == null) return;
+        Vector3 toTarget = currentTarget.transform.position - transform.position;
+        float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
+        if (dotProduct < 0) return;
         if ((currentTarget.transform.position - transform.position).magnitude < attackRange) Attack();
         return;
     }

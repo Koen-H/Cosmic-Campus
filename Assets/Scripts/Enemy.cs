@@ -61,7 +61,7 @@ public class Enemy : NetworkBehaviour
         {
             if (currentTarget == value) return;
             currentTarget = value;
-            OnTargetChange?.Invoke(currentTarget);
+            if(OnTargetChange != null) OnTargetChange?.Invoke(currentTarget);
         }
     }
 

@@ -32,20 +32,18 @@ public class RangeEnemy : PunchAttack
     {
         PlayerCharacterController currentTarget = enemy.CurrentTarget;
         if (currentTarget == null) return;
+        Vector3 toTarget = currentTarget.transform.position - transform.position;
+        float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
+
+        if (dotProduct < 0) return;
         if ((currentTarget.transform.position - transform.position).magnitude < attackRange)
         {
-            //We are punching on close distance!
+            //We are trying to punch on close distance!
             base.Attack();
         }
         else
         {
-            Vector3 toTarget = currentTarget.transform.position - transform.position;
-            float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
-
-            if (dotProduct > 0 && toTarget.magnitude < rangedAttackRange)
-            {
-                Attack();
-            }
+            if (toTarget.magnitude < rangedAttackRange) Attack();
         }
         return;
     }

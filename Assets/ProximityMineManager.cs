@@ -30,7 +30,9 @@ public class ProximityMineManager : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == 6) return;//Ground layer? We don't explode by ground
+        if (other.CompareTag("Enemy") || other.CompareTag("InvincibleEnemy")) return;
         if (IsOwner) ExplodeClientRpc();
+        Debug.Log("explosion caused by" + other.name);
     }
 
     IEnumerator ProximityTimer()
