@@ -14,7 +14,8 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] InworldPlayer InworldPlayer;
     [SerializeField] GameObject npc; 
     Dictionary<ulong, bool> deadClients;
-
+    public bool useFairPlay = true;
+    public List<EnemyType> allowedEnemyTypes;
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -46,19 +47,27 @@ public class GameManager : NetworkBehaviour
         levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
         deadClients = new();
         foreach (ulong playerId in LobbyManager.Instance.GetClients().Keys) deadClients.Add(playerId, false);
-        Debug.Log(deadClients.Count);
         yield return new WaitForFixedUpdate();
+        allowedEnemyTypes = new();
         LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
+        LoadEnemyTypes();
         ToggleLoadingScreenClientRpc(false);
         LoadGameUIClientRpc();
 
-        Debug.Log("SHit: " + ClientManager.MyClient.playerCharacter.gameObject);
-        //Debug.Log("Fuck: " + inworldController);
         //inworldController.m_InworldPlayer = ClientManager.MyClient.playerCharacter.gameObject;
         //var playerController = Instantiate(InworldPlayer, ClientManager.MyClient.playerCharacter.transform);
         //Instantiate(npc, inworldController.transform);
         //playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform,false);
 
+    }
+
+
+    public void LoadEnemyTypes()
+    {
+        if (!useFairPlay)
+        {
+            //foreach(EnemyType type in EnemyType)
+        }
     }
 
     [ClientRpc]

@@ -34,7 +34,7 @@ public class Sword : Weapon
             Enemy enemy = enteredTransform.GetComponentInParent<Enemy>();
             float damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
             enemy.TakeDamage(damage, playerController.damageType);
-            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,5f,2f);
+            enemy.GetComponent<EnemyMovement>().ApplyKnockback((enemy.transform.position - playerController.transform.position).normalized ,2f,1f);
         }
     }
 
@@ -148,7 +148,7 @@ public class Sword : Weapon
         //
         ToggleColliders(true);
 
-        weaponAnimation.SetTrigger("SwordSlash");
+        if(playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.SWORDSLASH;
        // AnimatorClipInfo[] clips = weaponAnimation.GetCurrentAnimatorClipInfo(0);
         //Debug.Log();//.GetCurrentAnimatorStateInfo(0)
         StartCoroutine(AfterAnim(1.083f/2));

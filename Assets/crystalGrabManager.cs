@@ -10,21 +10,24 @@ public class crystalGrabManager : MonoBehaviour
     [SerializeField] float speed = 0.3f;
 
     [SerializeField] private float rotationSpeed = 5f;
+    float timer; 
 
     private void Start()
     {
-        transform.forward = -(staffObject.position - transform.position).normalized;
+        Vector3 targetDirection = transform.position - staffObject.position;
+        transform.rotation = Quaternion.LookRotation(targetDirection.normalized, Vector3.up);
     }
 
 
     private void Update()
     {
+        timer += Time.deltaTime; 
         // Calculate the direction to look at the staffObject
         Vector3 targetDirection = staffObject.position - transform.position;
-        Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
+        //Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized, Vector3.up);
 
         // Rotate the object towards the target rotation with the desired speed
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, (rotationSpeed + (rotationSpeed/(1+timer))) * Time.deltaTime);
 
         // Move the object forward
         transform.Translate(transform.forward * (speed * Time.deltaTime));

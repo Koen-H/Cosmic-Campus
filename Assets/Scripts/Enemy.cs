@@ -29,6 +29,7 @@ public class Enemy : NetworkBehaviour
     public float typeMatchDamageIncrease = 1.5f;//
     public float typeMatchDamagePenalty = 1;//Default is none
     public bool forceTypeMatch = false;
+    [SerializeField] private bool changeTypeOnCorrectHit;
 
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
@@ -134,6 +135,18 @@ public class Enemy : NetworkBehaviour
         return (T)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
     }
 
+    private T GetRandomEnumValue<T>(T excludeValue) where T : Enum
+    {
+        Array enumValues = Enum.GetValues(typeof(T));
+        T randomValue;
+
+        do{
+            randomValue = (T)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
+        } while (randomValue.Equals(excludeValue));
+
+        return randomValue;
+    }
+
     public override void OnNetworkDespawn()
     {
         health.OnValueChanged -= OnHealthChange;
@@ -207,13 +220,14 @@ public class Enemy : NetworkBehaviour
             {
                 //The match fits! Apply the bonus damage!
                 totalDamage *= typeMatchDamageIncrease;
+                if(changeTypeOnCorrectHit) enemyType.Value = GetRandomEnumValue<EnemyType>(enemyType.Value);
             }
             else
             {
-                //The match doesn't fit! Decrease the damage!
+                //The match doesn't fit! Apply the penalty!
                 totalDamage *= typeMatchDamagePenalty;
             }
-        }
+        }else if (changeTypeOnCorrectHit) enemyType.Value = GetRandomEnumValue<EnemyType>(enemyType.Value);//Color is white, change it!
         totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
         health.Value -= totalDamage;
         lastClientDamageID = serverRpcParams.Receive.SenderClientId;

@@ -64,7 +64,7 @@ public class Bow : Weapon
     public override void AttackStart()
     {
         StartCharge();
-        weaponAnimation.SetBool("Bowing", true);
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.BOW;
     }
     private void StartCharge()
     {
@@ -76,7 +76,7 @@ public class Bow : Weapon
 
     private void ShootArrow()
     {
-        weaponAnimation.SetBool("Bowing", false);
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.IDLE;
 
         float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
         chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);

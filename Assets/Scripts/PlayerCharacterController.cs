@@ -67,14 +67,9 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] GameObject cartObject;
     [SerializeField] float cartSpeed;
 
-    public enum PlayerAnimationState
-    {
-        IDLE,
-        RUNNING,
-        SWORDSLASH
-    }
 
-    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
+
+    public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -216,8 +211,16 @@ public class PlayerCharacterController : NetworkBehaviour
 
     }
 
+
+    /// <summary>
+    /// Handles the animations of the player. Automatically networked when the value is changed.
+    /// </summary>
     void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
     {
+        animator.SetBool("Bowing", false);
+        animator.SetBool("Running", false);
+        animator.SetBool("Staffing", false);
+
         switch (newAnimationState)
         {
             case PlayerAnimationState.RUNNING:
@@ -226,8 +229,17 @@ public class PlayerCharacterController : NetworkBehaviour
             case PlayerAnimationState.SWORDSLASH:
                 animator.SetTrigger("SwordSlash");
                 break;
-            default:
+            case PlayerAnimationState.BOW:
+                animator.SetBool("Bowing", true);
+                break;
+            case PlayerAnimationState.STAFF:
+                animator.SetBool("Staffing", true);
+                break;
+            case PlayerAnimationState.CART:
+                //TODO:: Change with cart pose
                 animator.SetBool("Running", false);
+                break;
+            default:
                 break;
         }
     }
@@ -270,12 +282,13 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
         if (canMove && !knockedBack) Move();
+        DeathCheck();
+        LoadCart();
+        if (usingCart.Value) return;//Below this is disabled while you are in a cart!
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-        DeathCheck();
-        LoadCart();
     }
 
     void LoadCart()
@@ -400,7 +413,7 @@ public class PlayerCharacterController : NetworkBehaviour
             float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
 
             currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
-            playerAnimationState.Value = PlayerAnimationState.RUNNING;
+            playerAnimationState.Value = usingCart.Value ?  PlayerAnimationState.CART :PlayerAnimationState.RUNNING;
         }
         else
         {
@@ -616,4 +629,15 @@ public class PlayerCharacterController : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.OnAttackInputStop();
     }
+}
+
+public enum PlayerAnimationState
+{
+    IDLE,
+    RUNNING,
+    SWORDSLASH,
+    BOW,
+    STAFF,
+    CART,
+
 }
