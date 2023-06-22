@@ -3522,6 +3522,7 @@ GameObject:
   - component: {fileID: 4490902677939833139}
   - component: {fileID: 4490902677939833138}
   - component: {fileID: 4490902677939833137}
+  - component: {fileID: 2773061550187482928}
   m_Layer: 6
   m_Name: TheGarden
   m_TagString: Ground
@@ -4358,6 +4359,20 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4490902677939833135}
+  m_Mesh: {fileID: 0}
+--- !u!64 &2773061550187482928
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4490902677939833135}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &4490902678978862307
 GameObject:

@@ -933,6 +933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8452948688450350671}
   - component: {fileID: 8452948688450350667}
+  - component: {fileID: 1637057799621441293}
   - component: {fileID: 2328116851091482353}
   - component: {fileID: 941930381765984158}
   - component: {fileID: 8452948688450350666}
@@ -988,6 +989,24 @@ MonoBehaviour:
     max: 21
     diff: 1
   canBeNockedBack: 0
+--- !u!114 &1637057799621441293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8452948688450350668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17349306062168c459ec936a34e71b70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionRange: 0
+  trackingRange: 0
+  enemyEyes: {fileID: 0}
+  hasThirdEye: 1
+  thirdEyeRange: 50
+  useThirdEyeOnDamage: 1
 --- !u!114 &2328116851091482353
 MonoBehaviour:
   m_ObjectHideFlags: 0

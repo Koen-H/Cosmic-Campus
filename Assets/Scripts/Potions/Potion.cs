@@ -17,7 +17,7 @@ public class Potion : NetworkBehaviour
     }
     private void Start()
     {
-        if(!IsServer) Destroy(gameObject);
+
     }
 
 

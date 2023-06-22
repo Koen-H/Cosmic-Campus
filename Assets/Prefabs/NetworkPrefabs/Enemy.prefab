@@ -2030,6 +2030,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6880509871702667902}
   - component: {fileID: 6913687221059783418}
+  - component: {fileID: 2417264174561278840}
   m_Layer: 14
   m_Name: Avatar
   m_TagString: Enemy
@@ -2068,6 +2069,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8967059003635105395, guid: 8ef46b36e961a03449fe4e8e2d922d73, type: 3}
+--- !u!65 &2417264174561278840
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880509871702667903}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.85773516, z: 0.1938324}
+  m_Center: {x: 0, y: 0.60631907, z: -0.0033872128}
 --- !u!1 &6880509872380289770
 GameObject:
   m_ObjectHideFlags: 0
