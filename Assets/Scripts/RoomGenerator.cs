@@ -14,6 +14,9 @@ public class RoomGenerator : NetworkBehaviour
     [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
     public List<RoomInfo> roomPrefabs;
+
+    [SerializeField] RoomInfo firstRoom; 
+    [SerializeField] RoomInfo lastRoom;
     //private List<RoomInfo> generatedRooms = new List<RoomInfo>();
 
     [SerializeField] private float forwardOffset;
@@ -658,6 +661,7 @@ public class RoomGenerator : NetworkBehaviour
         VisualiseRooms(roomLayers);
         int rand = systemRand.Next(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
+        if (lastRoom != null) from.roomPrefab = lastRoom;
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to, roomLayers);
         List<NavMeshSurface> navMeshSurfaces;
@@ -680,6 +684,7 @@ public class RoomGenerator : NetworkBehaviour
         RoomsLayer initialLayer = new RoomsLayer(0);
         int randInt = systemRand.Next(0, roomPrefabs.Count);
         RoomInfo roomInfo = roomPrefabs[randInt];
+        if (firstRoom != null) roomInfo = firstRoom;
         initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0, new Door(roomInfo.GetEntrancePosition() + origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition() + origin, roomInfo.normalExit), roomInfo) };
         roomLayers.Add(initialLayer);
         return initialLayer;
