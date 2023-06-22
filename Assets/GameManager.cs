@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,8 +16,9 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] InworldPlayer InworldPlayer;
     [SerializeField] GameObject npc; 
     Dictionary<ulong, bool> deadClients;
-    public bool useFairPlay = true;
-    public List<EnemyType> allowedEnemyTypes;
+    [SerializeField] private bool useFairPlay = true;
+    [SerializeField] private bool useWhiteEnemies = true;
+    private List<EnemyType> allowedEnemyTypes;
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -48,7 +51,6 @@ public class GameManager : NetworkBehaviour
         deadClients = new();
         foreach (ulong playerId in LobbyManager.Instance.GetClients().Keys) deadClients.Add(playerId, false);
         yield return new WaitForFixedUpdate();
-        allowedEnemyTypes = new();
         LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
         LoadEnemyTypes();
         ToggleLoadingScreenClientRpc(false);
@@ -64,10 +66,28 @@ public class GameManager : NetworkBehaviour
 
     public void LoadEnemyTypes()
     {
+        allowedEnemyTypes = new();
+        if (useWhiteEnemies) allowedEnemyTypes.Add(EnemyType.WHITE);
         if (!useFairPlay)
         {
-            //foreach(EnemyType type in EnemyType)
+            allowedEnemyTypes.Add(EnemyType.ARTIST);
+            allowedEnemyTypes.Add(EnemyType.DESIGNER);
+            allowedEnemyTypes.Add(EnemyType.ENGINEER);
+            return;
         }
+
+        Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
+        foreach (ClientManager client in clients.Values) allowedEnemyTypes.Add(client.playerCharacter.damageType);
+    }
+
+
+    public EnemyType GetEnemyType(EnemyType oldType = EnemyType.NONE)
+    {
+        EnemyType newType = allowedEnemyTypes[UnityEngine.Random.Range(0, allowedEnemyTypes.Count)];
+
+        while(newType == oldType) newType = GetEnemyType(oldType);
+
+        return newType;
     }
 
     [ClientRpc]
