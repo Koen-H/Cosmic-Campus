@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(ClientNetworkTransform))]
 public class ObjectSlamManager : NetworkBehaviour
 {
     public PlayerCharacterController playerController;
@@ -21,7 +23,6 @@ public class ObjectSlamManager : NetworkBehaviour
     bool isSinking = false;
 
     [SerializeField] GameObject collider;
-    [SerializeField] GameObject vfxSpawnpoint;
     [SerializeField] ParticleSystem vfxPrefab;
 
     private void Awake()
