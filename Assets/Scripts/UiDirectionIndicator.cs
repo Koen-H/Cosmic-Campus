@@ -72,21 +72,22 @@ public class UiDirectionIndicator: MonoBehaviour
     {
         if (playerPosition == null) return;
 
+        Vector3 pointOnPlane = cam.transform.position;
+        Vector3 point = Vector3.zero;  
+        Vector3 normal = Vector3.Cross(cam.transform.right, cam.transform.up);
+        Vector3 planeToPoint = point - pointOnPlane;
+        float dotProduct = Vector3.Dot(planeToPoint, normal);
+
         Vector3 screenPosition = cam.WorldToScreenPoint(Vector3.zero);
+
+        if (dotProduct < 0) screenPosition *= -1;
 
         if (screenPosition.x > cam.pixelWidth - margin) screenPosition.x = cam.pixelWidth - margin;
         if (screenPosition.y > cam.pixelHeight - margin) screenPosition.y = cam.pixelHeight - margin;
         if (screenPosition.x < margin) screenPosition.x = margin;
         if (screenPosition.y < margin) screenPosition.y = margin;
 
-        Vector2 localPosition;
-        //RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, screenPosition, cam, out localPosition);
-
-        self.anchoredPosition = screenPosition; // Changed from 'position' to 'anchoredPosition'
-
-        // The arrow part seems to not be correctly set up.
-        // Vector3 bruh = cam.WorldToScreenPoint(playerPosition.position) - screenPosition;
-        // arrow.right = bruh;
+        self.anchoredPosition = screenPosition;
     }
     IEnumerator ScaleOverTime(Transform target, Vector3 endScale, float duration)
     {
