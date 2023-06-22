@@ -461,13 +461,13 @@ public class RoomGenerator : NetworkBehaviour
         foreach(Transform spawnSpot in room.cmgtTransformSpawnpoints)
         {
             int rand = systemRand.Next(max);
-            float x = (float)systemRand.NextDouble() * 360f;
-            float y = (float)systemRand.NextDouble() * 360f;
-            float z = (float)systemRand.NextDouble() * 360f;
+            //float x = (float)systemRand.NextDouble() * 360f;
+            //float y = (float)systemRand.NextDouble() * 360f;
+            //float z = (float)systemRand.NextDouble() * 360f;
 
-            Quaternion randomQuat = Quaternion.Euler(x, y, z);
-            GameObject instance = Instantiate(cmgtPrefabs.GetGameObject(rand), spawnSpot.position, randomQuat);
-            instance.transform.localScale = spawnSpot.localScale;
+            //Quaternion randomQuat = Quaternion.Euler(x, y, z);
+            GameObject instance = Instantiate(cmgtPrefabs.GetGameObject(rand), spawnSpot.position, spawnSpot.rotation);
+            instance.transform.localScale = spawnSpot.lossyScale;
         }
     }
 
