@@ -27,6 +27,7 @@ public class DesignerAbility : Ability
     public override void Activate(Vector3 origin, Vector3 direction)
     {
         //base.Activate(origin,direction); //there was a reason why i didnt have base in here
+        if (player.usingCart.Value) return;
         if (onCooldown) return;
 
         Ray ray = new Ray(origin, direction);

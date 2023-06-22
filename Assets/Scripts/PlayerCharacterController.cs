@@ -61,7 +61,7 @@ public class PlayerCharacterController : NetworkBehaviour
     protected bool canBeDamaged = true;
     [SerializeField] float invinsibilityDuration;
 
-    [HideInInspector] NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+    [HideInInspector] public NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
     float cartLoad = 0;
     [SerializeField] private float cartEnterTime = 3;
     [SerializeField] GameObject cartObject;

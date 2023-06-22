@@ -41,6 +41,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     Vector3 startPos;
 
+    private PlayerCharacterController playerController;
+
     public override void OnNetworkSpawn()
     {
         isBuilding.OnValueChanged += BuildingStopped;
@@ -50,6 +52,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             CameraManager.MyCamera.SetFollowTarg(transform);
             CameraManager.MyCamera.SetLookTarg(transform);
             CanvasManager.Instance.SetEngineerPrompt("Hold Right click to charge!");
+            playerController = ClientManager.MyClient.playerCharacter;
         }
     }
 
@@ -123,7 +126,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             Vector2 lerpDir = Vector2.Lerp(currentDir, movementDir, t * accelerationTime);
             currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
         }
-        rigidbody.velocity = currentDirection * maxSpeed;
+        rigidbody.velocity = currentDirection * playerController.effectManager.ApplyMovementEffect(maxSpeed);
     }
 
 
@@ -194,6 +197,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         CanvasManager.Instance.SetEngineerPrompt(" ", false);
         Collider[] colliders = Physics.OverlapSphere(transform.position, (explosionRange + rangeIncreasePerObj * attachedObjects) > maxExplosionRange ? maxExplosionRange : (explosionRange + rangeIncreasePerObj * attachedObjects));
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
+        damage = playerController.effectManager.ApplyAttackEffect(damage);
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Enemy"))
@@ -201,6 +205,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
                 collider.GetComponentInParent<Enemy>().TakeDamage(damage,EnemyType.ENGINEER);//Hardcoded engineer, because it's a engineer ability
             }
         }
+        
         StartCoroutine(LateCameraMoveBack(1));
 
         IEnumerator LateCameraMoveBack(float duration)

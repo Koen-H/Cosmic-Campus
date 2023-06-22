@@ -26,6 +26,7 @@ public class EngineerAbility : Ability
 
     public override void Activate(Vector3 origin, Vector3 direction)
     {
+        if (player.usingCart.Value) return;
         if (!player.IsOwner) return;
         //base.Activate(origin, direction);
         RaycastHit hit;
@@ -35,7 +36,6 @@ public class EngineerAbility : Ability
         player.AttackStopServerRpc();
         player.engineering = true;
         player.LockPlayer(true);//Disable the player interactions.
-        StartCoroutine(Cooldown(cooldown));
 
         //GameObject target = GetTarget(origin, direction);
         //target.transform.forward = player.playerObj.transform.forward;
