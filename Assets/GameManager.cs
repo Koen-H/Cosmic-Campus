@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
-using Inworld;
-using Inworld.Sample;
+//using Inworld;
+//using Inworld.Sample;
 using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
     public RoomGenerator levelGenerator;
-    [SerializeField] InworldController inworldController;
-    [SerializeField] InworldPlayer InworldPlayer;
+    //[SerializeField] InworldController inworldController;
+    //[SerializeField] InworldPlayer InworldPlayer;
     [SerializeField] GameObject npc; 
     Dictionary<ulong, bool> deadClients;
 
@@ -53,11 +53,11 @@ public class GameManager : NetworkBehaviour
         LoadGameUIClientRpc();
 
         Debug.Log("SHit: " + ClientManager.MyClient.playerCharacter.gameObject);
-        Debug.Log("Fuck: " + inworldController);
-        inworldController.m_InworldPlayer = ClientManager.MyClient.playerCharacter.gameObject;
-        var playerController = Instantiate(InworldPlayer, ClientManager.MyClient.playerCharacter.transform);
-        Instantiate(npc, inworldController.transform);
-        playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform,false);
+        //Debug.Log("Fuck: " + inworldController);
+        //inworldController.m_InworldPlayer = ClientManager.MyClient.playerCharacter.gameObject;
+        //var playerController = Instantiate(InworldPlayer, ClientManager.MyClient.playerCharacter.transform);
+        //Instantiate(npc, inworldController.transform);
+        //playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform,false);
 
     }
 
