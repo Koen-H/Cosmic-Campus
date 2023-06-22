@@ -62,6 +62,8 @@ public class RoomGenerator : NetworkBehaviour
 
     //List<Transform> obstacles = new List<Transform>();
 
+    [SerializeField] private ListSO cmgtPrefabs;
+
     private static RoomGenerator instance;
     public static RoomGenerator Instance
     {
@@ -447,10 +449,28 @@ public class RoomGenerator : NetworkBehaviour
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
+        LoadCmgtPrefabs(room);
         ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[path.Count - 1].layerNumber;
         lateRoomEnemiesToSpawn.Add(room);
     }
+
+    void LoadCmgtPrefabs(RoomInfo room)
+    {
+        int max = cmgtPrefabs.GetCount();
+        foreach(Transform spawnSpot in room.cmgtTransformSpawnpoints)
+        {
+            int rand = systemRand.Next(max);
+            float x = (float)systemRand.NextDouble() * 360f;
+            float y = (float)systemRand.NextDouble() * 360f;
+            float z = (float)systemRand.NextDouble() * 360f;
+
+            Quaternion randomQuat = Quaternion.Euler(x, y, z);
+            GameObject instance = Instantiate(cmgtPrefabs.GetGameObject(rand), spawnSpot.position, randomQuat);
+            instance.transform.localScale = spawnSpot.localScale;
+        }
+    }
+
     void ApplyNavMeshModifierToChildren(Transform parent)
     {
         foreach (Transform child in parent)

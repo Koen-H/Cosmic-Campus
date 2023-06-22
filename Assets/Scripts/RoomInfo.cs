@@ -29,6 +29,8 @@ public class RoomInfo : MonoBehaviour
 
     public List<NetworkObjectSpawner> networkObjectSpawners = new List<NetworkObjectSpawner>();
 
+    public List<Transform> cmgtTransformSpawnpoints = new();
+
     private void Start()
     {
         if(roomLayer == 0 || roomLayer == 1)

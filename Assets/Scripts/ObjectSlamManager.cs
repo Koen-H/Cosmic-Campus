@@ -70,18 +70,21 @@ public class ObjectSlamManager : NetworkBehaviour
         {
             if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("RainbowRoad"))
             {
-            hasFallen = true;
-            GroundSlam();
+                hasFallen = true;
+                GroundSlam();
+                Instantiate(vfxPrefab, collision.contacts[0].point, Quaternion.identity);
+                //collision.contacts[0].point
 
             }
         }
-
     }
+
+
     private void GroundSlam()
     {
         rb.isKinematic = true;
         collider.SetActive(true);
-        Instantiate(vfxPrefab, vfxSpawnpoint.transform.position, Quaternion.identity);
+
         CameraManager.MyCamera.ShakeCamera(2,0.5f);
         StartCoroutine(SinkCountdown(1));
         //Do fancy particle stuff

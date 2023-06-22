@@ -148,6 +148,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
         if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
         if (!IsOwner) return;
+        if (engineering) return;// Got revived during engineering ability go back
         LockPlayer(isCurrentlyDead, true);
     }
     IEnumerator InvinsibilityForTime(float time)
