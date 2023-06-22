@@ -11,9 +11,9 @@ public class FieldOfView : EnemyTargettingBehaviour
     public override void FindTarget()
     {
 
-        if(target != null)
+        if(target != null && !target.isDead.Value)
         {
-                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange && !target.isDead.Value)//If the target is still in range and not dead
+                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange )//If the target is still in range and not dead
                 {
                     // Visualization
                     Debug.DrawLine(transform.position, target.transform.position, Color.green, 0.01f);
@@ -24,8 +24,12 @@ public class FieldOfView : EnemyTargettingBehaviour
                 {
                     target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
                 }
-                SetEnemyTarget();
         }
+        else
+        {
+            target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
+        }
+        SetEnemyTarget();
         return;
     }
 

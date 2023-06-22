@@ -32,6 +32,10 @@ public class ObjectSlamManager : NetworkBehaviour
         //slamObjVFX = Resources.Load<GameObject>("SlamEffect/Slam");
         //slamExtraVFX = Resources.Load<GameObject>("SlamEffect/Slam2");
     }
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner) StartCoroutine(LateDestroyObject());
+    }
 
     private void Update()
     {
@@ -42,18 +46,18 @@ public class ObjectSlamManager : NetworkBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!hasFallen)
-        {
-            if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("RainbowRoad"))
-            {
-                hasFallen = true;
-                GroundSlam();
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (!hasFallen)
+    //    {
+    //        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("RainbowRoad"))
+    //        {
+    //            hasFallen = true;
+    //            GroundSlam();
 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
 
     private void OnCollisionEnter (Collision collision)
     {
@@ -155,6 +159,12 @@ public class ObjectSlamManager : NetworkBehaviour
         isSinking = true;
     }
 
+
+    IEnumerator LateDestroyObject()
+    {
+        yield return new WaitForSeconds(30);
+        Destroy(this.gameObject);
+    }
 
     void SinkObject()
     {
