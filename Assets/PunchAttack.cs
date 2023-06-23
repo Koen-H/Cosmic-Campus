@@ -71,6 +71,7 @@ public class PunchAttack : EnemyAttackBehaviour
         if (enteredTransform.TryGetComponent(out PlayerCharacterController player))
         {
             player.TakeDamage(damage);
+            enemy.soundManager.enemyAttack.Play();
         }
     }
 

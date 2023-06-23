@@ -22,6 +22,8 @@ public class Enemy : NetworkBehaviour
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
+    public EnemySoundManager soundManager;
+
     [Header("Enemy type variables")]
     public EnemyType enemyTypeInsp = EnemyType.NONE;
     [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
@@ -134,6 +136,7 @@ public class Enemy : NetworkBehaviour
         health.OnValueChanged -= OnHealthChange;
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
+        soundManager.PlayDeathSFX();
         FallApart();
     }
     void SetSOData()
