@@ -10,6 +10,11 @@ public class Bow : Weapon
     private bool isCharging;
     private float chargeStartTime;
 
+
+    private void Start()
+    {
+        weaponAnimation = GetComponentInChildren<Animator>();
+    }
     /// <summary>
     /// When the player starts with the input
     /// </summary>
@@ -32,7 +37,7 @@ public class Bow : Weapon
             AttackStart();
         }
         if (weaponState != WeaponState.HOLD) return;
-        Aim();
+        Aim(true);
         playerController.ToggleMovement(false);
     }
     /// <summary>
@@ -41,7 +46,7 @@ public class Bow : Weapon
     public override void OnAttackInputStop()
     {
         if (weaponState != WeaponState.HOLD) return;
-        Aim();
+        Aim(true);
         if (isCharging)
         {
             ShootArrow();
@@ -59,6 +64,8 @@ public class Bow : Weapon
     public override void AttackStart()
     {
         StartCharge();
+        playerController.playerSounds.bowPullBack.Play();
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.BOW;
     }
     private void StartCharge()
     {
@@ -70,14 +77,17 @@ public class Bow : Weapon
 
     private void ShootArrow()
     {
-        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / maxChargeTime);
-        chargeLevel = Mathf.Lerp(weaponData.minProjectileSpeed, weaponData.maxProjectileSpeed, chargeLevel);
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.IDLE;
+        playerController.playerSounds.bowShot.Play();
+        float chargeLevel = Mathf.Clamp01((Time.time - chargeStartTime) / weaponData.maxChargeTime);
+        float chargeSpeedLevel = Mathf.Lerp(weaponData.chargeProjectileSpeed.min, weaponData.chargeProjectileSpeed.max, chargeLevel);
+        float chargeDamageLevel = Mathf.Lerp(weaponData.chargeProjectileDamage.min, weaponData.chargeProjectileDamage.max, chargeLevel);
         isCharging = false;
 
         GameObject arrow = Instantiate(weaponData.projectilePrefab, weaponObj.transform.position, weaponObj.transform.rotation);
-        arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeLevel);
+        arrow.GetComponent<Rigidbody>().AddForce(weaponObj.transform.forward * chargeSpeedLevel);
         ArrowManager arrowManager = arrow.GetComponent<ArrowManager>();
-        arrowManager.damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue());
+        arrowManager.damage = playerController.effectManager.ApplyAttackEffect(weaponData.damage.GetRandomValue() + chargeDamageLevel);
         arrowManager.playerController = playerController;
     }
 }

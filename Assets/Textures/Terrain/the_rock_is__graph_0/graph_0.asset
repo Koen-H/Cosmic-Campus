@@ -17,11 +17,11 @@ MonoBehaviour:
   Name: graph_0
   IsRoot: 1
   FlagedForDelete: 0
-  GUID: ed4606ed-07d4-45d2-a261-d4a9f5850239
+  GUID: 2d4ee1ec-8aa5-488a-b345-7314e33245da
   Index: 0
   Input:
-  - rid: 3794982301215227904
-  - rid: 3794982301215227905
+  - rid: 8115130635435376640
+  - rid: 8115130635435376641
   Output:
   - Index: 0
     VirtualOutputIndex: 7
@@ -146,8 +146,7 @@ MonoBehaviour:
   GenerateAllMipmaps: 1
   OutputMaterial: {fileID: 2100000, guid: b5b7b4ea6fc285842bd173a6bcfd16fa, type: 2}
   DefaultPreset: " <sbspreset pkgurl=\"pkg://the_rock_is_\" label=\"\" >\n  <presetinput
-    identifier=\"$outputsize\" uid=\"3187461676\" type=\"8\" value=\"10,10\" />\n
-    </sbspreset>\n"
+    identifier=\"$outputsize\" uid=\"3187461676\" type=\"8\" value=\"10,10\" />\n</sbspreset>\n"
   MaterialShader: HDRP/Lit
   RenderTextures: 0
   OutputRemaped: 0
@@ -155,7 +154,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 3794982301215227904
+    - rid: 8115130635435376640
       type: {class: SubstanceInputInt2, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 0
@@ -174,7 +173,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 3794982301215227905
+    - rid: 8115130635435376641
       type: {class: SubstanceInputInt, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 1

@@ -1,3 +1,4 @@
+using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,13 +23,21 @@ public class ReadyUpManager : NetworkBehaviour
     [SerializeField] Button weaponNextButton;
     [SerializeField] TextMeshProUGUI weaponNextButtonText;
 
+    [SerializeField] List<GameObject> disableItemsOnClient = new List<GameObject>();
+    [SerializeField] GameObject lobbyUI;
+
 
     bool weaponsSelected;
 
+    private void Awake()
+    {
+        clientItems = new Dictionary<ulong, ReadyUpUIItems>();
+    }
 
     private void Start()
     {
         LobbyManager.OnNewClientJoined += NewClientJoined;
+        SteamMatchmaking.OnLobbyEntered += LoadLobby;
     }
 
     public void StartNetcodeHost()
@@ -39,6 +48,12 @@ public class ReadyUpManager : NetworkBehaviour
     public void StartNetcodeClient()
     {
         NetworkManager.Singleton.StartClient();
+    }
+
+    void LoadLobby(Steamworks.Data.Lobby lobby)
+    {
+        foreach(GameObject obj in disableItemsOnClient) obj.SetActive(false);
+        lobbyUI.SetActive(true);
     }
 
     void NewClientJoined(ClientManager newClient)
@@ -101,10 +116,7 @@ public class ReadyUpManager : NetworkBehaviour
                 playerRoleData = GameData.Instance.engineerData;
                 break;
             default:
-                Debug.Log("no value!?");
                 try {
-                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRole.Value);
-                    Debug.Log(LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData);
                     playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;}
                 catch { return; }
                 break;
@@ -166,11 +178,8 @@ public class ReadyUpManager : NetworkBehaviour
 
     void CheckReady()
     {
-        if (!IsServer) return;
-
         charNextButton.gameObject.SetActive(true);
         weaponNextButton.gameObject.SetActive(true);
-
         int isReadies = 0;
         foreach (KeyValuePair<ulong, bool> entry in clientReady)
         {
@@ -185,12 +194,12 @@ public class ReadyUpManager : NetworkBehaviour
         {
             if (!weaponsSelected)
             {
-                charNextButton.interactable = true;
+                if(IsServer)charNextButton.interactable = true;
                 charNextButtonText.text = "Everyone ready!";
             }
             else
             {
-                weaponNextButton.interactable = true;
+                if (IsServer) weaponNextButton.interactable = true;
                 weaponNextButtonText.text = "Everyone ready!";
             }
         }
@@ -204,9 +213,11 @@ public class ReadyUpManager : NetworkBehaviour
             else
             {
                 weaponNextButton.interactable = false;
-                charNextButtonText.text = $"{isReadies}/{clientReady.Count} ready";
+                weaponNextButtonText.text = $"{isReadies}/{clientReady.Count} ready";
             }
         }
+        DiscordManager.Instance.UpdateStatus("Waiting for friends", $"{isReadies}/{clientReady.Count} ready");
+
     }
 
     void UnreadyAll()
@@ -226,6 +237,8 @@ public class ReadyUpManager : NetworkBehaviour
     [ClientRpc]
     void ReadyUpClientRpc(bool ready, ulong receivedClientId)
     {
+        clientReady[receivedClientId] = ready;
+        CheckReady();
         clientItems[receivedClientId].platform.GetComponent<ReadyUpPlatform>().ChangeColor(ready);
     }
 
@@ -246,6 +259,7 @@ public class ReadyUpManager : NetworkBehaviour
 
     public void StartGame()
     {
+        if(SteamGameNetworkManager.Instance.CurrentLobby != null)SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
         EnableLoadingScreenClientRpc();
         NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
     }

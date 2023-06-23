@@ -5,12 +5,17 @@ using UnityEngine;
 public class EngineerAbility : Ability
 {
 
+    protected override void Awake()
+    {
+        base.Awake();
+        cooldown = 10;
+    }
 
     //TODO: Make Ability good with playerchar so I can remove update in here!
     public void Update()
     {
         if (!player.IsOwner) return;
-        if (Input.GetMouseButtonDown(1))  // 1 is the right mouse button
+        if (Input.GetMouseButtonDown(1) && !onCooldown)  // 1 is the right mouse button
         {
             if (!player.canAbility) return;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -21,16 +26,16 @@ public class EngineerAbility : Ability
 
     public override void Activate(Vector3 origin, Vector3 direction)
     {
+        if (player.usingCart.Value) return;
         if (!player.IsOwner) return;
         //base.Activate(origin, direction);
-        Ray ray = new Ray(origin, direction);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit)) ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
+        LayerMask layerMask = ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("Enemy") | LayerMask.GetMask("Area") | LayerMask.GetMask("Player") | LayerMask.GetMask("UI"));
+        if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity, layerMask)) ServerSpawner.Instance.SpawnRemoteEngineerPrefabServerRpc(hit.point);
         else return;
         player.AttackStopServerRpc();
         player.engineering = true;
         player.LockPlayer(true);//Disable the player interactions.
-
 
         //GameObject target = GetTarget(origin, direction);
         //target.transform.forward = player.playerObj.transform.forward;

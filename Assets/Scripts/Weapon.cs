@@ -64,18 +64,21 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// Aim rotates the player towards where the mouse clicks.
     /// </summary>
-    internal void Aim()
+    internal void Aim(bool isBow = false)
     {
         if (!playerController.IsOwner) return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("UI") | LayerMask.GetMask("Area"))))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("UI") | LayerMask.GetMask("Area") | LayerMask.GetMask("Debris"))))
         {
             Vector3 clickPoint = hit.point;
             Transform playerObj = playerController.playerObj.transform;
             playerObj.LookAt(new Vector3(clickPoint.x, playerObj.position.y, clickPoint.z));
-            //weaponObj.transform.LookAt(clickPoint);
-            //playerController.gunForward.Value = weaponObj.transform.forward;
+            if (isBow)
+            {
+                weaponObj.transform.LookAt(clickPoint);
+                playerController.gunForward.Value = weaponObj.transform.forward;
+            }
         }
     }
 

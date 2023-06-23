@@ -15,7 +15,9 @@ public class QuestNPC : NetworkBehaviour
 
     [HideInInspector] public Vector3 doorPosition;
     [HideInInspector] public Vector3 doorNormal;
-    [HideInInspector] public int doorId; 
+    [HideInInspector] public int doorId;
+
+    public NetworkVariable<bool> isFollowing = new(false);
 
 
     private void Start()
@@ -57,7 +59,7 @@ public class QuestNPC : NetworkBehaviour
             if (self.requiredStudents == 0) 
                 if(IsServer) OpenDoorClientRpc(doorId);
         }
-
+        
     }
     [ServerRpc(RequireOwnership = false)]
     public virtual void InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
@@ -68,6 +70,7 @@ public class QuestNPC : NetworkBehaviour
             //this.gameObject.SetActive(false);
             CurrentTarget = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter.transform;
             enemyState = QuestNPCState.FOLLOWING;
+            isFollowing.Value = true;
             //Destroy(this.GetComponent<CapsuleCollider>());
             //return self;
         }

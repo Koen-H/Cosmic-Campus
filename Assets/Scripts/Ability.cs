@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.Burst.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 using static UnityEngine.UI.Image;
 
 public class Ability : MonoBehaviour
@@ -10,14 +11,15 @@ public class Ability : MonoBehaviour
     public float interactionRange = 5f;
     [SerializeField] protected float cooldown;
     protected bool canUse = true;
+    protected bool onCooldown = false;
 
     protected PlayerCharacterController player;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         player = GetComponent<PlayerCharacterController>();
     }
-    private void Update()
+    protected virtual void Update()
     {
         if (!player.IsOwner) return;
         if (!player.canAbility) return;//Until ability is refactored
@@ -31,7 +33,7 @@ public class Ability : MonoBehaviour
 
     public void AbilityInput()
     {
-        if (Input.GetMouseButtonUp(1) && canUse)  // 1 is the right mouse button
+        if (Input.GetMouseButtonUp(1) && !onCooldown)  // 1 is the right mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (GetTarget(ray.origin, ray.direction) != null)
@@ -41,7 +43,7 @@ public class Ability : MonoBehaviour
                 return;
             }
         }
-        if (Input.GetMouseButtonUp(1) && !canUse)
+        if (Input.GetMouseButtonUp(1) && !canUse && !onCooldown)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -51,7 +53,7 @@ public class Ability : MonoBehaviour
                 return;
             }
         }
-        if (Input.GetMouseButtonUp(1) && !canUse)
+        if (Input.GetMouseButtonUp(1) && !canUse && !onCooldown)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -88,14 +90,25 @@ public class Ability : MonoBehaviour
         if (target == null) return;
 
 
-        canUse = false;
-        Debug.Log("Activated ability on " + target.name);
-        StartCoroutine(Cooldown(cooldown));
+        //canUse = false;
+        //Debug.Log("Activated ability on " + target.name);
+        //StartCoroutine(Cooldown(cooldown));
     }
 
-    IEnumerator Cooldown(float time)
+    protected IEnumerator Cooldown(float time)
     {
-        yield return new WaitForSeconds(time);
-        canUse = true;
+        //Calculate on cooldown, incase we have a special effects that decreases the cooldown.
+        onCooldown = true;
+        float barMult = 1 / time;
+
+        while(time > 0)
+        {
+            float xValue = time * barMult;
+            if (time < 0) xValue = 0;
+            CanvasManager.Instance.SetCooldown(1 - xValue);
+            time -= 0.1f;
+            yield return new WaitForSeconds(0.1f);
+        }
+        onCooldown = false;
     }
 }

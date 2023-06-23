@@ -13,6 +13,7 @@ public class WeaponData : ScriptableObject
     public WeaponType weaponType = WeaponType.UNSET;
 
     public Range damage = new Range(0,1);
+    public Range damageHeal = new Range(0,1);
     [Tooltip("How long does the attack take?")]
     public float speed = 0;
     [Tooltip("How long till the attack can happen again?")]
@@ -21,8 +22,9 @@ public class WeaponData : ScriptableObject
     public float range = 0;
 
     public GameObject projectilePrefab = null;
-    public float minProjectileSpeed = 0;
-    public float maxProjectileSpeed = 0;
+    public float maxChargeTime = 2;
+    public Range chargeProjectileSpeed = new Range(250,1500);
+    public Range chargeProjectileDamage = new Range(0, 15);
 
     public float accuracy = 0;
 

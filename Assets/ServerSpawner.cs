@@ -12,6 +12,8 @@ public class ServerSpawner : NetworkBehaviour
 
     [SerializeField] GameObject remoteEngineerPrefab;
 
+    [SerializeField] List<NetworkObject> designerObjects;
+
 
     [Header("Artist decals")]
     [SerializeField] GameObject whiteDecal;
@@ -50,7 +52,6 @@ public class ServerSpawner : NetworkBehaviour
         instance.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
     }
 
-
     [ServerRpc(RequireOwnership = false)]
     public void SpawnArtistDecalPrefabServerRpc(Vector3 instanceLocation, ArtistPaintColor color, ServerRpcParams serverRpcParams = default)
     {
@@ -86,4 +87,19 @@ public class ServerSpawner : NetworkBehaviour
         if (instance == null) return;
         instance.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnDesignerObjectServerRpc(Vector3 instanceLocation, ServerRpcParams serverRpcParams = default)
+    {
+        int randomIndex = Random.Range(0, designerObjects.Count);
+
+        Vector3 spawnSpot = new Vector3(instanceLocation.x, instanceLocation.y + 5, instanceLocation.z);
+        NetworkObject instance = Instantiate(designerObjects[randomIndex], spawnSpot, Quaternion.identity);
+        instance.GetComponent<ObjectSlamManager>().playerController = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter;
+        instance.Spawn();
+        //instance.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+
+
+    } 
+
 }

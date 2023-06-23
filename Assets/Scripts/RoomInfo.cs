@@ -16,6 +16,10 @@ public class RoomInfo : MonoBehaviour
     public Transform studentSpawnPoint; 
     public Transform teacherSpawnPoint;
 
+    public Transform doorLeft;
+    public Transform doorRight;
+
+
     public Vector3 GetEntrancePosition() => doorEntrance.position;
     public Vector3 GetExitPosition() =>  doorExit.position;
     public Vector3 GetStudentPosition() => studentSpawnPoint.position;
@@ -23,15 +27,24 @@ public class RoomInfo : MonoBehaviour
 
     public List<EnemySpawner> enemySpawners= new List<EnemySpawner>();
 
-    public List<NetworkObject> potions = new List<NetworkObject>();
+    public List<NetworkObjectSpawner> networkObjectSpawners = new List<NetworkObjectSpawner>();
 
+    public List<Transform> cmgtTransformSpawnpoints = new();
+
+    private void Start()
+    {
+        if(roomLayer == 0 || roomLayer == 1)
+        {
+            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerCharacterController player = other.GetComponent<PlayerCharacterController>();
         if (player)
         {
-            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer);
+            RoomGenerator.Instance.SpawnEnemiesInRoomServerRpc(roomLayer + 1);
             player.checkPoint = doorEntrance.position;
         }
 

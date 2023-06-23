@@ -53,6 +53,8 @@ MonoBehaviour:
   roomPrefabs:
   - {fileID: 8178778973823242893, guid: 349d365e89453d34197024ffc3d057f8, type: 3}
   - {fileID: 4109838769310283684, guid: 92766a586a5f0704694040885e148807, type: 3}
+  firstRoom: {fileID: 0}
+  lastRoom: {fileID: 0}
   forwardOffset: 10
   rightOffset: 5
   randomXOffset: 5
@@ -72,6 +74,8 @@ MonoBehaviour:
     type: 3}
   studentPrefab: {fileID: 1231603171206996409, guid: d6c2f0300f950594cba4d980bad07043,
     type: 3}
+  initialSpawnLocation: {x: 0, y: 0, z: 0}
+  cmgtPrefabs: {fileID: 11400000, guid: 382402eed8c859f4fbeb9adf10923b12, type: 2}
 --- !u!114 &2764607105048962562
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
 {
     private Enemy enemy;
 
-    protected Transform target;
+    protected PlayerCharacterController target;
     [SerializeField] protected float detectionRange;
     [SerializeField] protected float trackingRange;
 
@@ -52,6 +52,7 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
             if (collider.CompareTag("Player"))
             {
                 float distance = Vector3.Distance(transform.position, collider.transform.position);
+                if (collider.GetComponent<PlayerCharacterController>().isDead.Value) continue;
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
@@ -62,7 +63,7 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
 
         if (closestPlayerCollider != null)
         {
-            target = closestPlayerCollider.transform;
+            target = closestPlayerCollider.GetComponent<PlayerCharacterController>();
             SetEnemyTarget();
         }
     }

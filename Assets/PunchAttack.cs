@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PunchAttack : EnemyAttackBehaviour
 {
 
     [SerializeField, Tooltip("From what distance should we try the attack?")] 
-    float attackRange = 2f;
+    protected float attackRange = 2f;
     Animator attackAnim;
 
 
@@ -21,6 +22,7 @@ public class PunchAttack : EnemyAttackBehaviour
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
         }
+        ToggleColliders(false);
     }
     private void OnDisable()
     {
@@ -32,27 +34,34 @@ public class PunchAttack : EnemyAttackBehaviour
 
     public override void TryAttack()
     {
-        Transform currentTarget = enemy.CurrentTarget;
+        PlayerCharacterController currentTarget = enemy.CurrentTarget;
         if (currentTarget == null) return;
-        if ((currentTarget.position - transform.position).magnitude < attackRange) Attack();
+        Vector3 toTarget = currentTarget.transform.position - transform.position;
+        float dotProduct = Vector3.Dot(toTarget.normalized, transform.forward);
+        if (dotProduct < 0) return;
+        if ((currentTarget.transform.position - transform.position).magnitude < attackRange) Attack();
         return;
     }
 
     protected override void Attack()
     {
-        base.Attack();
+        Attacked();
         //
         ToggleColliders(true);
 
         //Play the punch attack animation
 
         //For now...
-        enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
+        if (enemy.IsOwner)
+        {
+            enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
+        }
 
-      /*  attackAnim = GetComponentInChildren<Animator>();
-        attackAnim.SetTrigger("Animate");*/
+        /*  attackAnim = GetComponentInChildren<Animator>();
+          attackAnim.SetTrigger("Animate");*/
 
-        StartCoroutine(AfterAttackAnim(enemy.animator.GetCurrentAnimatorStateInfo(0).length));
+        float attackAnimDuration = 0.917f;
+        StartCoroutine(AfterAttackAnim(attackAnimDuration));
     }
 
     void OnAttackColliderEnter(Transform enteredTransform)
@@ -62,6 +71,7 @@ public class PunchAttack : EnemyAttackBehaviour
         if (enteredTransform.TryGetComponent(out PlayerCharacterController player))
         {
             player.TakeDamage(damage);
+            enemy.soundManager.enemyAttack.Play();
         }
     }
 

@@ -1446,6 +1446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!4 &352938739
@@ -2616,7 +2617,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &599826856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,7 +2630,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
+  spawnOnNetwork: 0
+  enemyPrefab: {fileID: 8452948688450350668, guid: 3a0ee4e3d0714cf4ca6706e95264fd9c,
     type: 3}
 --- !u!4 &599826857
 Transform:
@@ -4019,7 +4021,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 515559878}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: CreateCharacters
+        m_MethodName: CreateCharactersZerozero
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4426,6 +4428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!4 &944193158
@@ -4475,6 +4478,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   remoteEngineerPrefab: {fileID: 8464556065097483213, guid: 6f5cdcc6523532c4f9792ac9ae74ec2b,
     type: 3}
+  whiteDecal: {fileID: 0}
+  blueDecal: {fileID: 0}
+  yellowDecal: {fileID: 0}
+  orangeDecal: {fileID: 0}
+  redDecal: {fileID: 0}
+  greenDecal: {fileID: 0}
+  purpleDecal: {fileID: 0}
+  pinkDecal: {fileID: 0}
 --- !u!4 &950897935
 Transform:
   m_ObjectHideFlags: 0
@@ -4859,7 +4870,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
+  spawnOnNetwork: 1
+  enemyPrefab: {fileID: 8452948688450350668, guid: 3a0ee4e3d0714cf4ca6706e95264fd9c,
     type: 3}
 --- !u!4 &1076424486
 Transform:
@@ -6680,6 +6692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!4 &1419193387
@@ -10880,6 +10893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b75a0b3f4d9601409629106635c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnOnNetwork: 0
   enemyPrefab: {fileID: 6880509872615113898, guid: c0cd495ea9d98984b8aa45bc8d7d0706,
     type: 3}
 --- !u!4 &2070937794

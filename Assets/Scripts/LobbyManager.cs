@@ -7,7 +7,7 @@ using UnityEngine;
 public class LobbyManager : MonoBehaviour
 {
     [SerializeField] GameObject playerObj;
-    Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
+    private Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
     public static event System.Action<ClientManager> OnNewClientJoined;
     [SerializeField] GameObject spawnLocation;
 
@@ -45,9 +45,19 @@ public class LobbyManager : MonoBehaviour
         return clients[id];
     }
 
+    public Dictionary<ulong,ClientManager> GetClients()
+    {
+        return clients;
+    }
+
     public int ConnectedClientsAmount()
     {
         return clients.Count;
+    }
+
+    public void CreateCharactersZerozero()
+    {
+        CreateCharacters(Vector3.zero);
     }
 
     public void CreateCharacters(Vector3 spawnLoaction)
@@ -63,8 +73,10 @@ public class LobbyManager : MonoBehaviour
             clientManager.playerCharacter.checkPoint = spawnLoaction;
             //obj.GetComponent<PlayerCharacterController>().InitCharacter(client.Value.ClientId);
             NetworkObject networkObj = obj.GetComponent<NetworkObject>();
-            networkObj.SpawnWithOwnership(client.Value.ClientId);
+            networkObj.SpawnWithOwnership(client.Value.ClientId,true);
         }
+
+        DiscordManager.Instance.ToggleRandomUpdates(true);
     }
 
 }

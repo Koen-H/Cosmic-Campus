@@ -104,7 +104,7 @@ public class EffectManager : MonoBehaviour
         float newIncDamage = oldIncDamage;
         foreach (Effect resistanceEffect in resistanceEffects)
         {
-            newIncDamage = resistanceEffect.ApplyMovementEffect(newIncDamage);
+            newIncDamage = resistanceEffect.ApplyResistanceEffect(newIncDamage);
         }
         return newIncDamage;
     }

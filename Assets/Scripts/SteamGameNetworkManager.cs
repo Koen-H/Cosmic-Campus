@@ -22,6 +22,9 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     private FacepunchTransport transport = null;
     
+    bool loggedIn = false;
+
+
     private void Awake()
     {
         if(Instance == null)
@@ -79,7 +82,7 @@ public class SteamGameNetworkManager : MonoBehaviour
     {
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
-
+        if (SteamClient.IsLoggedOn) loggedIn = true;
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
     }
 
@@ -199,6 +202,14 @@ public class SteamGameNetworkManager : MonoBehaviour
     private void OnGameLobbyJoinRequested(Lobby lobby, SteamId steamId)
     {
         StartClient(steamId);
-    } 
+    }
     #endregion
+
+
+
+    public void UpdateRichPresenceStatus(string value)
+    {
+        
+        Debug.Log(SteamFriends.SetRichPresence("steam_display ", value));
+    }
 }
