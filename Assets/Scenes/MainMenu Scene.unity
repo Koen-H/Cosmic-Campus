@@ -15185,13 +15185,19 @@ MonoBehaviour:
   - display: Artist
     value: 1
     rolePlate: {fileID: 21300000, guid: 2171e66b061c3f347b8394b20ae50f6f, type: 3}
+    option: 0
   - display: Designer
     value: 2
     rolePlate: {fileID: 21300000, guid: f3d809a9afb1bdf43b9042f9b9c0cd71, type: 3}
+    option: 1
   - display: Engineer
     value: 3
     rolePlate: {fileID: 21300000, guid: 5bf7576a9f1d2214d98a2d1f0ebca494, type: 3}
+    option: 2
   displayText: {fileID: 716880688}
+  selectButton: {fileID: 927145424}
+  selectButtonText: {fileID: 1210192214}
+  deselectButton: {fileID: 1118267660}
   readyUpManager: {fileID: 2058417152}
   bannerPlateImg: {fileID: 918653478}
 --- !u!1 &927145422
@@ -23250,13 +23256,19 @@ MonoBehaviour:
   - display: Artist
     value: 1
     rolePlate: {fileID: 21300000, guid: 2171e66b061c3f347b8394b20ae50f6f, type: 3}
+    option: 0
   - display: Designer
     value: 2
     rolePlate: {fileID: 21300000, guid: f3d809a9afb1bdf43b9042f9b9c0cd71, type: 3}
+    option: 1
   - display: Engineer
     value: 3
     rolePlate: {fileID: 21300000, guid: 5bf7576a9f1d2214d98a2d1f0ebca494, type: 3}
+    option: 2
   displayText: {fileID: 707162103}
+  selectButton: {fileID: 1320815777}
+  selectButtonText: {fileID: 1862179598}
+  deselectButton: {fileID: 1320815777}
   readyUpManager: {fileID: 2058417152}
   bannerPlateImg: {fileID: 1433767398}
 --- !u!1 &1434956998
@@ -32215,13 +32227,19 @@ MonoBehaviour:
   - display: Artist
     value: 1
     rolePlate: {fileID: 21300000, guid: 2171e66b061c3f347b8394b20ae50f6f, type: 3}
+    option: 0
   - display: Designer
     value: 2
     rolePlate: {fileID: 21300000, guid: f3d809a9afb1bdf43b9042f9b9c0cd71, type: 3}
+    option: 1
   - display: Engineer
     value: 3
     rolePlate: {fileID: 21300000, guid: 5bf7576a9f1d2214d98a2d1f0ebca494, type: 3}
+    option: 2
   displayText: {fileID: 790131228}
+  selectButton: {fileID: 1477553096}
+  selectButtonText: {fileID: 890476749}
+  deselectButton: {fileID: 1477553096}
   readyUpManager: {fileID: 2058417152}
   bannerPlateImg: {fileID: 2025531811}
 --- !u!1 &2043850352
@@ -32724,6 +32742,7 @@ MonoBehaviour:
   - {fileID: 1043704315}
   - {fileID: 97733659}
   lobbyUI: {fileID: 1679026518}
+  optionsTaken: 
 --- !u!114 &2058417153
 MonoBehaviour:
   m_ObjectHideFlags: 0
