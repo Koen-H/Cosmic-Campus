@@ -14,6 +14,9 @@ public class RoomGenerator : NetworkBehaviour
     [SerializeField] private int numberOfPyramids;
     public int numberOfRooms;
     public List<RoomInfo> roomPrefabs;
+
+    [SerializeField] RoomInfo firstRoom; 
+    [SerializeField] RoomInfo lastRoom;
     //private List<RoomInfo> generatedRooms = new List<RoomInfo>();
 
     [SerializeField] private float forwardOffset;
@@ -58,6 +61,8 @@ public class RoomGenerator : NetworkBehaviour
     public Vector3 initialSpawnLocation; 
 
     //List<Transform> obstacles = new List<Transform>();
+
+    [SerializeField] private ListSO cmgtPrefabs;
 
     private static RoomGenerator instance;
     public static RoomGenerator Instance
@@ -444,10 +449,28 @@ public class RoomGenerator : NetworkBehaviour
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
+        LoadCmgtPrefabs(room);
         ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[path.Count - 1].layerNumber;
         lateRoomEnemiesToSpawn.Add(room);
     }
+
+    void LoadCmgtPrefabs(RoomInfo room)
+    {
+        int max = cmgtPrefabs.GetCount();
+        foreach(Transform spawnSpot in room.cmgtTransformSpawnpoints)
+        {
+            int rand = systemRand.Next(max);
+            //float x = (float)systemRand.NextDouble() * 360f;
+            //float y = (float)systemRand.NextDouble() * 360f;
+            //float z = (float)systemRand.NextDouble() * 360f;
+
+            //Quaternion randomQuat = Quaternion.Euler(x, y, z);
+            GameObject instance = Instantiate(cmgtPrefabs.GetGameObject(rand), spawnSpot.position, spawnSpot.rotation);
+            instance.transform.localScale = spawnSpot.lossyScale;
+        }
+    }
+
     void ApplyNavMeshModifierToChildren(Transform parent)
     {
         foreach (Transform child in parent)
@@ -658,6 +681,7 @@ public class RoomGenerator : NetworkBehaviour
         VisualiseRooms(roomLayers);
         int rand = systemRand.Next(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
+        if (lastRoom != null) from.roomPrefab = lastRoom;
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to, roomLayers);
         List<NavMeshSurface> navMeshSurfaces;
@@ -680,6 +704,7 @@ public class RoomGenerator : NetworkBehaviour
         RoomsLayer initialLayer = new RoomsLayer(0);
         int randInt = systemRand.Next(0, roomPrefabs.Count);
         RoomInfo roomInfo = roomPrefabs[randInt];
+        if (firstRoom != null) roomInfo = firstRoom;
         initialLayer.roomPositions = new List<Room>() { new Room(Vector3.zero, origin, 0, new Door(roomInfo.GetEntrancePosition() + origin, roomInfo.normalEntrance), new Door(roomInfo.GetExitPosition() + origin, roomInfo.normalExit), roomInfo) };
         roomLayers.Add(initialLayer);
         return initialLayer;

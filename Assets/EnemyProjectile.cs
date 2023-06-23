@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class EnemyProjectile : MonoBehaviour
@@ -9,14 +10,17 @@ public class EnemyProjectile : MonoBehaviour
     public float damage = 0;
     public Enemy enemy;
 
+    [SerializeField] AudioClip playerHit;
+    [SerializeField] SFXPlayer sfxPlayer;
+
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.name);
         if (attached) return;
         if (other.tag == "Player")
         {
-            //if (enemy.IsOwner)
                 other.transform.GetComponent<PlayerCharacterController>().TakeDamage(damage);
+            Instantiate(sfxPlayer,transform.position,Quaternion.identity).audioClip= playerHit;
             Destroy(this.gameObject);
         }
         attached = true;

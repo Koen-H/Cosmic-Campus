@@ -60,7 +60,7 @@ public class Staff : Weapon
     void DestoryAllBeams()
     {
         isBeaming = false;
-        weaponAnimation.SetBool("Staffing", false);
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.IDLE;
 
         while (beams.Count > 0)
         {
@@ -73,7 +73,7 @@ public class Staff : Weapon
     public override void Attack()
     {
         isBeaming = true;
-        weaponAnimation.SetBool("Staffing", true);
+        if(playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.STAFF;
 
         FindClosestEnemy();
     }

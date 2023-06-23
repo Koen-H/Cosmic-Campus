@@ -42,7 +42,6 @@ public class ArtistAbility : Ability
         //Check if something is inside the given index
         if (paintBucket.Count > index)
         {
-        Debug.Log("colorswap");
             ArtistPaintColor temp = paintBucket[index];
             paintBucket[index] = paintBucket[0];
             paintBucket[0] = temp;
@@ -56,6 +55,7 @@ public class ArtistAbility : Ability
 
     public override void Activate(Vector3 origin, Vector3 direction)
     {
+        if (player.usingCart.Value) return;
         Ray ray = new Ray(origin, direction);
         LayerMask layerMask = ~(LayerMask.GetMask("Decal") | LayerMask.GetMask("Enemy") | LayerMask.GetMask("Area") | LayerMask.GetMask("Player") | LayerMask.GetMask("UI"));
         RaycastHit hit;

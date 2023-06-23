@@ -11,6 +11,11 @@ public abstract class Effect : MonoBehaviour
     public GameObject vfx;
     protected GameObject vfxInstance;
 
+    public AudioClip sfx;
+    public bool loopSfx = false;
+    protected AudioSource sfxInstance;
+
+
     [SerializeField, Tooltip("If it's a reference it will be used for applying and not doing anything by iteself.")] 
     bool isReference = false;
 
@@ -69,6 +74,17 @@ public abstract class Effect : MonoBehaviour
         {
             vfxInstance = Instantiate(vfx, transform);
             vfxInstance.transform.localPosition = new Vector3(0, 2, 0);//Todo: Temporary
+            Debug.Log("TEST2");
+        }
+        if(sfx != null)
+        {
+            Debug.Log("TEST");
+            sfxInstance = gameObject.AddComponent<AudioSource>();
+            sfxInstance.clip = sfx;
+            sfxInstance.loop = loopSfx;
+            sfxInstance.spatialBlend = 1;
+            sfxInstance.volume = 10;
+            sfxInstance.Play();
         }
         StartCoroutine(EffectCountdown());
     }
@@ -79,6 +95,7 @@ public abstract class Effect : MonoBehaviour
     public virtual void RemoveEffect()
     {
         if (vfxInstance != null) Destroy(vfxInstance);
+        if (sfxInstance != null) Destroy(sfxInstance);
     }
 
     public virtual void CopyFrom(Effect original)
@@ -86,6 +103,8 @@ public abstract class Effect : MonoBehaviour
         duration = original.duration;
         strength = original.strength;
         vfx = original.vfx;
+        sfx = original.sfx;
+        loopSfx = original.loopSfx;
     }
 
     /// <summary>

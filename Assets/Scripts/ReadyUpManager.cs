@@ -29,6 +29,10 @@ public class ReadyUpManager : NetworkBehaviour
 
     bool weaponsSelected;
 
+    private void Awake()
+    {
+        clientItems = new Dictionary<ulong, ReadyUpUIItems>();
+    }
 
     private void Start()
     {

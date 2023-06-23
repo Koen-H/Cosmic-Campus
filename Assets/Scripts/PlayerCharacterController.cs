@@ -16,7 +16,7 @@ public class PlayerCharacterController : NetworkBehaviour
     //NetworkVariables
     public NetworkVariable<float> maxHealth = new(50);
     public NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
+    [HideInInspector] public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
     //public float moveSpeed = 5f;
@@ -26,7 +26,7 @@ public class PlayerCharacterController : NetworkBehaviour
     public bool engineering = false;
 
     [Tooltip("What enemytype will take critical damage?")]
-    public EnemyType damageType = EnemyType.NONE;
+    [HideInInspector] public EnemyType damageType = EnemyType.NONE;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
@@ -47,6 +47,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float currentSpeed = 0f;
 
     public EffectManager effectManager;
+    public PlayerSoundsManager playerSounds;//All player related sounds are on the player!
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
@@ -61,20 +62,15 @@ public class PlayerCharacterController : NetworkBehaviour
     protected bool canBeDamaged = true;
     [SerializeField] float invinsibilityDuration;
 
-    [HideInInspector] NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+    [HideInInspector] public NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
     float cartLoad = 0;
     [SerializeField] private float cartEnterTime = 3;
     [SerializeField] GameObject cartObject;
     [SerializeField] float cartSpeed;
 
-    public enum PlayerAnimationState
-    {
-        IDLE,
-        RUNNING,
-        SWORDSLASH
-    }
 
-    private NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
+
+    [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -139,6 +135,7 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
+            playerSounds.playerDowned.Play();
             if (IsOwner) ClientManager.MyClient.timesDied.Value++;
         }
         else
@@ -153,6 +150,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
         if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
         if (!IsOwner) return;
+        if (engineering) return;// Got revived during engineering ability go back
         LockPlayer(isCurrentlyDead, true);
     }
     IEnumerator InvinsibilityForTime(float time)
@@ -216,8 +214,16 @@ public class PlayerCharacterController : NetworkBehaviour
 
     }
 
+
+    /// <summary>
+    /// Handles the animations of the player. Automatically networked when the value is changed.
+    /// </summary>
     void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
     {
+        animator.SetBool("Bowing", false);
+        animator.SetBool("Running", false);
+        animator.SetBool("Staffing", false);
+
         switch (newAnimationState)
         {
             case PlayerAnimationState.RUNNING:
@@ -226,8 +232,17 @@ public class PlayerCharacterController : NetworkBehaviour
             case PlayerAnimationState.SWORDSLASH:
                 animator.SetTrigger("SwordSlash");
                 break;
-            default:
+            case PlayerAnimationState.BOW:
+                animator.SetBool("Bowing", true);
+                break;
+            case PlayerAnimationState.STAFF:
+                animator.SetBool("Staffing", true);
+                break;
+            case PlayerAnimationState.CART:
+                //TODO:: Change with cart pose
                 animator.SetBool("Running", false);
+                break;
+            default:
                 break;
         }
     }
@@ -237,13 +252,13 @@ public class PlayerCharacterController : NetworkBehaviour
         healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
-            Debug.Log("Take damage!");
+            playerSounds.playerHit.Play();
+           // Debug.Log("Take damage!");
         }
         else if (prevHealth < newHealth)//Do things where the player gained health!
         {
-            Debug.Log("Gained healht!");
+            //Debug.Log("Gained healht!");
         }
-        else { Debug.LogError("Networking error?"); }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -270,12 +285,13 @@ public class PlayerCharacterController : NetworkBehaviour
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
         if (canMove && !knockedBack) Move();
+        DeathCheck();
+        LoadCart();
+        if (usingCart.Value) return;//Below this is disabled while you are in a cart!
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
         if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-        DeathCheck();
-        LoadCart();
     }
 
     void LoadCart()
@@ -400,7 +416,7 @@ public class PlayerCharacterController : NetworkBehaviour
             float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
 
             currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
-            playerAnimationState.Value = PlayerAnimationState.RUNNING;
+            playerAnimationState.Value = usingCart.Value ?  PlayerAnimationState.CART :PlayerAnimationState.RUNNING;
         }
         else
         {
@@ -616,4 +632,15 @@ public class PlayerCharacterController : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.OnAttackInputStop();
     }
+}
+
+public enum PlayerAnimationState
+{
+    IDLE,
+    RUNNING,
+    SWORDSLASH,
+    BOW,
+    STAFF,
+    CART,
+
 }

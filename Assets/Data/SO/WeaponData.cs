@@ -22,8 +22,9 @@ public class WeaponData : ScriptableObject
     public float range = 0;
 
     public GameObject projectilePrefab = null;
-    public float minProjectileSpeed = 0;
-    public float maxProjectileSpeed = 0;
+    public float maxChargeTime = 2;
+    public Range chargeProjectileSpeed = new Range(250,1500);
+    public Range chargeProjectileDamage = new Range(0, 15);
 
     public float accuracy = 0;
 

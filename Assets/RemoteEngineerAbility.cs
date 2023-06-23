@@ -41,15 +41,25 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     Vector3 startPos;
 
+    private PlayerCharacterController playerController;
+
+
+    [SerializeField] AudioSource chargingSFX;
+    [SerializeField] AudioSource rollingSFX;
+    [SerializeField] AudioSource explosionSFX;
+
+
     public override void OnNetworkSpawn()
     {
         isBuilding.OnValueChanged += BuildingStopped;
+        chargingSFX.Play();
         if (IsOwner)
         {
             //Get the camera to focus on this object!
             CameraManager.MyCamera.SetFollowTarg(transform);
             CameraManager.MyCamera.SetLookTarg(transform);
             CanvasManager.Instance.SetEngineerPrompt("Hold Right click to charge!");
+            playerController = ClientManager.MyClient.playerCharacter;
         }
     }
 
@@ -58,6 +68,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
         if (!newValue)//IF Stopped building
         {
             Destroy(chargingVFX);
+            chargingSFX.Stop();
+            rollingSFX.Play();
             boilingVFX.GetComponent<ParticleSystem>().Play();
             rigidbody.isKinematic = false;
             if(IsOwner)StartCoroutine(ExplosionCountdown());
@@ -123,7 +135,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             Vector2 lerpDir = Vector2.Lerp(currentDir, movementDir, t * accelerationTime);
             currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
         }
-        rigidbody.velocity = currentDirection * maxSpeed;
+        rigidbody.velocity = currentDirection * playerController.effectManager.ApplyMovementEffect(maxSpeed);
     }
 
 
@@ -184,6 +196,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [ClientRpc]
     public void ExplodeClientRpc()
     {
+        rollingSFX.Stop();
+        explosionSFX.Play();
         exploded = true;
         GameObject explosionVFXinstance = Instantiate(explosionVFX, transform.position, Quaternion.identity);
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;
@@ -194,6 +208,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
         CanvasManager.Instance.SetEngineerPrompt(" ", false);
         Collider[] colliders = Physics.OverlapSphere(transform.position, (explosionRange + rangeIncreasePerObj * attachedObjects) > maxExplosionRange ? maxExplosionRange : (explosionRange + rangeIncreasePerObj * attachedObjects));
         float damage = explosionDamage + damageIncreasePerObj * attachedObjects;
+        damage = playerController.effectManager.ApplyAttackEffect(damage);
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Enemy"))
@@ -201,6 +216,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
                 collider.GetComponentInParent<Enemy>().TakeDamage(damage,EnemyType.ENGINEER);//Hardcoded engineer, because it's a engineer ability
             }
         }
+        
         StartCoroutine(LateCameraMoveBack(1));
 
         IEnumerator LateCameraMoveBack(float duration)

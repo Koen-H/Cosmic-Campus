@@ -11,9 +11,9 @@ public class FieldOfView : EnemyTargettingBehaviour
     public override void FindTarget()
     {
 
-        if(target != null)
+        if(target != null && !target.isDead.Value)
         {
-                if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange && !target.isDead.Value)//If the target is still in range and not dead
+            if (Vector3.Distance(transform.position, target.transform.position) <= trackingRange)//If the target is still in range and in view (if enabled)
                 {
                     // Visualization
                     Debug.DrawLine(transform.position, target.transform.position, Color.green, 0.01f);
@@ -24,8 +24,12 @@ public class FieldOfView : EnemyTargettingBehaviour
                 {
                     target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
                 }
-                SetEnemyTarget();
         }
+        else
+        {
+            target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
+        }
+        SetEnemyTarget();
         return;
     }
 
@@ -87,8 +91,9 @@ public class FieldOfView : EnemyTargettingBehaviour
                     // Check if this player is closer than the previous closest player
                     if (hit.distance < closestDistance)
                     {
-                        closest = hit.collider.GetComponent<PlayerCharacterController>();
-                        if (closest.isDead.Value) continue;
+                        PlayerCharacterController temp = hit.collider.GetComponent<PlayerCharacterController>();
+                        if (temp.isDead.Value) continue;
+                        closest = temp;
                         closestDistance = hit.distance;
                     }
                 }

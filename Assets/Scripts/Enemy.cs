@@ -22,6 +22,8 @@ public class Enemy : NetworkBehaviour
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
+    public EnemySoundManager soundManager;
+
     [Header("Enemy type variables")]
     public EnemyType enemyTypeInsp = EnemyType.NONE;
     [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
@@ -29,6 +31,7 @@ public class Enemy : NetworkBehaviour
     public float typeMatchDamageIncrease = 1.5f;//
     public float typeMatchDamagePenalty = 1;//Default is none
     public bool forceTypeMatch = false;
+    [SerializeField] private bool changeTypeOnCorrectHit;
 
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
@@ -60,7 +63,7 @@ public class Enemy : NetworkBehaviour
         {
             if (currentTarget == value) return;
             currentTarget = value;
-            OnTargetChange?.Invoke(currentTarget);
+            if(OnTargetChange != null) OnTargetChange?.Invoke(currentTarget);
         }
     }
 
@@ -110,7 +113,7 @@ public class Enemy : NetworkBehaviour
         healthBarOriginalRotation = healthBar.transform.rotation;
         enemyDebrisDrops.SetActive(false);
         if (IsOwner) enemyType.Value = enemyTypeInsp;
-        if (IsOwner && startWithRandomType) enemyType.Value = GetRandomEnumValue<EnemyType>();
+        if (IsOwner && startWithRandomType) enemyType.Value = enemyType.Value = GameManager.Instance.GetEnemyType();
         StartCoroutine(EnemyLogic());
     }
 
@@ -127,18 +130,13 @@ public class Enemy : NetworkBehaviour
         maxHealth = health.Value;
         healthBar.SetMaxValue(maxHealth);
     }
-    //TODO: Don't put it in here.
-    private T GetRandomEnumValue<T>() where T : Enum
-    {
-        Array enumValues = Enum.GetValues(typeof(T));
-        return (T)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
-    }
 
     public override void OnNetworkDespawn()
     {
         health.OnValueChanged -= OnHealthChange;
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
+        soundManager.PlayDeathSFX();
         FallApart();
     }
     void SetSOData()
@@ -192,10 +190,10 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     /// <param name="damageInc">The damage received</param>
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE,bool inPercentage = false , ServerRpcParams serverRpcParams = default)
+    void TakeDamageServerRpc(float damageInc, EnemyType damageType = EnemyType.NONE, bool inPercentage = false , ServerRpcParams serverRpcParams = default)
     {
         float totalDamage =  inPercentage ? maxHealth * (damageInc / 100) :damageInc;
-        if (enemyType.Value != EnemyType.NONE)
+        if (enemyType.Value != EnemyType.WHITE)
         {
             bool typeMatch = damageType == enemyType.Value;
             if (!typeMatch && forceTypeMatch)
@@ -207,13 +205,14 @@ public class Enemy : NetworkBehaviour
             {
                 //The match fits! Apply the bonus damage!
                 totalDamage *= typeMatchDamageIncrease;
+                if (changeTypeOnCorrectHit) enemyType.Value = GameManager.Instance.GetEnemyType(enemyType.Value);
             }
             else
             {
-                //The match doesn't fit! Decrease the damage!
+                //The match doesn't fit! Apply the penalty!
                 totalDamage *= typeMatchDamagePenalty;
             }
-        }
+        }else if (changeTypeOnCorrectHit) enemyType.Value = GameManager.Instance.GetEnemyType(enemyType.Value); ;//Color is white, change it!
         totalDamage = effectManager.ApplyResistanceEffect(totalDamage);
         health.Value -= totalDamage;
         lastClientDamageID = serverRpcParams.Receive.SenderClientId;
@@ -391,7 +390,7 @@ public class Enemy : NetworkBehaviour
 
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
-public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER }
+public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER, WHITE}
 
 
 public enum EnemyAnimationState

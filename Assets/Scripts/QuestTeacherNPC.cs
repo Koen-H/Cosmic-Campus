@@ -9,7 +9,7 @@ public class QuestTeacherNPC : QuestNPC
 
     private void Start()
     {
-        Instantiate(avatar,transform.position,Quaternion.identity,transform);
+        //Instantiate(avatar,transform.position,Quaternion.identity,transform);
     }
 
 
