@@ -388,7 +388,7 @@ public class PlayerCharacterController : NetworkBehaviour
         cartObject.SetActive(toggle);
         //Cart pose OR idle!
         //TODO:: Change anim
-        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}");
+        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}", "Haha kart goes vroem", "karting");
     }
 
 
