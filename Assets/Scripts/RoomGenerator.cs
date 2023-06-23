@@ -88,12 +88,13 @@ public class RoomGenerator : NetworkBehaviour
     //    if (!IsServer) return;
     //    GenerateMapClientRpc(seed);//TODO: Replace with random seed?
     //}
+
     [ServerRpc(RequireOwnership = false)]
     public void SpawnEnemiesInRoomServerRpc(int layer)
     {
         if(layer > latestEnemyLayer)
         {
-            if (layer > numberOfRooms) return;
+            if (layer > numberOfRooms+1) return;
             latestEnemyLayer = layer;
             if (IsServer)
             {
@@ -681,7 +682,13 @@ public class RoomGenerator : NetworkBehaviour
         VisualiseRooms(roomLayers);
         int rand = systemRand.Next(0, roomLayers[roomLayers.Count - 1].roomPositions.Count);
         Room from = roomLayers[roomLayers.Count - 1].roomPositions[rand];
-        if (lastRoom != null) from.roomPrefab = lastRoom;
+        if (lastRoom != null)
+        {
+            from.roomPrefab = lastRoom;
+            from.entrance = new Door(from.GetRoomPosition() + from.roomPrefab.GetEntrancePosition(), from.roomPrefab.normalEntrance);
+            from.exit = new Door(from.GetRoomPosition() + from.roomPrefab.GetExitPosition(), from.roomPrefab.normalExit);
+        }
+
         Room to = roomLayers[0].roomPositions[0];
         List<Room> correctPath = FindPath(from, to, roomLayers);
         List<NavMeshSurface> navMeshSurfaces;

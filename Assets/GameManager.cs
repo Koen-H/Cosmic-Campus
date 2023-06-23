@@ -34,10 +34,6 @@ public class GameManager : NetworkBehaviour
     {
         _instance = this;
     }
-    private void Start()
-    {
-
-    }
 
     public void InitalizeLevel()
     {

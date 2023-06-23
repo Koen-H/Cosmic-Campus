@@ -222,7 +222,8 @@ GameObject:
   m_Component:
   - component: {fileID: 836553870113073110}
   - component: {fileID: 3522394641730107716}
-  m_Layer: 0
+  - component: {fileID: 1233625259998561221}
+  m_Layer: 11
   m_Name: TheGardenRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,6 +301,19 @@ MonoBehaviour:
   - {fileID: 2575417975742231026}
   cmgtTransformSpawnpoints:
   - {fileID: 6856786011196036918}
+--- !u!65 &1233625259998561221
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906800191762792261}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 18.5, y: 5.78, z: 1}
+  m_Center: {x: -4.64, y: 11.92, z: -29.1}
 --- !u!1 &2019019192231497884
 GameObject:
   m_ObjectHideFlags: 0
@@ -3538,7 +3552,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4490902677939833135}
   m_LocalRotation: {x: -0, y: 0.2214481, z: -0, w: 0.97517216}
-  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalPosition: {x: 36.499336, y: -0.2, z: 14.545368}
   m_LocalScale: {x: 0.8732873, y: 0.87328744, z: 0.8732873}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -9738,7 +9752,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8649047725885426433}
   m_LocalRotation: {x: -0, y: 0.2214481, z: -0, w: 0.97517216}
-  m_LocalPosition: {x: -17.123882, y: 9.8, z: -18.070055}
+  m_LocalPosition: {x: 19.375454, y: 9.8, z: -3.5246868}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9769,7 +9783,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8649047726144846920}
   m_LocalRotation: {x: -0, y: 0.2214481, z: -0, w: 0.97517216}
-  m_LocalPosition: {x: -68.91536, y: 9.8, z: -8.951737}
+  m_LocalPosition: {x: -32.416023, y: 9.8, z: 5.593631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9800,7 +9814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8649047726431048482}
   m_LocalRotation: {x: -0, y: 0.2214481, z: -0, w: 0.97517216}
-  m_LocalPosition: {x: -38.40712, y: 9.8, z: 12.759003}
+  m_LocalPosition: {x: -1.9077835, y: 9.8, z: 27.30437}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9831,7 +9845,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8649047726562315785}
   m_LocalRotation: {x: -0, y: 0.2214481, z: -0, w: 0.97517216}
-  m_LocalPosition: {x: -41.499336, y: 9.8, z: -44.54537}
+  m_LocalPosition: {x: -5, y: 9.8, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

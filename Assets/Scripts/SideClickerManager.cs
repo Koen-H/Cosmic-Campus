@@ -66,4 +66,5 @@ public class SideClickerValue
 {
     [SerializeField]public string display;
     [SerializeField]public string value;
+    [SerializeField] public Sprite rolePlate;
 }
