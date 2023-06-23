@@ -541,6 +541,7 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+    public PlayerData GetPlayerData() => playerData; 
 
 
     [ServerRpc(RequireOwnership = false)]

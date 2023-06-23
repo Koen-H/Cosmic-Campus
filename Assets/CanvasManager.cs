@@ -18,6 +18,8 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] List<ArtistUIAbility> artistUIAbilities;
 
+    [SerializeField] UiDirectionIndicatorManager uiDirectionIndicatorManager;
+
 
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
@@ -82,8 +84,10 @@ public class CanvasManager : MonoBehaviour
             uiItems[i].gameObject.SetActive(true);
             uiItems[i].SetClient(client.Value);
             uiItems[i].LoadCorrectUI();
+            uiDirectionIndicatorManager.AddToCharacterToTrack(client.Value.playerCharacter);
             i++;
         }
+        uiDirectionIndicatorManager.InitiateDirections();
     }
 
     public void ToggleRevive(bool toggle)
