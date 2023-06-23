@@ -373,6 +373,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (Physics.SphereCast(transform.position + Vector3.up, radius, -Vector3.up, out hit, groundDistance + 1))
         {
             // If the sphere hit something, the character is grounded
+            BackgroundMusicManager.Instance.HandleGroundMusic(hit.transform.tag);
             isGrounded = true;
         }
         else

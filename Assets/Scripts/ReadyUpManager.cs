@@ -78,6 +78,7 @@ public class ReadyUpManager : NetworkBehaviour
         }
         UpdatePlayerCharacter(newClientId);
         CheckReady();
+        if (IsServer) ReadyUpClientRpc(clientReady[newClientId], newClientId);//Inform the new client of the status
     }
 
     private ulong FindKeyByValue(ReadyUpUIItems value)
