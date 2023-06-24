@@ -9,7 +9,6 @@ public class AttackCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("This gets called:" + " in triggerENterEvenet: " + OnTriggerEnterEvent);
         if (OnTriggerEnterEvent != null)
         OnTriggerEnterEvent.Invoke(other.transform);
     }

@@ -49,7 +49,7 @@ public class SideClickerManager : MonoBehaviour
         OnValueChanged();
     }
 
-    void UpdateText()
+    protected void UpdateText()
     {
         displayText.text = sideClickerValues[currentSideClick].display;
     }
@@ -80,4 +80,5 @@ public class SideClickerValue
     [SerializeField]public string value;
     [SerializeField] public Sprite rolePlate;
     [SerializeField] public ReadyOption option;
+    [SerializeField] public GameObject relatedObj;
 }

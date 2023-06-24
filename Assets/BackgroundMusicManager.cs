@@ -41,7 +41,6 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         currentMusic = calmMusic;
         calmMusic.volume = maxVolume;
-        Debug.Log("test");
     }
 
     private void Update()

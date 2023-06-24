@@ -137,7 +137,6 @@ public class Enemy : NetworkBehaviour
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
         soundManager.PlayDeathSFX();
-        Debug.Log("thsi"+ gameObject.name);
         FallApart();
     }
     void SetSOData()
@@ -260,7 +259,6 @@ public class Enemy : NetworkBehaviour
         List<Transform> bodyParts = GetChildren(enemyDebrisDrops.transform);
         MatChanger[] matChangers = enemyDebrisDrops.GetComponentsInChildren<MatChanger>();
         foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemyType.Value, true);
-        Debug.Log("test" + gameObject.name);
         foreach (var bodyPart in bodyParts)
         {
             bodyPart.parent = null;
