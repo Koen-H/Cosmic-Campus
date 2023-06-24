@@ -18,9 +18,12 @@ public class PunchAttack : EnemyAttackBehaviour
     private void Awake()
     {
         base.Awake();
-        foreach(AttackCollider atCol in attackColliders)
+        Debug.Log(gameObject.name);
+        if (gameObject.name == "Boss enemy(Clone)") Debug.Log($"The Awake gets called");
+        foreach (AttackCollider atCol in attackColliders)
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
+           if(gameObject.name == "Boss enemy(Clone)") Debug.Log($"SUBBED TO : {atCol}");
         }
         ToggleColliders(false);
     }
