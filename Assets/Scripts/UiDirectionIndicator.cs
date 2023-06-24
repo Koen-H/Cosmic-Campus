@@ -4,67 +4,68 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class UiDirectionIndicator: MonoBehaviour
+public class UiDirectionIndicator : MonoBehaviour
 {
-    public Transform player;
+    private Camera cam;
 
-    public Camera cam;
-    public RectTransform canvas;
-    public RectTransform self; 
-    [SerializeField] Image fishIcon;
+    [SerializeField] RectTransform self; 
+    [SerializeField] RectTransform playerIconRect;
     [SerializeField] RectTransform arrow;
-
     [SerializeField] float margin;
     [SerializeField] float deathDelayPopUpEnd;
 
-    public bool enableIndicator;
-    public bool instaKill;
+    [SerializeField] Image playerIcon;
+    [SerializeField] Image arrowIcon;
+    private PlayerCharacterController player;
 
-    bool tracking; 
 
     Vector3 ogSize;
+    Vector3 arrowOgSize;
     float spawnAnimationDelay = 0.2f;
 
+    bool disableArrow = false; 
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L)) Enable();
-        if (Input.GetKeyDown(KeyCode.K)) Disable();
+       // if (Input.GetKeyDown(KeyCode.L)) Enable(false);
+      //  if (Input.GetKeyDown(KeyCode.K)) Disable();
     }
-    public void SetFishImage(Sprite image)
+    void OnPlayerDeath(bool oldValue, bool newValue)
     {
-        fishIcon.sprite = image;
+        Enable(newValue);
+    }
+
+    public void SetData(Sprite PlayerIcon, Sprite ArrowIcon, PlayerCharacterController Player)
+    {
+        playerIcon.sprite = PlayerIcon;
+        arrowIcon.sprite = ArrowIcon;
+        player = Player;
+        player.isDead.OnValueChanged += OnPlayerDeath;
     }
 
     private void Start()
     {
-        player = ClientManager.MyClient.playerCharacter.transform;
-
         cam = Camera.main;
-        canvas = CanvasManager.Instance.GetGameUI().GetComponent<RectTransform>();
 
-
-        ogSize = self.localScale;
-        self.localScale = Vector3.zero;
+        ogSize = playerIconRect.localScale;
+        arrowOgSize = arrow.transform.localScale;
+        Enable(false);
     }
 
-    private void Enable()
+    private void Enable(bool showIcon)
     {
-        tracking = true;
-        self.gameObject.SetActive(true);
-        StopAllCoroutines(); // to stop Deactivation of self
-        StartCoroutine(ScaleOverTime(self, ogSize, spawnAnimationDelay));
-    }
-
-    private void Disable()
-    {
-        tracking = false;
-        StartCoroutine(ScaleOverTime(self, Vector3.zero, spawnAnimationDelay));
-        StartCoroutine(DeactivateWithDelay(self.gameObject, spawnAnimationDelay));
+        if(showIcon) StartCoroutine(ScaleOverTime(playerIconRect, ogSize, spawnAnimationDelay));
+        else StartCoroutine(ScaleOverTime(playerIconRect, Vector3.zero, spawnAnimationDelay));
     }
     private void FixedUpdate()
     {
-            SnapToPlayerPosition(player);
+        bool temp = disableArrow;
+        SnapToPlayerPosition(player.transform);
+        if(temp != disableArrow)
+        {
+            if (!disableArrow) StartCoroutine(ScaleOverTime(arrow, Vector3.zero, spawnAnimationDelay));
+            else StartCoroutine(ScaleOverTime(arrow, arrowOgSize, spawnAnimationDelay));
+        }
     }
 
 
@@ -73,14 +74,15 @@ public class UiDirectionIndicator: MonoBehaviour
         if (playerPosition == null) return;
 
         Vector3 pointOnPlane = cam.transform.position;
-        Vector3 point = Vector3.zero;  
+        Vector3 point = playerPosition.position;  
         Vector3 normal = Vector3.Cross(cam.transform.right, cam.transform.up);
         Vector3 planeToPoint = point - pointOnPlane;
         float dotProduct = Vector3.Dot(planeToPoint, normal);
 
-        Vector3 screenPosition = cam.WorldToScreenPoint(Vector3.zero);
+        Vector3 screenPosition = cam.WorldToScreenPoint(playerPosition.position);
 
         if (dotProduct < 0) screenPosition *= -1;
+        Vector3 diffCheck = screenPosition; 
 
         if (screenPosition.x > cam.pixelWidth - margin) screenPosition.x = cam.pixelWidth - margin;
         if (screenPosition.y > cam.pixelHeight - margin) screenPosition.y = cam.pixelHeight - margin;
@@ -88,6 +90,12 @@ public class UiDirectionIndicator: MonoBehaviour
         if (screenPosition.y < margin) screenPosition.y = margin;
 
         self.anchoredPosition = screenPosition;
+
+        Vector3 dir = cam.WorldToScreenPoint(playerPosition.position) - screenPosition;
+        if (diffCheck != screenPosition) disableArrow = true;
+        else disableArrow = false;
+        if (dotProduct < 0) dir *= -1;
+        arrow.up = dir;
     }
     IEnumerator ScaleOverTime(Transform target, Vector3 endScale, float duration)
     {
@@ -102,50 +110,5 @@ public class UiDirectionIndicator: MonoBehaviour
         }
 
         target.localScale = endScale;
-    }
-
-    IEnumerator DeactivateWithDelay(GameObject Object, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        //Object.SetActive(false);
-    }
-    IEnumerator ActivateWithDelay(GameObject Object, float delay, bool animateScale)
-    {
-        yield return new WaitForSeconds(delay);
-        if (Object != self.gameObject) Object.SetActive(true);
-        if (animateScale)
-        {
-            StartCoroutine(ScaleOverTime(Object.transform, Vector3.one, spawnAnimationDelay));
-        }
-    }
-
-    IEnumerator ActivateWithDelay(GameObject Object, float delay, bool animateScale, float animationSpeedMult)
-    {
-        yield return new WaitForSeconds(delay);
-        if (Object != self.gameObject) Object.SetActive(true);
-        if (animateScale)
-        {
-            StartCoroutine(ScaleOverTime(Object.transform, Vector3.one, spawnAnimationDelay * animationSpeedMult));
-        }
-    }
-
-    IEnumerator ActivateWithDelay(GameObject Object, float delay, bool animateScale, Action<string> callback)
-    {
-        yield return new WaitForSeconds(delay);
-        if (Object != self.gameObject) Object.SetActive(true);
-        if (animateScale)
-        {
-            StartCoroutine(ScaleOverTime(Object.transform, Vector3.one, spawnAnimationDelay));
-        }
-        callback?.Invoke("death");
-    }
-
-
-
-    IEnumerator DisableSelf(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        enableIndicator = false;
-        if (!tracking) Disable();
     }
 }

@@ -70,6 +70,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
 
+
     [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
@@ -553,6 +554,7 @@ public class PlayerCharacterController : NetworkBehaviour
         }
     }
 
+    public PlayerData GetPlayerData() => playerData; 
 
 
     [ServerRpc(RequireOwnership = false)]
