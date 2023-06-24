@@ -15,15 +15,13 @@ public class PunchAttack : EnemyAttackBehaviour
     
     List<Transform> hits = new List<Transform>();
 
-    private void Awake()
+    protected void Awake()
     {
         base.Awake();
-        Debug.Log(gameObject.name);
-        if (gameObject.name == "Boss enemy(Clone)") Debug.Log($"The Awake gets called");
+        
         foreach (AttackCollider atCol in attackColliders)
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
-           if(gameObject.name == "Boss enemy(Clone)") Debug.Log($"SUBBED TO : {atCol}");
         }
         ToggleColliders(false);
     }
