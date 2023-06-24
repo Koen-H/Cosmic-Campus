@@ -72,7 +72,7 @@ public class GameManager : NetworkBehaviour
     }
 
 
-    public void LoadEnemyTypes()
+    public void LoadEnemyTypes(ulong clientLeft = ulong.MaxValue)
     {
         allowedEnemyTypes = new();
         if (useWhiteEnemies) allowedEnemyTypes.Add(EnemyType.WHITE);
@@ -85,7 +85,11 @@ public class GameManager : NetworkBehaviour
         }
 
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
-        foreach (ClientManager client in clients.Values) allowedEnemyTypes.Add(client.playerCharacter.damageType);
+        foreach (ClientManager client in clients.Values)
+        {
+            if (clientLeft == client.GetClientId()) continue;
+            allowedEnemyTypes.Add(client.playerCharacter.damageType);
+        }
     }
 
 
@@ -119,8 +123,10 @@ public class GameManager : NetworkBehaviour
 
     public void PlayerLeft(ClientManager clientLeft)
     {
-        deadClients.Remove(clientLeft.GetClientId());
+        ulong clinetLeftID = clientLeft.GetClientId();
+        deadClients.Remove(clinetLeftID);
         clientLeft.OnClientLeft -= PlayerLeft;
+        LoadEnemyTypes(clinetLeftID);
         CheckDeaths();
     }
 
