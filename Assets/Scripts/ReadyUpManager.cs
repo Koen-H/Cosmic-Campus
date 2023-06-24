@@ -2,6 +2,7 @@ using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Xml;
 using TMPro;
 using Unity.Netcode;
@@ -99,7 +100,24 @@ public class ReadyUpManager : NetworkBehaviour
         }
         UpdatePlayerCharacter(newClientId);
         CheckReady();
+        newClient.OnClientLeft += ClientLeft;
     }
+
+
+    void ClientLeft(ClientManager clientLeft)
+    {
+        ulong clientLeftId = clientLeft.GetClientId();
+        if (clientLeftId == NetworkManager.Singleton.LocalClientId) return;
+        clientReady.Remove(clientLeftId);
+        clientItems[clientLeftId].sideClickerManager.gameObject.SetActive(false);
+        UpdatePlayerCharacter(clientLeftId,true);
+        clientItems.Remove(clientLeftId);
+
+        CheckReady();
+        clientLeft.OnClientLeft -= ClientLeft;//TODO Unsubscibe when scene changes
+    }
+
+
     private ulong FindKeyByValue(ReadyUpUIItems value)
     {
         foreach (var pair in clientItems)
@@ -117,12 +135,19 @@ public class ReadyUpManager : NetworkBehaviour
     public void HandleRoleValueChange(SideClickerValue newValue)
     {
         ClientManager.MyClient.playerData.playerRole.Value = (PlayerRole)int.Parse(newValue.value);
-        UpdatePlayerCharacter(NetworkManager.Singleton.LocalClientId, int.Parse(newValue.value));
+        UpdatePlayerCharacter(NetworkManager.Singleton.LocalClientId, false, int.Parse(newValue.value));
     }
 
 
-    public void UpdatePlayerCharacter(ulong outdatedClientId, int newValue = 100)
+    public void UpdatePlayerCharacter(ulong outdatedClientId, bool left = false, int newValue = 100)
     {
+        if (left)//Player left, clean up the spot
+        {
+            GameObject platform = clientItems[outdatedClientId].avatarPreview;
+            foreach (Transform child in platform.transform) Destroy(child.gameObject);
+            return;
+        }
+
         //PlayerData playerData = LobbyManager.Instance.GetClient(outdatedClientId).playerData;
         PlayerRoleData playerRoleData;
         switch (newValue)
@@ -157,7 +182,7 @@ public class ReadyUpManager : NetworkBehaviour
     {
         ulong clientId = NetworkManager.Singleton.LocalClientId;
         LobbyManager.Instance.GetClient(clientId).playerData.playerRole.Value = (PlayerRole)newRoleInt;
-        UpdatePlayerCharacter(clientId, newRoleInt);
+        UpdatePlayerCharacter(clientId,false, newRoleInt);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -172,7 +197,7 @@ public class ReadyUpManager : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         SideClickerManager sideClickerManager = clientItems[receivedClientId].sideClickerManager;
         sideClickerManager.UpdateValue(newValue);
-        UpdatePlayerCharacter(receivedClientId, int.Parse(sideClickerManager.GetValue()));
+        UpdatePlayerCharacter(receivedClientId, false, int.Parse(sideClickerManager.GetValue()));
     }
 
     public void ReadyUp()
@@ -209,8 +234,6 @@ public class ReadyUpManager : NetworkBehaviour
                 isReadies++;
             }
         }
-
-        //
         if (isReadies == clientReady.Count)
         {
             if (!weaponsSelected)
@@ -281,6 +304,12 @@ public class ReadyUpManager : NetworkBehaviour
         if(SteamGameNetworkManager.Instance.CurrentLobby != null)SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
         EnableLoadingScreenClientRpc();
         NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+
+    private void OnDisable()
+    {
+        Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
+        foreach (ClientManager client in clients.Values) client.OnClientLeft -= ClientLeft;
     }
 
 

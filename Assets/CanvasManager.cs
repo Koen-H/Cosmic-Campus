@@ -66,8 +66,9 @@ public class CanvasManager : MonoBehaviour
     }
 
 
-    public void LoadGameUI()
+    public void LoadGameUI(ulong clientLeft = ulong.MaxValue)
     {
+        foreach(PlayerUIItem item in uiItems) item.DisableAll();
         gameUI.SetActive(true);
         Dictionary<ulong,ClientManager> clients = LobbyManager.Instance.GetClients();
 
@@ -80,15 +81,36 @@ public class CanvasManager : MonoBehaviour
 
         foreach(KeyValuePair<ulong,ClientManager> client in clients)
         {
-            if (client.Key == myId) continue;
+            if (client.Key == myId || clientLeft == client.Key) continue;
             uiItems[i].gameObject.SetActive(true);
             uiItems[i].SetClient(client.Value);
             uiItems[i].LoadCorrectUI();
             uiDirectionIndicatorManager.AddToCharacterToTrack(client.Value.playerCharacter);
             i++;
+            client.Value.OnClientLeft += ClientLeft;
         }
         uiDirectionIndicatorManager.InitiateDirections();
     }
+
+
+    /// <summary>
+    /// When a client leaves, we need to remove the related ui from the screen
+    /// </summary>
+    /// <param name="clientLeft"></param>
+    public void ClientLeft(ClientManager clientLeft)
+    {
+        Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
+        ulong myId = NetworkManager.Singleton.LocalClientId;
+        foreach (KeyValuePair<ulong, ClientManager> client in clients)
+        {
+            if (client.Key == myId) continue;
+            client.Value.OnClientLeft -= ClientLeft;
+        }
+        LoadGameUI();
+
+    }
+
+
 
     public void ToggleRevive(bool toggle)
     {

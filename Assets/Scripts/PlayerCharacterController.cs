@@ -344,8 +344,14 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void TryRevive()
     {
+        if (!otherReviveArea.isActiveAndEnabled)
+        {
+            otherReviveArea = null;
+            CanvasManager.Instance.ToggleRevive(false);
+        }
         if (Input.GetKey(KeyCode.E))
         {
+            if (isDead.Value) return;
             otherReviveArea.OnRevivingServerRpc();
         }
     }

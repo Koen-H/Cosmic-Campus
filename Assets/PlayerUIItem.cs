@@ -108,6 +108,7 @@ public class PlayerUIItem : MonoBehaviour
 
         if(avatar != null){
             Texture2D avatarTexture = SteamAvatarTest.Convert(avatar);
+            playerImage.gameObject.SetActive(true);
             playerImage.texture = avatarTexture;
         }
 
@@ -127,4 +128,12 @@ public class PlayerUIItem : MonoBehaviour
         relatedCooldownUI.fillAmount = value;
     }
 
+    public void DisableAll()
+    {
+        foreach (GameObject obj in artistUI) obj.SetActive(false);
+        foreach (GameObject obj in designerUI) obj.SetActive(false);
+        foreach (GameObject obj in engineerUI) obj.SetActive(false);
+        if (playerImage != null) playerImage.gameObject.SetActive(false);
+        this.gameObject.SetActive(false);
+    }
 }

@@ -29,7 +29,7 @@ public class LobbyManager : MonoBehaviour
 
     private void Start()
     {
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnConnectionLost;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientConnectionLost;
         //NetworkManager.Singleton.OnTransportFailure += OnConnectionLost;
         //NetworkManager.Singleton.
     }
@@ -88,18 +88,17 @@ public class LobbyManager : MonoBehaviour
         DiscordManager.Instance.ToggleRandomUpdates(true);
     }
 
-    public void OnConnectionLost(ulong lostClient)
+    public void OnClientConnectionLost(ulong lostClientID)
     {
-        Debug.Log(NetworkManager.Singleton.IsListening);
-            //NetworkManager.Singleton.Shutdown();
-            //UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
-    }
 
-    private void OnDisable()
-    {
-        if (NetworkManager.Singleton.IsServer)
+        ClientManager client = GetClient(lostClientID);
+        client.OnLeaving();
+        
+        if (NetworkManager.ServerClientId == lostClientID)
         {
-
+         Debug.Log("LOST CONNECTION WITH HOST!");
+            NetworkManager.Singleton.Shutdown();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
         }
     }
 

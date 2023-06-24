@@ -45,7 +45,11 @@ public class GameManager : NetworkBehaviour
         levelGenerator.SetSeed();
         levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
         deadClients = new();
-        foreach (ulong playerId in LobbyManager.Instance.GetClients().Keys) deadClients.Add(playerId, false);
+        foreach (ClientManager client in LobbyManager.Instance.GetClients().Values)
+        {
+            deadClients.Add(client.GetClientId(), false);
+            client.OnClientLeft += PlayerLeft;
+        }
         yield return new WaitForFixedUpdate();
         LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
         LoadEnemyTypes();
@@ -57,6 +61,14 @@ public class GameManager : NetworkBehaviour
         //Instantiate(npc, inworldController.transform);
         //playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform,false);
 
+    }
+
+    private void OnDisable()
+    {
+        foreach (ClientManager client in LobbyManager.Instance.GetClients().Values)
+        {
+            client.OnClientLeft -= PlayerLeft;
+        }
     }
 
 
@@ -105,9 +117,11 @@ public class GameManager : NetworkBehaviour
         CheckDeaths();
     }
 
-    public void PlayerLeft(ulong playerId)
+    public void PlayerLeft(ClientManager clientLeft)
     {
-        deadClients.Remove(playerId);
+        deadClients.Remove(clientLeft.GetClientId());
+        clientLeft.OnClientLeft -= PlayerLeft;
+        CheckDeaths();
     }
 
     void CheckDeaths()
