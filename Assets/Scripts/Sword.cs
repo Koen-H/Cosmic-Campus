@@ -73,20 +73,6 @@ public class Sword : Weapon
             }
         }
     }
-
-    public Transform FindDeepChild(Transform aParent, string aName)
-    {
-        var result = aParent.Find(aName);
-        if (result != null)
-            return result;
-        foreach (Transform child in aParent)
-        {
-            result = FindDeepChild(child, aName);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
     public void ResetChildTransforms(Transform parentTransform, int depth)
     {
         // Reset the local position, rotation, and scale of the parent first

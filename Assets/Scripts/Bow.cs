@@ -9,11 +9,27 @@ public class Bow : Weapon
 
     private bool isCharging;
     private float chargeStartTime;
+    [SerializeField] Vector3 TESTING; 
 
 
     private void Start()
     {
+        weaponObj.transform.parent = FindDeepChild(this.transform, "Tool_bone");
+        ResetChildTransforms(weaponObj.transform, 2);
         weaponAnimation = GetComponentInChildren<Animator>();
+    }
+    private void Update()
+    {
+        ResetChildTransforms(weaponObj.transform, 2);
+    }
+
+    public void ResetChildTransforms(Transform parentTransform, int depth)
+    {
+        // Reset the local position, rotation, and scale of the parent first
+        parentTransform.localPosition = Vector3.zero;
+        //Vector3(10.699996, 169, 58.6)
+        parentTransform.localRotation = Quaternion.Euler(-119,0,0);// Set(169, -11, -121,0);//   new Vector3(10.699996f, 169f, 58.6f); Quaternion.EulerAngles(196 * Mathf.Deg2Rad, (-83 + 20) * Mathf.Deg2Rad, (-156 -90) * Mathf.Deg2Rad);
+        //parentTransform.localScale = Vector3.one;
     }
     /// <summary>
     /// When the player starts with the input
