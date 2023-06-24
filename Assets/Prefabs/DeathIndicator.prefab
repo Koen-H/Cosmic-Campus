@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1095460562096875291}
   - component: {fileID: 1095460562096875288}
   m_Layer: 5
-  m_Name: DeathCircle
+  m_Name: PlayerIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 1095460562309724152}
   - component: {fileID: 1095460562309724153}
   m_Layer: 5
-  m_Name: DeathCircleArrow
+  m_Name: PlayerArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1095460561514106866}
   m_RootOrder: 0
@@ -241,6 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   self: {fileID: 1095460561514106866}
+  playerIconRect: {fileID: 1095460562096875289}
   arrow: {fileID: 1095460562309724158}
   margin: 50
   deathDelayPopUpEnd: 0

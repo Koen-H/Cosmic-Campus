@@ -26,11 +26,9 @@ public class UiDirectionIndicatorManager : MonoBehaviour
         foreach (var player in characterControllers)
         {
             UiDirectionIndicator indicator = Instantiate(deathPrefab, this.transform);
-            Debug.Log("What is it : " + player.GetPlayerData().playerRole.Value);
             switch (player.GetPlayerData().playerRole.Value)
             {
                 case PlayerRole.ARTIST:
-                    Debug.Log("Switch gets called");
                     indicator.SetData(artistSprite, artistArrow, player);
                     break;
                 case PlayerRole.ENGINEER:

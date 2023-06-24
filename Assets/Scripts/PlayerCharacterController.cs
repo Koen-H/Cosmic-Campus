@@ -70,6 +70,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
 
+
     [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
