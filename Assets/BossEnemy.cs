@@ -23,6 +23,7 @@ public class BossEnemy : PunchAttack
 
     void LaunchMine()
     {
+        if (!IsOwner) return;
         Quaternion randomRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         // Get a random tilt angle within the specified range
@@ -41,6 +42,7 @@ public class BossEnemy : PunchAttack
 
     IEnumerator ShootMines()
     {
+        if (!IsOwner) yield return null;
         while(true)
         {
             yield return new WaitForSeconds(launchInterval.GetRandomValue());

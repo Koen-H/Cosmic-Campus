@@ -101,8 +101,6 @@ public class GameManager : NetworkBehaviour
 
     public void PlayerDeadStatus(ulong playerId, bool deadStatus)
     {
-        Debug.Log(playerId);
-        Debug.Log(deadClients.Count);
         deadClients[playerId] = deadStatus;
         CheckDeaths();
     }

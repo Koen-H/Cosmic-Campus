@@ -74,11 +74,9 @@ public abstract class Effect : MonoBehaviour
         {
             vfxInstance = Instantiate(vfx, transform);
             vfxInstance.transform.localPosition = new Vector3(0, 2, 0);//Todo: Temporary
-            Debug.Log("TEST2");
         }
         if(sfx != null)
         {
-            Debug.Log("TEST");
             sfxInstance = gameObject.AddComponent<AudioSource>();
             sfxInstance.clip = sfx;
             sfxInstance.loop = loopSfx;

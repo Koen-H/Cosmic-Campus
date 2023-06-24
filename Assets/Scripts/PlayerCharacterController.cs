@@ -112,6 +112,15 @@ public class PlayerCharacterController : NetworkBehaviour
         else health.Value += addedHealth;
     }
 
+    /// <summary>
+    /// For when the server has to do damage to the client
+    /// </summary>
+    [ClientRpc]
+    public void TakeDamageClientRpc(float damage, bool inPercentage = false)
+    {
+        TakeDamage(damage, inPercentage);
+    }
+
     public void TakeDamage(float damage, bool inPercentage = false)
     {
         if (!IsOwner) return;

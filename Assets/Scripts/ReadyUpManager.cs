@@ -96,15 +96,7 @@ public class ReadyUpManager : NetworkBehaviour
         }
         UpdatePlayerCharacter(newClientId);
         CheckReady();
-        if (IsServer) testClientRpc();
     }
-
-    [ClientRpc]
-    void testClientRpc()
-    {
-        Debug.Log("hello new client!");
-    }
-
     private ulong FindKeyByValue(ReadyUpUIItems value)
     {
         foreach (var pair in clientItems)

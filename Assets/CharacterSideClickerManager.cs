@@ -52,6 +52,5 @@ public class CharacterSideClickerManager : SideClickerManager
             selectButton.interactable = true;
             selectButtonText.text = "Select";
         }
-        Debug.Log(sideClickerValues[currentSideClick].option);
     }
 }
