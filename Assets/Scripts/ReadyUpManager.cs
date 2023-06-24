@@ -26,6 +26,8 @@ public class ReadyUpManager : NetworkBehaviour
     [SerializeField] List<GameObject> disableItemsOnClient = new List<GameObject>();
     [SerializeField] GameObject lobbyUI;
 
+    [SerializeField] WeaponSideClickerManager weaponSideClickerManager;
+
     bool weaponsSelected;
 
     [SerializeField]public  List<ReadyOption> optionsTaken = new();
@@ -42,6 +44,7 @@ public class ReadyUpManager : NetworkBehaviour
         if (take) optionsTaken.Add(option);
         else optionsTaken.Remove(option);
         clientItems[NetworkManager.LocalClientId].sideClickerManager.CheckTaken();
+        weaponSideClickerManager.CheckTaken();
     }
 
 
@@ -264,8 +267,6 @@ public class ReadyUpManager : NetworkBehaviour
     {
         ulong clientId = NetworkManager.Singleton.LocalClientId;
         LobbyManager.Instance.GetClient(clientId).playerData.weaponId.Value = weaponInt;
-        //For now...
-        ReadyUpServerRpc(true);
     }
 
     [ClientRpc]
