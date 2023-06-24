@@ -43,9 +43,16 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     private PlayerCharacterController playerController;
 
+
+    [SerializeField] AudioSource chargingSFX;
+    [SerializeField] AudioSource rollingSFX;
+    [SerializeField] AudioSource explosionSFX;
+
+
     public override void OnNetworkSpawn()
     {
         isBuilding.OnValueChanged += BuildingStopped;
+        chargingSFX.Play();
         if (IsOwner)
         {
             //Get the camera to focus on this object!
@@ -61,6 +68,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
         if (!newValue)//IF Stopped building
         {
             Destroy(chargingVFX);
+            chargingSFX.Stop();
+            rollingSFX.Play();
             boilingVFX.GetComponent<ParticleSystem>().Play();
             rigidbody.isKinematic = false;
             if(IsOwner)StartCoroutine(ExplosionCountdown());
@@ -187,6 +196,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [ClientRpc]
     public void ExplodeClientRpc()
     {
+        rollingSFX.Stop();
+        explosionSFX.Play();
         exploded = true;
         GameObject explosionVFXinstance = Instantiate(explosionVFX, transform.position, Quaternion.identity);
         explosionVFXinstance.GetComponent<ParticleSystem>().startSize *= attachedObjects * 10 + 1000;

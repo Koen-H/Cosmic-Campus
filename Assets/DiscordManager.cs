@@ -130,7 +130,7 @@ public class DiscordManager : MonoBehaviour
                 UpdateStatus("Fighting golems", $"Golems killed: {ClientManager.MyClient.golemsKilled.Value}");
                 break;
             case 1://Show current health
-                UpdateStatus("Chuckles in danger", $"Current Health: {ClientManager.MyClient.playerCharacter.health.Value}");
+                UpdateStatus("Chuckles in danger", $"Current Health: {(int)ClientManager.MyClient.playerCharacter.health.Value}");
                 break;
             case 2://Mark mom jokes
                 UpdateStatus("Oh hi Mark!", $"Your Mom Jokes: Too many");

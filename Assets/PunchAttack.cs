@@ -15,10 +15,11 @@ public class PunchAttack : EnemyAttackBehaviour
     
     List<Transform> hits = new List<Transform>();
 
-    private void Awake()
+    protected void Awake()
     {
         base.Awake();
-        foreach(AttackCollider atCol in attackColliders)
+        
+        foreach (AttackCollider atCol in attackColliders)
         {
             atCol.OnTriggerEnterEvent += OnAttackColliderEnter;
         }
@@ -71,6 +72,7 @@ public class PunchAttack : EnemyAttackBehaviour
         if (enteredTransform.TryGetComponent(out PlayerCharacterController player))
         {
             player.TakeDamage(damage);
+            enemy.soundManager.enemyAttack.Play();
         }
     }
 

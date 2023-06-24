@@ -26,19 +26,37 @@ public class ReadyUpManager : NetworkBehaviour
     [SerializeField] List<GameObject> disableItemsOnClient = new List<GameObject>();
     [SerializeField] GameObject lobbyUI;
 
-
     bool weaponsSelected;
+
+    [SerializeField]public  List<ReadyOption> optionsTaken = new();
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeOptionServerRpc(ReadyOption option, bool take)
+    {
+        TakeOptionclientRpc(option, take);
+    }
+
+    [ClientRpc]
+    public void TakeOptionclientRpc(ReadyOption option, bool take)
+    {
+        if (take) optionsTaken.Add(option);
+        else optionsTaken.Remove(option);
+        clientItems[NetworkManager.LocalClientId].sideClickerManager.CheckTaken();
+    }
+
 
     private void Awake()
     {
         clientItems = new Dictionary<ulong, ReadyUpUIItems>();
     }
 
+
     private void Start()
     {
         LobbyManager.OnNewClientJoined += NewClientJoined;
         SteamMatchmaking.OnLobbyEntered += LoadLobby;
     }
+
 
     public void StartNetcodeHost()
     {
@@ -78,6 +96,13 @@ public class ReadyUpManager : NetworkBehaviour
         }
         UpdatePlayerCharacter(newClientId);
         CheckReady();
+        if (IsServer) testClientRpc();
+    }
+
+    [ClientRpc]
+    void testClientRpc()
+    {
+        Debug.Log("hello new client!");
     }
 
     private ulong FindKeyByValue(ReadyUpUIItems value)
@@ -89,7 +114,7 @@ public class ReadyUpManager : NetworkBehaviour
                 return pair.Key;
             }
         }
-        Debug.Log("NMO KEUY");
+        Debug.Log("NO KEY");
         return 0; // Key not found
     }
 
@@ -175,6 +200,7 @@ public class ReadyUpManager : NetworkBehaviour
 
         //StartGame(); 
     }
+
 
     void CheckReady()
     {
@@ -285,3 +311,4 @@ public class ReadyUpUIItems
     public SideClickerManager sideClickerManager;
     public TextMeshPro userNameDisplay;
 }
+public enum ReadyOption { ARTIST, DESIGNER, ENGINEER, BOW, SWORD, STAFF }

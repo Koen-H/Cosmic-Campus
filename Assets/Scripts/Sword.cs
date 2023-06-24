@@ -20,6 +20,7 @@ public class Sword : Weapon
         hits.Add(enteredTransform);
         if (enteredTransform.CompareTag("Enemy"))
         {
+            playerController.playerSounds.swordHit.Play();
             if (!playerController.IsOwner) return;
             //Temporary for testing
             float heal = weaponData.damageHeal.GetRandomValue();
@@ -146,6 +147,7 @@ public class Sword : Weapon
         Aim();
         base.Attack();
         //
+        playerController.playerSounds.swordSlash.Play();
         ToggleColliders(true);
 
         if(playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.SWORDSLASH;

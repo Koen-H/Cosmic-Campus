@@ -9,18 +9,11 @@ public class ArrowManager : MonoBehaviour
     private Transform attachedObject;
     public float damage = 0;
     public PlayerCharacterController playerController;
-    public RangeEnemy rangeEnemy; 
+    [SerializeField] AudioSource arrowHitSFX;
+    
 
     private void OnTriggerEnter(Collider other)
     {
-        if (rangeEnemy)
-        {
-            Debug.Log("range Enemy is not null");
-            PlayerCharacterController player = other.transform.GetComponent<PlayerCharacterController>();
-            Debug.Log("Player : " + player + "  : name =  " + other.gameObject.name);
-            DealDamage(damage, player);
-            return;
-        }
         if (!playerController) return;
         if (attached) return;
         if(other.tag == "Enemy")
@@ -28,6 +21,7 @@ public class ArrowManager : MonoBehaviour
             if(playerController.IsOwner)
             other.transform.parent.GetComponent<Enemy>().TakeDamage(damage, playerController.damageType);
         }
+        arrowHitSFX.Play();
         attached = true;
         attachedObject = other.gameObject.transform;
         this.transform.parent = attachedObject;

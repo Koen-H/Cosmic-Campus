@@ -68,6 +68,7 @@ public class RangeEnemy : PunchAttack
     void ShootClientRpc(Vector3 lookAtPos)
     {
         projectileSpawner.transform.LookAt(lookAtPos);
+        enemy.soundManager.enemyShoot.Play();
         EnemyProjectile projectileInstance = Instantiate(projectile.gameObject, projectileSpawner.transform.position, projectileSpawner.transform.rotation).GetComponent<EnemyProjectile>();
         projectileInstance.GetComponent<Rigidbody>().AddForce(projectileInstance.transform.forward * projectileSpeed);
         projectileInstance.damage = projectileDamage;

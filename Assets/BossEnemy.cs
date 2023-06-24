@@ -14,7 +14,7 @@ public class BossEnemy : PunchAttack
     [SerializeField] private Range launchInterval = new Range(16, 30);
 
 
-    private void Awake()
+    protected void Awake()
     {
         base.Awake();
         StartCoroutine(ShootMines());

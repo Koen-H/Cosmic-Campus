@@ -22,6 +22,8 @@ public class Enemy : NetworkBehaviour
     [SerializeField] EnemySO enemySO;
     public EnemyState enemyState = EnemyState.IDLING;
 
+    public EnemySoundManager soundManager;
+
     [Header("Enemy type variables")]
     public EnemyType enemyTypeInsp = EnemyType.NONE;
     [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
@@ -134,6 +136,8 @@ public class Enemy : NetworkBehaviour
         health.OnValueChanged -= OnHealthChange;
         effectManager.OnEffectChange -= HandleEffectChange;
         enemyType.OnValueChanged -= OnEnemyTypeChange;
+        soundManager.PlayDeathSFX();
+        Debug.Log("thsi"+ gameObject.name);
         FallApart();
     }
     void SetSOData()
@@ -256,7 +260,7 @@ public class Enemy : NetworkBehaviour
         List<Transform> bodyParts = GetChildren(enemyDebrisDrops.transform);
         MatChanger[] matChangers = enemyDebrisDrops.GetComponentsInChildren<MatChanger>();
         foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(enemyType.Value, true);
-
+        Debug.Log("test" + gameObject.name);
         foreach (var bodyPart in bodyParts)
         {
             bodyPart.parent = null;

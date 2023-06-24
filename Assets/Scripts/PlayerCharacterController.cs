@@ -16,7 +16,7 @@ public class PlayerCharacterController : NetworkBehaviour
     //NetworkVariables
     public NetworkVariable<float> maxHealth = new(50);
     public NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
+    [HideInInspector] public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
     [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
     //LocalVariables
     //public float moveSpeed = 5f;
@@ -26,7 +26,7 @@ public class PlayerCharacterController : NetworkBehaviour
     public bool engineering = false;
 
     [Tooltip("What enemytype will take critical damage?")]
-    public EnemyType damageType = EnemyType.NONE;
+    [HideInInspector] public EnemyType damageType = EnemyType.NONE;
 
     [SerializeField] private GameObject playerAvatar;//The player mesh/model
     public GameObject playerObj;//With weapon.
@@ -47,6 +47,7 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField]float currentSpeed = 0f;
 
     public EffectManager effectManager;
+    public PlayerSoundsManager playerSounds;//All player related sounds are on the player!
 
     private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
     private QuestNPC interactingNPC;
@@ -69,7 +70,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
 
 
-    public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
+    [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
 
 
     [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
@@ -134,6 +135,7 @@ public class PlayerCharacterController : NetworkBehaviour
             //col.enabled= false;//Disable collider to make the enemy target a different player.
             playerObj.gameObject.SetActive(false);
             myReviveArea.gameObject.SetActive(true);
+            playerSounds.playerDowned.Play();
             if (IsOwner) ClientManager.MyClient.timesDied.Value++;
         }
         else
@@ -250,13 +252,13 @@ public class PlayerCharacterController : NetworkBehaviour
         healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the player takes damage!
         {
-            Debug.Log("Take damage!");
+            playerSounds.playerHit.Play();
+           // Debug.Log("Take damage!");
         }
         else if (prevHealth < newHealth)//Do things where the player gained health!
         {
-            Debug.Log("Gained healht!");
+            //Debug.Log("Gained healht!");
         }
-        else { Debug.LogError("Networking error?"); }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -371,6 +373,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (Physics.SphereCast(transform.position + Vector3.up, radius, -Vector3.up, out hit, groundDistance + 1))
         {
             // If the sphere hit something, the character is grounded
+            BackgroundMusicManager.Instance.HandleGroundMusic(hit.transform.tag);
             isGrounded = true;
         }
         else
@@ -386,7 +389,7 @@ public class PlayerCharacterController : NetworkBehaviour
         cartObject.SetActive(toggle);
         //Cart pose OR idle!
         //TODO:: Change anim
-        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}");
+        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}", "Haha kart goes vroem", "karting");
     }
 
 
