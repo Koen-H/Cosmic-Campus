@@ -53,6 +53,7 @@ public class BackgroundMusicManager : MonoBehaviour
     public void SetVolume(float newVolume)
     {
         maxVolume = newVolume;
+        currentMusic.volume = maxVolume;
     }
 
     string lastTag = "";
