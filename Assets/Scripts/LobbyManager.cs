@@ -94,12 +94,20 @@ public class LobbyManager : MonoBehaviour
         ClientManager client = GetClient(lostClientID);
         client.OnLeaving();
         
-        if (NetworkManager.ServerClientId == lostClientID)
+        if (NetworkManager.ServerClientId == lostClientID)//Lost connection with host
         {
-         Debug.Log("LOST CONNECTION WITH HOST!");
-            NetworkManager.Singleton.Shutdown();
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
+            ReturnToMain(true);
         }
+    }
+
+
+    public void ReturnToMain(bool connectionLost = false)
+    {
+        CanvasManager.Instance.DisableAll();
+        BackgroundMusicManager.Instance.LoadDefault();
+        NetworkManager.Singleton.Shutdown();
+        if (connectionLost) CanvasManager.Instance.ToggleConnectionLostUI(true);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
     }
 
 }

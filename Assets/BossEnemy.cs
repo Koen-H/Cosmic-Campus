@@ -18,6 +18,7 @@ public class BossEnemy : PunchAttack
     {
         base.Awake();
         StartCoroutine(ShootMines());
+        BackgroundMusicManager.Instance.PlayBossMusic();
     }
 
 
@@ -49,6 +50,11 @@ public class BossEnemy : PunchAttack
             int mines = (int)minesPerLaunch.GetRandomValue();
             for (int i = 0; i < mines; i++) LaunchMine();
         }
+    }
+
+    private void OnDestroy()
+    {
+        BackgroundMusicManager.Instance.LoadDefault();
     }
 
 

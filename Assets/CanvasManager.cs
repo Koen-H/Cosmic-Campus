@@ -24,6 +24,8 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject settingsUI;
+    [SerializeField] private GameObject connectionLostUI;
     [SerializeField] TextMeshProUGUI loadingHint;
     private static CanvasManager _instance;
     public static CanvasManager Instance
@@ -36,7 +38,6 @@ public class CanvasManager : MonoBehaviour
     }
     [SerializeField] private List<PlayerUIItem> uiItems = new List<PlayerUIItem>();
 
-
     private void Awake()
     {
         _instance = this;
@@ -44,6 +45,14 @@ public class CanvasManager : MonoBehaviour
     }
 
 
+
+    public void DisableAll()
+    {
+        loadingScreen.SetActive(false);
+        gameUI.SetActive(false);
+        gameOverUI.SetActive(false);
+        settingsUI.SetActive(false);
+    }
 
     public void ToggleLoadingScreen(bool toggle)
     {
@@ -63,6 +72,17 @@ public class CanvasManager : MonoBehaviour
     public void ToggleGameUI(bool toggle)
     {
         gameUI.SetActive(toggle);
+    }
+
+    public void ToggleSettingsUI(bool toggle)
+    {
+        settingsUI.SetActive(toggle);
+        ClientManager.MyClient.playerCharacter.inSettings = toggle;
+    }
+
+    public void ToggleConnectionLostUI(bool toggle)
+    {
+        connectionLostUI.SetActive(toggle);
     }
 
 
