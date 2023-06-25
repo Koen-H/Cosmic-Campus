@@ -9,8 +9,24 @@ using UnityEngine;
 /// </summary>
 public class SceneManager : NetworkBehaviour
 {
+
+    private static SceneManager instance;
+
+    public static SceneManager Instance
+    {
+        get {
+            if (instance == null) Debug.LogError("SceneManager is null!");
+            return instance; }
+    }
+
     private void Awake()
     {
+        if(instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+        instance = this;
         DontDestroyOnLoad(this);
     }
 

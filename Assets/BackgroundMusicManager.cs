@@ -41,6 +41,13 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         currentMusic = calmMusic;
         calmMusic.volume = maxVolume;
+
+    }
+
+    public void LoadDefault()
+    {
+        groundBasedMusic = true;
+        PlayCalmMusic();
     }
 
     private void Update()
@@ -53,6 +60,7 @@ public class BackgroundMusicManager : MonoBehaviour
     public void SetVolume(float newVolume)
     {
         maxVolume = newVolume;
+        currentMusic.volume = maxVolume;
     }
 
     string lastTag = "";
@@ -86,8 +94,9 @@ public class BackgroundMusicManager : MonoBehaviour
         if (fade != null) { StopCoroutine(fade); }
         fade = StartCoroutine(FadeMusic(battleMusic));
     }
-    void PlayBossMusic()
+    public void PlayBossMusic()
     {
+        groundBasedMusic = false;
         fade = StartCoroutine(FadeMusic(bossMusic));
     }
 

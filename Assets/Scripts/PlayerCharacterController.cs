@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using static PlayerSO;
@@ -33,7 +34,6 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] TextMeshPro healthText;
     [SerializeField] HealthBar healthBar;
     [SerializeField] ReviveAreaManager myReviveArea;
-    public ReviveAreaManager otherReviveArea;
 
     [SerializeField] private float damage;
     [SerializeField] private GameObject playerWeapon;//The object
@@ -67,8 +67,8 @@ public class PlayerCharacterController : NetworkBehaviour
     [SerializeField] private float cartEnterTime = 3;
     [SerializeField] GameObject cartObject;
     [SerializeField] float cartSpeed;
-
-
+    public bool inSettings = false;
+    public NetworkVariable<bool> isReviving = new(false,default,NetworkVariableWritePermission.Owner);
 
 
     [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
@@ -190,24 +190,6 @@ public class PlayerCharacterController : NetworkBehaviour
         health.Value = maxHealth.Value * 0.25f;
     }
 
-    /// <summary>
-    /// Set the revive area that the player ented. Let the player know that he can heal his teammate by holding E!
-    /// </summary>
-    public void SetReviveArea(ReviveAreaManager reviveArea)
-    {
-        otherReviveArea = reviveArea;
-        if(otherReviveArea != null)
-        {
-            CanvasManager.Instance.ToggleRevive(true);
-        }
-        else
-        {
-            CanvasManager.Instance.ToggleRevive(false);
-        }
-    }
-
-
-
     public override void OnNetworkSpawn()
     {
         InitCharacter(OwnerClientId);
@@ -294,13 +276,18 @@ public class PlayerCharacterController : NetworkBehaviour
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
         if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
         CheckIfGrounded();
-        if (canMove && !knockedBack) Move();
         DeathCheck();
+        TryRevive();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CanvasManager.Instance.ToggleSettingsUI(!inSettings);
+        }
+        if (inSettings) return;
+        if (canMove && !knockedBack) Move();
         LoadCart();
         if (usingCart.Value) return;//Below this is disabled while you are in a cart!
         if (canAttack) HandleAttackInput();
         if (canAbility) HandleAbilityInput();
-        if (otherReviveArea != null) TryRevive();
         if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
     }
 
@@ -344,9 +331,13 @@ public class PlayerCharacterController : NetworkBehaviour
 
     void TryRevive()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.E) && !isDead.Value)
         {
-            otherReviveArea.OnRevivingServerRpc();
+            isReviving.Value = true;
+        }
+        else
+        {
+            isReviving.Value = false;
         }
     }
 

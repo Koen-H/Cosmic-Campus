@@ -27,6 +27,15 @@ public class LobbyManager : MonoBehaviour
         _instance = this;
     }
 
+    private void Start()
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientConnectionLost;
+        //NetworkManager.Singleton.OnTransportFailure += OnConnectionLost;
+        //NetworkManager.Singleton.
+    }
+
+
+
     public void AddClient(ulong id, ClientManager newClient)
     {
         clients.Add(id, newClient);
@@ -77,6 +86,28 @@ public class LobbyManager : MonoBehaviour
         }
 
         DiscordManager.Instance.ToggleRandomUpdates(true);
+    }
+
+    public void OnClientConnectionLost(ulong lostClientID)
+    {
+
+        ClientManager client = GetClient(lostClientID);
+        client.OnLeaving();
+        
+        if (NetworkManager.ServerClientId == lostClientID)//Lost connection with host
+        {
+            ReturnToMain(true);
+        }
+    }
+
+
+    public void ReturnToMain(bool connectionLost = false)
+    {
+        CanvasManager.Instance.DisableAll();
+        BackgroundMusicManager.Instance.LoadDefault();
+        NetworkManager.Singleton.Shutdown();
+        if (connectionLost) CanvasManager.Instance.ToggleConnectionLostUI(true);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
     }
 
 }
