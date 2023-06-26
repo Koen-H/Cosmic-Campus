@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
@@ -136,7 +137,7 @@ public class CanvasManager : MonoBehaviour
             if (client.Key == myId) continue;
             client.Value.OnClientLeft -= ClientLeft;
         }
-        LoadGameUI();
+        LoadGameUI(clientLeft.GetClientId());
 
     }
 

@@ -55,7 +55,11 @@ public class UiDirectionIndicator : MonoBehaviour
     private void FixedUpdate()
     {
         bool temp = disableArrow;
-        if (player == null) return;
+        if (player == null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         SnapToPlayerPosition(player.transform);
         if(temp != disableArrow)
         {
