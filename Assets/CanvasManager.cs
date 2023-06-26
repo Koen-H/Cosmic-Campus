@@ -19,6 +19,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] List<ArtistUIAbility> artistUIAbilities;
 
     [SerializeField] UiDirectionIndicatorManager uiDirectionIndicatorManager;
+    [SerializeField] UiMoneyDroppedElement enemyDamageIndicator; 
 
 
     [SerializeField] GameObject loadingScreen;
@@ -38,10 +39,19 @@ public class CanvasManager : MonoBehaviour
     }
     [SerializeField] private List<PlayerUIItem> uiItems = new List<PlayerUIItem>();
 
+    public Camera camera; 
+
     private void Awake()
     {
         _instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void SpawnDamageText(Vector3 worldPosition, int damge)
+    {
+        var newDamageTest = Instantiate(enemyDamageIndicator, uiDirectionIndicatorManager.transform);
+        newDamageTest.SetText(damge.ToString()); 
+        newDamageTest.SetPosition(worldPosition, camera);
     }
 
 

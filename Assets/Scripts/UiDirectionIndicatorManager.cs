@@ -18,6 +18,11 @@ public class UiDirectionIndicatorManager : MonoBehaviour
 
     private List<PlayerCharacterController> characterControllers = new List<PlayerCharacterController>();
 
+    private void Start()
+    {
+        CanvasManager.Instance.camera = Camera.main;
+    }
+
 
     public void AddToCharacterToTrack(PlayerCharacterController character) => characterControllers.Add(character); 
 

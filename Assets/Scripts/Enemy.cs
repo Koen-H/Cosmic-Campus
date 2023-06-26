@@ -230,6 +230,7 @@ public class Enemy : NetworkBehaviour
         healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
+            CanvasManager.Instance.SpawnDamageText(this.transform.position, (int)(newHealth- prevHealth));
             if (OnReceivedDamage != null) OnReceivedDamage.Invoke();
             if (health.Value <= 0) Die();
         }
