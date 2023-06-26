@@ -123,6 +123,8 @@ MonoBehaviour:
   doorPosition: {x: 0, y: 0, z: 0}
   doorNormal: {x: 0, y: 0, z: 0}
   doorId: 0
+  isFollowing:
+    m_InternalValue: 0
   enemyState: 0
   avatar: {fileID: -3915082565821610680, guid: b09d0f07db871984d96ecf19b7bc6c5a, type: 3}
 --- !u!195 &2548790869303321592
@@ -306,6 +308,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4321569868076062114, guid: 0d906d3891651974185f7313554a47ab,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 26ebbda6ed920da4999bc0b29b4bca20, type: 2}
     - target: {fileID: 919132149155446097, guid: 0d906d3891651974185f7313554a47ab,
         type: 3}
       propertyPath: m_Name
