@@ -35,20 +35,25 @@ public class ReviveAreaManager : NetworkBehaviour
     {
         playersInArea.Clear();
         reviveTime.OnValueChanged -= OnReviveTimeChange;
+        CanvasManager.Instance.ToggleRevive(false); 
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            playersInArea.Add(other.GetComponent<PlayerCharacterController>());
+            PlayerCharacterController otherPlayer = other.GetComponent<PlayerCharacterController>();
+            if (otherPlayer.IsOwner) CanvasManager.Instance.ToggleRevive(true);
+            playersInArea.Add(otherPlayer);
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            playersInArea.Remove(other.GetComponent<PlayerCharacterController>());
+            PlayerCharacterController otherPlayer = other.GetComponent<PlayerCharacterController>();
+            if (otherPlayer.IsOwner) CanvasManager.Instance.ToggleRevive(false);
+            playersInArea.Remove(otherPlayer);
         }
     }
 
