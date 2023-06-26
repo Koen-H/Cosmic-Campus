@@ -5,15 +5,15 @@ using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
-//using Inworld;
-//using Inworld.Sample;
+using Inworld;
+using Inworld.Sample;
 using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
     public RoomGenerator levelGenerator;
-    //[SerializeField] InworldController inworldController;
-    //[SerializeField] InworldPlayer InworldPlayer;
+    [SerializeField] InworldController inworldController;
+    [SerializeField] InworldPlayer InworldPlayer;
     [SerializeField] GameObject npc; 
     Dictionary<ulong, bool> deadClients;
     [SerializeField] private bool useFairPlay = true;
@@ -63,11 +63,6 @@ public class GameManager : NetworkBehaviour
         LoadEnemyTypes();
         ToggleLoadingScreenClientRpc(false);
         LoadGameUIClientRpc();
-
-        //inworldController.m_InworldPlayer = ClientManager.MyClient.playerCharacter.gameObject;
-        //var playerController = Instantiate(InworldPlayer, ClientManager.MyClient.playerCharacter.transform);
-        //Instantiate(npc, inworldController.transform);
-        //playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform,false);
 
     }
 
@@ -174,8 +169,14 @@ public class GameManager : NetworkBehaviour
     /// </summary>
     public void OnBossDestroy()
     {
-        int index = UnityEngine.Random.Range(0, INWorldTeachers.GetCount());
-        SpawnInworldTeacherClientRpc(index);
+        inworldController.m_InworldPlayer = ClientManager.MyClient.playerCharacter.gameObject;
+        var playerController = Instantiate(InworldPlayer, ClientManager.MyClient.playerCharacter.transform);
+        playerController.m_GlobalChatCanvas.transform.SetParent(CanvasManager.Instance.GetGameUI().transform, false);
+        //Instantiate(npc, inworldController.transform);
+
+        SpawnInworldTeacherClientRpc();
+        /*        int index = UnityEngine.Random.Range(0, INWorldTeachers.GetCount());
+                SpawnInworldTeacherClientRpc(index);*/
     }
 
     [ClientRpc]
@@ -186,6 +187,12 @@ public class GameManager : NetworkBehaviour
         GameObject teacherInstance =  Instantiate(teacher, spawnPoint.position, spawnPoint.rotation);
     }
 
+    [ClientRpc]
+    void SpawnInworldTeacherClientRpc()
+    {
+        Transform spawnPoint = levelGenerator.lastBossRoom.teacherSpawnPoint;
+        GameObject teacherInstance = Instantiate(npc, spawnPoint.position, spawnPoint.rotation);
+    }
     void CheckCheatCodes()
     {
         foreach (char c in Input.inputString)

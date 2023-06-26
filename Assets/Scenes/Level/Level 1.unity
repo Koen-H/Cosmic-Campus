@@ -416,6 +416,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
         type: 3}
+      propertyPath: inworldController
+      value: 
+      objectReference: {fileID: 9133232318524051561, guid: c6791824545fa244cbe96054c32fd5e5,
+        type: 3}
+    - target: {fileID: 2991427587043466504, guid: 0a68af601b2f108449aa21f2573efde7,
+        type: 3}
       propertyPath: teacherStudentRatio
       value: 1
       objectReference: {fileID: 0}
@@ -974,7 +980,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelGenerator: {fileID: 987873169}
-  npc: {fileID: 5626955898963317018, guid: 408d3704be267dd45aafd7bfd759520c, type: 3}
+  inworldController: {fileID: 9133232318524051561, guid: c6791824545fa244cbe96054c32fd5e5,
+    type: 3}
+  InworldPlayer: {fileID: 5850455540921699961, guid: 377a3199ab75de842bf039ecaaf6063f,
+    type: 3}
+  npc: {fileID: 9133232318524051560, guid: c6791824545fa244cbe96054c32fd5e5, type: 3}
   useFairPlay: 1
   useWhiteEnemies: 1
   INWorldTeachers: {fileID: 11400000, guid: 03854247912586d4684fd1d847563df4, type: 2}
