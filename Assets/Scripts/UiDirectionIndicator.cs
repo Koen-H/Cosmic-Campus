@@ -25,11 +25,6 @@ public class UiDirectionIndicator : MonoBehaviour
 
     bool disableArrow = false; 
 
-    private void Update()
-    {
-       // if (Input.GetKeyDown(KeyCode.L)) Enable(false);
-      //  if (Input.GetKeyDown(KeyCode.K)) Disable();
-    }
     void OnPlayerDeath(bool oldValue, bool newValue)
     {
         Enable(newValue);
@@ -60,6 +55,7 @@ public class UiDirectionIndicator : MonoBehaviour
     private void FixedUpdate()
     {
         bool temp = disableArrow;
+        if (player == null) return;
         SnapToPlayerPosition(player.transform);
         if(temp != disableArrow)
         {
