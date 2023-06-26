@@ -18,10 +18,10 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField] bool dontFade = false;
 
-    private void Start()
+/*    private void Start()
     {
         barMult = 1 / maxValue;
-    }
+    }*/
 
     public void ResetBar()
     {
@@ -38,7 +38,7 @@ public class HealthBar : MonoBehaviour
     /// Scales bar on X Axis accourding to the maximum value and given value
     /// </summary>
     /// <param name="value"></param>
-    public void UpdateBar(int value)
+    public void UpdateBar(float value)
     {
         if(coBg != null)StopCoroutine(coBg);
         if(coBar != null) StopCoroutine(coBar);
@@ -47,7 +47,6 @@ public class HealthBar : MonoBehaviour
         if (value < 0) xValue = 0;
         bar.transform.localScale = new Vector3(xValue, bar.transform.localScale.y, bar.transform.localScale.z);
 
-        if (dontFade) return;
         coBg = StartCoroutine(FadeInOut(bgSprite, fadeDuration));
         coBar = StartCoroutine(FadeInOut(barSprite, fadeDuration));
     }

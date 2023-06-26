@@ -11,6 +11,7 @@ public class ReviveAreaManager : NetworkBehaviour
     NetworkVariable<float> reviveTime = new(default,default,NetworkVariableWritePermission.Owner);
 
     [SerializeField] TextMeshPro displayTimer;
+    [SerializeField] HealthBar progressBar;
     private PlayerCharacterController player;
 
     List<PlayerCharacterController> playersInArea = new();
@@ -24,8 +25,10 @@ public class ReviveAreaManager : NetworkBehaviour
     {
         playersInArea.Clear();
         reviveTime.OnValueChanged += OnReviveTimeChange;
+        progressBar.SetMaxValue(totalReviveTime);
         if (!IsOwner) return;
             reviveTime.Value = totalReviveTime;
+
     }
 
     private void OnDisable()
@@ -64,6 +67,7 @@ public class ReviveAreaManager : NetworkBehaviour
 
     void OnReviveTimeChange(float prevValue, float newValue)
     {
+        progressBar.UpdateBar(newValue);
         displayTimer.text = ((int)newValue).ToString();
         if (IsOwner && reviveTime.Value < 0) player.Revive();
     }
