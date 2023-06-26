@@ -17,6 +17,7 @@ public class RoomGenerator : NetworkBehaviour
 
     [SerializeField] RoomInfo firstRoom; 
     [SerializeField] RoomInfo lastRoom;
+    [HideInInspector] public RoomInfo lastBossRoom; 
     //private List<RoomInfo> generatedRooms = new List<RoomInfo>();
 
     [SerializeField] private float forwardOffset;
@@ -450,6 +451,7 @@ public class RoomGenerator : NetworkBehaviour
         }
         RoomInfo room = Instantiate(path[path.Count - 1].roomPrefab, path[path.Count - 1].GetRoomPosition(), Quaternion.identity, this.transform);//generates last room
         room.gameObject.layer = 6;
+        if (reverse) lastBossRoom = room;
         LoadCmgtPrefabs(room);
         ApplyNavMeshModifierToChildren(room.transform);
         room.roomLayer = path[path.Count - 1].layerNumber;

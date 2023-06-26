@@ -50,13 +50,6 @@ public class BackgroundMusicManager : MonoBehaviour
         PlayCalmMusic();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H)) PlayCalmMusic();
-        else if (Input.GetKeyDown(KeyCode.J)) PlayBattleMusic();
-        else if (Input.GetKeyDown(KeyCode.K)) PlayBossMusic();
-    }
-
     public void SetVolume(float newVolume)
     {
         maxVolume = newVolume;

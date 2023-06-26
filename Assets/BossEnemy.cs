@@ -9,7 +9,7 @@ public class BossEnemy : PunchAttack
 
 
     [Header("Mine launcher settings")]
-    [SerializeField] private float launchStrength = 750;
+    [SerializeField] private float launchStrength = 1250;
     [SerializeField] private Range minesPerLaunch = new Range(2, 8);
     [SerializeField] private Range launchInterval = new Range(16, 30);
 
@@ -54,7 +54,8 @@ public class BossEnemy : PunchAttack
 
     private void OnDestroy()
     {
-        BackgroundMusicManager.Instance.LoadDefault();
+        if(IsServer)GameManager.Instance.OnBossDestroy();
+        BackgroundMusicManager.Instance.PlayCalmMusic();
     }
 
 

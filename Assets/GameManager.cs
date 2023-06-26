@@ -20,6 +20,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private bool useWhiteEnemies = true;
     private List<EnemyType> allowedEnemyTypes;
 
+    [SerializeField] private ListSO INWorldTeachers;
+
     private static GameManager _instance;
     public static GameManager Instance
     {
@@ -158,6 +160,24 @@ public class GameManager : NetworkBehaviour
         CanvasManager.Instance.ToggleLoadingScreen(true);
         if(IsServer)NetworkManager.SceneManager.LoadScene("Level 1",LoadSceneMode.Single);
         yield return null;
+    }
+
+
+    /// <summary>
+    /// Happens on the server, when the boss is destroyed.
+    /// </summary>
+    public void OnBossDestroy()
+    {
+        int index = UnityEngine.Random.Range(0, INWorldTeachers.GetCount());
+        SpawnInworldTeacherClientRpc(index);
+    }
+
+    [ClientRpc]
+    void SpawnInworldTeacherClientRpc(int index)
+    {
+        GameObject teacher = INWorldTeachers.GetGameObject(index);
+        Transform spawnPoint = levelGenerator.lastBossRoom.teacherSpawnPoint;
+        GameObject teacherInstance =  Instantiate(teacher, spawnPoint.position, spawnPoint.rotation);
     }
 
 }
