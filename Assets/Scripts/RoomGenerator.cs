@@ -49,6 +49,7 @@ public class RoomGenerator : NetworkBehaviour
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private List<GameObject> spawnedNpcs = new List<GameObject>();
+    private List<Room> correctPath = new List<Room>();
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
@@ -58,6 +59,13 @@ public class RoomGenerator : NetworkBehaviour
 
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = -1;
+    public int LatestEnemyLayer
+    {
+        get
+        {
+            return latestEnemyLayer;
+        }
+    }
 
     public Vector3 initialSpawnLocation; 
 
@@ -108,6 +116,18 @@ public class RoomGenerator : NetworkBehaviour
                 }
             }
         }
+    }
+    public Room GetCorrectPathRoom(int layerIndex)
+    {
+        if (layerIndex > numberOfRooms + 1) return null;
+        foreach (Room room in correctPath)
+        {
+            if (room.layerNumber == layerIndex)
+            {
+                return room;
+            }
+        }
+        return null;
     }
 
     [ClientRpc]
@@ -244,7 +264,7 @@ public class RoomGenerator : NetworkBehaviour
 
 
 
-    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
+    private void GenerateBranches(List<Room> branchingPoints, List<Room> path, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
     {
         List<Room> allBranches = new List<Room>();
         navMeshSurfaces = new List<NavMeshSurface>();
@@ -333,7 +353,7 @@ public class RoomGenerator : NetworkBehaviour
         return student;
     }
 
-    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
+    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> path, List<Room> generatedBranches)
     {
         //Debug.Log("Ittiration attempt");
         if (maxDepthOfBranch == 0)
@@ -609,6 +629,7 @@ public class RoomGenerator : NetworkBehaviour
         }
         spawnedEnemies.Clear();
         generation.Clear();
+        correctPath.Clear();
 
         StartCoroutine(GenerateNextFrame());
     }
@@ -692,7 +713,7 @@ public class RoomGenerator : NetworkBehaviour
         }
 
         Room to = roomLayers[0].roomPositions[0];
-        List<Room> correctPath = FindPath(from, to, roomLayers);
+        correctPath = FindPath(from, to, roomLayers);
         List<NavMeshSurface> navMeshSurfaces;
         GeneratePath(correctPath, Color.green, out navMeshSurfaces, out mainPathEnemies, true);
         List<NavMeshSurface> newNavMeshSurfaces;

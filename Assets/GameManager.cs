@@ -19,6 +19,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private bool useFairPlay = true;
     [SerializeField] private bool useWhiteEnemies = true;
     private List<EnemyType> allowedEnemyTypes;
+    private string inputCheatCode = "";
+    private const string cheatCode = "nextisland";
 
     [SerializeField] private ListSO INWorldTeachers;
 
@@ -35,6 +37,10 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         _instance = this;
+    }
+    private void Update()
+    {
+        CheckCheatCodes();
     }
 
     public void InitalizeLevel()
@@ -178,6 +184,46 @@ public class GameManager : NetworkBehaviour
         GameObject teacher = INWorldTeachers.GetGameObject(index);
         Transform spawnPoint = levelGenerator.lastBossRoom.teacherSpawnPoint;
         GameObject teacherInstance =  Instantiate(teacher, spawnPoint.position, spawnPoint.rotation);
+    }
+
+    void CheckCheatCodes()
+    {
+        foreach (char c in Input.inputString)
+        {
+            if (c == '\b')  // backspace character
+            {
+                Debug.Log("backspace Pressed");
+                if (inputCheatCode.Length != 0)
+                {
+                    inputCheatCode = inputCheatCode.Substring(0, inputCheatCode.Length - 1);
+                }
+            }
+            else if ((c == '\n') || (c == '\r')) // newline or return
+            {
+                // maybe you want to do something when the player hits return?
+                Debug.Log("Enter Pressed");
+            }
+            else
+            {
+                inputCheatCode += c;
+
+                // Check if the cheat code was entered
+                if (inputCheatCode.Contains(cheatCode))
+                {
+                    Debug.Log("Cheat Code Activated");
+                    Room nextRoom = levelGenerator.GetCorrectPathRoom(levelGenerator.LatestEnemyLayer+1);
+                    if (nextRoom != null)
+                    {
+                        Vector3 tpPosition = nextRoom.roomPrefab.doorEntrance.position + nextRoom.GetRoomPosition();
+                        ClientManager.MyClient.playerCharacter.transform.position = tpPosition;
+                    }
+
+                    // Remove cheatCode from inputCheatCode, keeping any characters that were entered after the cheat code
+                    int index = inputCheatCode.IndexOf(cheatCode);
+                    inputCheatCode = inputCheatCode.Substring(index + cheatCode.Length);
+                }
+            }
+        }
     }
 
 }
