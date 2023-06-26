@@ -18,10 +18,14 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] List<ArtistUIAbility> artistUIAbilities;
 
+    [SerializeField] UiDirectionIndicatorManager uiDirectionIndicatorManager;
+
 
     [SerializeField] GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject settingsUI;
+    [SerializeField] private GameObject connectionLostUI;
     [SerializeField] TextMeshProUGUI loadingHint;
     private static CanvasManager _instance;
     public static CanvasManager Instance
@@ -34,7 +38,6 @@ public class CanvasManager : MonoBehaviour
     }
     [SerializeField] private List<PlayerUIItem> uiItems = new List<PlayerUIItem>();
 
-
     private void Awake()
     {
         _instance = this;
@@ -42,6 +45,14 @@ public class CanvasManager : MonoBehaviour
     }
 
 
+
+    public void DisableAll()
+    {
+        loadingScreen.SetActive(false);
+        gameUI.SetActive(false);
+        gameOverUI.SetActive(false);
+        settingsUI.SetActive(false);
+    }
 
     public void ToggleLoadingScreen(bool toggle)
     {
@@ -63,9 +74,21 @@ public class CanvasManager : MonoBehaviour
         gameUI.SetActive(toggle);
     }
 
-
-    public void LoadGameUI()
+    public void ToggleSettingsUI(bool toggle)
     {
+        settingsUI.SetActive(toggle);
+        ClientManager.MyClient.playerCharacter.inSettings = toggle;
+    }
+
+    public void ToggleConnectionLostUI(bool toggle)
+    {
+        connectionLostUI.SetActive(toggle);
+    }
+
+
+    public void LoadGameUI(ulong clientLeft = ulong.MaxValue)
+    {
+        foreach(PlayerUIItem item in uiItems) item.DisableAll();
         gameUI.SetActive(true);
         Dictionary<ulong,ClientManager> clients = LobbyManager.Instance.GetClients();
 
@@ -78,13 +101,36 @@ public class CanvasManager : MonoBehaviour
 
         foreach(KeyValuePair<ulong,ClientManager> client in clients)
         {
-            if (client.Key == myId) continue;
+            if (client.Key == myId || clientLeft == client.Key) continue;
             uiItems[i].gameObject.SetActive(true);
             uiItems[i].SetClient(client.Value);
             uiItems[i].LoadCorrectUI();
+            uiDirectionIndicatorManager.AddToCharacterToTrack(client.Value.playerCharacter);
             i++;
+            client.Value.OnClientLeft += ClientLeft;
         }
+        uiDirectionIndicatorManager.InitiateDirections();
     }
+
+
+    /// <summary>
+    /// When a client leaves, we need to remove the related ui from the screen
+    /// </summary>
+    /// <param name="clientLeft"></param>
+    public void ClientLeft(ClientManager clientLeft)
+    {
+        Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
+        ulong myId = NetworkManager.Singleton.LocalClientId;
+        foreach (KeyValuePair<ulong, ClientManager> client in clients)
+        {
+            if (client.Key == myId) continue;
+            client.Value.OnClientLeft -= ClientLeft;
+        }
+        LoadGameUI();
+
+    }
+
+
 
     public void ToggleRevive(bool toggle)
     {

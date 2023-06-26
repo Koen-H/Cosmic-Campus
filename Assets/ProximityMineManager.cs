@@ -32,7 +32,6 @@ public class ProximityMineManager : NetworkBehaviour
         if (other.gameObject.layer == 6) return;//Ground layer? We don't explode by ground
         if (other.CompareTag("Enemy") || other.CompareTag("InvincibleEnemy")) return;
         if (IsOwner) ExplodeClientRpc();
-        Debug.Log("explosion caused by" + other.name);
     }
 
     IEnumerator ProximityTimer()
@@ -82,7 +81,7 @@ public class ProximityMineManager : NetworkBehaviour
 
                 Vector3 knockbackDirection = player.transform.position - transform.position;
                 knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);
-                player.TakeDamage(playerDamage);
+                player.TakeDamageClientRpc(playerDamage,false);
                 player.ApplyKnockback(knockbackDirection.normalized, playerKnockbackForce, playerKnockbackDuration);
             }
         }

@@ -57,7 +57,6 @@ public class EnemyMovement : NetworkBehaviour
     public void ApplyKnockback(Vector3 direction, float force, float duration)
     {
         if (!canBeNockedBack) return;
-        Debug.Log("KnockedBack");
         ApplyNockbackServerRpc(direction, force, duration);
     }
 
@@ -69,7 +68,6 @@ public class EnemyMovement : NetworkBehaviour
         knockbackDuration = duration;
         knockbackTimer = 0f;
         isKnockedBack = true;
-        Debug.Log("KnockedBackServer!");
     }
 
     private void Nockback()

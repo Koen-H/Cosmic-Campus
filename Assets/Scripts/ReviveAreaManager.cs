@@ -8,10 +8,12 @@ public class ReviveAreaManager : NetworkBehaviour
 {
     [Tooltip("How long it takes to revive the player")]
     [SerializeField] float totalReviveTime = 5.0f;
-    NetworkVariable<float> reviveTime = new(default);
+    NetworkVariable<float> reviveTime = new(default,default,NetworkVariableWritePermission.Owner);
 
     [SerializeField] TextMeshPro displayTimer;
     private PlayerCharacterController player;
+
+    List<PlayerCharacterController> playersInArea = new();
 
     private void Awake()
     {
@@ -20,13 +22,15 @@ public class ReviveAreaManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        playersInArea.Clear();
         reviveTime.OnValueChanged += OnReviveTimeChange;
-        if (!IsServer) return;
-        reviveTime.Value = totalReviveTime;
+        if (!IsOwner) return;
+            reviveTime.Value = totalReviveTime;
     }
 
     private void OnDisable()
     {
+        playersInArea.Clear();
         reviveTime.OnValueChanged -= OnReviveTimeChange;
     }
 
@@ -34,22 +38,28 @@ public class ReviveAreaManager : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponentInParent<PlayerCharacterController>().SetReviveArea(this);
+            playersInArea.Add(other.GetComponent<PlayerCharacterController>());
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponentInParent<PlayerCharacterController>().SetReviveArea(null);
+            playersInArea.Remove(other.GetComponent<PlayerCharacterController>());
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void OnRevivingServerRpc()
+    private void Update()
     {
-        reviveTime.Value -= Time.deltaTime;
+        if (IsOwner) CheckRevive();
+    }
 
+    private void CheckRevive()
+    {
+        foreach(PlayerCharacterController player in playersInArea)
+        {
+            if(player.isReviving.Value) reviveTime.Value -= Time.deltaTime;
+        }
     }
 
     void OnReviveTimeChange(float prevValue, float newValue)

@@ -45,7 +45,11 @@ public class GameManager : NetworkBehaviour
         levelGenerator.SetSeed();
         levelGenerator.GenerateMapClientRpc(levelGenerator.GetSeed());
         deadClients = new();
-        foreach (ulong playerId in LobbyManager.Instance.GetClients().Keys) deadClients.Add(playerId, false);
+        foreach (ClientManager client in LobbyManager.Instance.GetClients().Values)
+        {
+            deadClients.Add(client.GetClientId(), false);
+            client.OnClientLeft += PlayerLeft;
+        }
         yield return new WaitForFixedUpdate();
         LobbyManager.Instance.CreateCharacters(levelGenerator.initialSpawnLocation);
         LoadEnemyTypes();
@@ -59,8 +63,16 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    private void OnDisable()
+    {
+        foreach (ClientManager client in LobbyManager.Instance.GetClients().Values)
+        {
+            client.OnClientLeft -= PlayerLeft;
+        }
+    }
 
-    public void LoadEnemyTypes()
+
+    public void LoadEnemyTypes(ulong clientLeft = ulong.MaxValue)
     {
         allowedEnemyTypes = new();
         if (useWhiteEnemies) allowedEnemyTypes.Add(EnemyType.WHITE);
@@ -73,7 +85,11 @@ public class GameManager : NetworkBehaviour
         }
 
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
-        foreach (ClientManager client in clients.Values) allowedEnemyTypes.Add(client.playerCharacter.damageType);
+        foreach (ClientManager client in clients.Values)
+        {
+            if (clientLeft == client.GetClientId()) continue;
+            allowedEnemyTypes.Add(client.playerCharacter.damageType);
+        }
     }
 
 
@@ -101,15 +117,17 @@ public class GameManager : NetworkBehaviour
 
     public void PlayerDeadStatus(ulong playerId, bool deadStatus)
     {
-        Debug.Log(playerId);
-        Debug.Log(deadClients.Count);
         deadClients[playerId] = deadStatus;
         CheckDeaths();
     }
 
-    public void PlayerLeft(ulong playerId)
+    public void PlayerLeft(ClientManager clientLeft)
     {
-        deadClients.Remove(playerId);
+        ulong clinetLeftID = clientLeft.GetClientId();
+        deadClients.Remove(clinetLeftID);
+        clientLeft.OnClientLeft -= PlayerLeft;
+        LoadEnemyTypes(clinetLeftID);
+        CheckDeaths();
     }
 
     void CheckDeaths()

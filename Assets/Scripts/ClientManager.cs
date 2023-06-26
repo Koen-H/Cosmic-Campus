@@ -19,6 +19,8 @@ public class ClientManager : NetworkBehaviour
     public NetworkVariable<int> golemsKilled = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> timesDied = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    public event System.Action<ClientManager> OnClientLeft;
+
     public PlayerCharacterController playerCharacter = null;
 
     //Get the clientManager, that belongs to you, the client.
@@ -31,6 +33,7 @@ public class ClientManager : NetworkBehaviour
             return _myClient;
         }
     }
+    
     //private void Awake()
     //{
     //    Debug.Log("hey");
@@ -80,4 +83,11 @@ public class ClientManager : NetworkBehaviour
     {
         return OwnerClientId;
     }
+
+
+    public void OnLeaving()
+    {
+        if (OnClientLeft != null) OnClientLeft.Invoke(this);
+    }
+
 }
