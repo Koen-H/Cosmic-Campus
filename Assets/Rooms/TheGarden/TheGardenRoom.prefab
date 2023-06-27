@@ -222,7 +222,8 @@ GameObject:
   m_Component:
   - component: {fileID: 836553870113073110}
   - component: {fileID: 3522394641730107716}
-  m_Layer: 0
+  - component: {fileID: 1889839364479576789}
+  m_Layer: 11
   m_Name: TheGardenRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,6 +304,19 @@ MonoBehaviour:
   - {fileID: 2575417975742231026}
   cmgtTransformSpawnpoints:
   - {fileID: 6856786011196036918}
+--- !u!65 &1889839364479576789
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906800191762792261}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 21.355423, y: 3.8504152, z: 3.207035}
+  m_Center: {x: -41.583076, y: -0.82940197, z: -44.55587}
 --- !u!1 &2019019192231497884
 GameObject:
   m_ObjectHideFlags: 0
