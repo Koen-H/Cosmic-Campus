@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
     CinemachineBasicMultiChannelPerlin m_MultiChannelPerlin;
 
     private static CameraManager _myCamera;
-
+    private static Camera camera;
     Coroutine shake = null;
 
     public static CameraManager MyCamera
@@ -25,6 +25,12 @@ public class CameraManager : MonoBehaviour
     {
         _myCamera = this;
         m_MultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        camera = this.GetComponent<Camera>();
+    }
+
+    public Camera GetCamera()
+    {
+        return camera;
     }
 
     public void SetLookTarg(Transform targ)

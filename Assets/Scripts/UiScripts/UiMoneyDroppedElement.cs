@@ -17,6 +17,7 @@ public class UiMoneyDroppedElement : MonoBehaviour
     }
     public void SetPosition(Vector3 worldPosition, Camera cam)
     {
+        cam = CameraManager.MyCamera.GetCamera();
         Vector3 pointOnPlane = cam.transform.position;
         Vector3 point = worldPosition;
         Vector3 normal = Vector3.Cross(cam.transform.right, cam.transform.up);
