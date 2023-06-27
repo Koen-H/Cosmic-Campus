@@ -19,7 +19,7 @@ public class EnemySpawner : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            if(Input.GetKeyDown(KeyCode.P)) SpawnEnemy();
+           // if(Input.GetKeyDown(KeyCode.P)) SpawnEnemy();
         }
 
         CheckCheatCodes();
