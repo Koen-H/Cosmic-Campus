@@ -15,9 +15,9 @@ public class RoomGenerator : NetworkBehaviour
     public int numberOfRooms;
     public List<RoomInfo> roomPrefabs;
 
-    [SerializeField] RoomInfo firstRoom; 
+    [SerializeField] RoomInfo firstRoom;
     [SerializeField] RoomInfo lastRoom;
-    [HideInInspector] public RoomInfo lastBossRoom; 
+    [HideInInspector] public RoomInfo lastBossRoom;
     //private List<RoomInfo> generatedRooms = new List<RoomInfo>();
 
     [SerializeField] private float forwardOffset;
@@ -49,6 +49,7 @@ public class RoomGenerator : NetworkBehaviour
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private List<GameObject> spawnedNpcs = new List<GameObject>();
+    private List<Room> correctPath = new List<Room>();
 
     private List<List<RoomsLayer>> generation = new List<List<RoomsLayer>>();
 
@@ -58,8 +59,15 @@ public class RoomGenerator : NetworkBehaviour
 
     private List<RoomInfo> lateRoomEnemiesToSpawn = new List<RoomInfo>();
     private int latestEnemyLayer = -1;
+    public int LatestEnemyLayer
+    {
+        get
+        {
+            return latestEnemyLayer;
+        }
+    }
 
-    public Vector3 initialSpawnLocation; 
+    public Vector3 initialSpawnLocation;
 
     //List<Transform> obstacles = new List<Transform>();
 
@@ -70,14 +78,14 @@ public class RoomGenerator : NetworkBehaviour
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 Debug.LogError("RoomGenerator Instance is null");
-                return instance;            
+                return instance;
             }
             else
             {
-                return instance; 
+                return instance;
             }
         }
     }
@@ -93,21 +101,34 @@ public class RoomGenerator : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SpawnEnemiesInRoomServerRpc(int layer)
     {
-        if(layer > latestEnemyLayer)
+        if (layer > latestEnemyLayer)
         {
-            if (layer > numberOfRooms+1) return;
+            if (layer > numberOfRooms + 1) return;
             latestEnemyLayer = layer;
             if (IsServer)
             {
                 foreach (RoomInfo room in lateRoomEnemiesToSpawn)
                 {
-                    if (room.roomLayer == latestEnemyLayer) {
+                    if (room.roomLayer == latestEnemyLayer)
+                    {
                         foreach (var spawner in room.enemySpawners) spawner.SpawnEnemy();
                         foreach (var networkObject in room.networkObjectSpawners) networkObject.SpawnObject();//TODO:: Replace list with potion.cs instead of networkobject
                     }
                 }
             }
         }
+    }
+    public Room GetCorrectPathRoom(int layerIndex)
+    {
+        if (layerIndex > numberOfRooms + 1) return null;
+        foreach (Room room in correctPath)
+        {
+            if (room.layerNumber == layerIndex)
+            {
+                return room;
+            }
+        }
+        return null;
     }
 
     [ClientRpc]
@@ -144,10 +165,10 @@ public class RoomGenerator : NetworkBehaviour
         Vector3 p2 = to.position; // Ending point
         Vector3 d2 = to.position + toDirection; // Second control point
 
-        return SplinePath( p1, d1, p2, d2);
+        return SplinePath(p1, d1, p2, d2);
     }
 
-    private List<Vector3> SplinePath( Vector3 p1, Vector3 d1, Vector3 p2,Vector3 d2)
+    private List<Vector3> SplinePath(Vector3 p1, Vector3 d1, Vector3 p2, Vector3 d2)
     {
         List<Vector3> pathPoints = new List<Vector3>();
         int resolution = splineResolution; // Higher numbers make the curve smoother
@@ -183,11 +204,11 @@ public class RoomGenerator : NetworkBehaviour
 
     private void Update()
     {
-/*        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (!IsServer) return;
-            GenerateMapClientRpc(seed);//TODO: Replace with random seed?
-        }*/
+        /*        if (Input.GetKeyDown(KeyCode.R))
+                {
+                    if (!IsServer) return;
+                    GenerateMapClientRpc(seed);//TODO: Replace with random seed?
+                }*/
         //ResetRooms();
         // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
     }
@@ -195,7 +216,7 @@ public class RoomGenerator : NetworkBehaviour
     {
         for (int i = 0; i < surfaces.Count; i++)
         {
-                surfaces[i].BuildNavMesh();
+            surfaces[i].BuildNavMesh();
             if (surfaces[i].gameObject.layer == 6)
             {
             }
@@ -244,7 +265,7 @@ public class RoomGenerator : NetworkBehaviour
 
 
 
-    private void GenerateBranches(List<Room> branchingPoints, List<Room> correctPath, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
+    private void GenerateBranches(List<Room> branchingPoints, List<Room> path, out List<NavMeshSurface> navMeshSurfaces, out List<EnemyNPC> allEnemies, out List<Room> outQuestNPC)
     {
         List<Room> allBranches = new List<Room>();
         navMeshSurfaces = new List<NavMeshSurface>();
@@ -333,7 +354,7 @@ public class RoomGenerator : NetworkBehaviour
         return student;
     }
 
-    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> correctPath, List<Room> generatedBranches)
+    private List<Room> BranchOff(Room from, int maxDepthOfBranch, List<Room> path, List<Room> generatedBranches)
     {
         //Debug.Log("Ittiration attempt");
         if (maxDepthOfBranch == 0)
@@ -416,12 +437,12 @@ public class RoomGenerator : NetworkBehaviour
         allEnemies = new List<EnemyNPC>();
         for (int i = 0; i < path.Count - 1; i++)
         {
-            if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition()- path[i].entrance.normal;
+            if (i == 0) initialSpawnLocation = path[i].entrance.position + path[i].GetRoomPosition() - path[i].entrance.normal;
             Debug.DrawLine(path[i].GetRoomPosition(), path[i + 1].GetRoomPosition(), color, drawingDelay);
 
             Room otherRoom;
             List<Vector3> splinePath;
-            if (!reverse) 
+            if (!reverse)
             {
                 otherRoom = path[i].roomA == path[i + 1] ? path[i].roomB : path[i].roomA;
 
@@ -432,7 +453,7 @@ public class RoomGenerator : NetworkBehaviour
                     // other's right to path's left
                     // other room is on the Left
                     rightDoor = otherRoom.roomPrefab.doorRight.position + otherRoom.GetRoomPosition();
-                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i+1].GetRoomPosition();
+                    leftDoor = path[i + 1].roomPrefab.doorLeft.position + path[i + 1].GetRoomPosition();
                     splinePath = SplinePath(rightDoor, rightDoor + Vector3.right, leftDoor, leftDoor - Vector3.right);
                 }
                 else
@@ -443,7 +464,7 @@ public class RoomGenerator : NetworkBehaviour
                     leftDoor = otherRoom.roomPrefab.doorLeft.position + otherRoom.GetRoomPosition();
                     splinePath = SplinePath(leftDoor, leftDoor - Vector3.right, rightDoor, rightDoor + Vector3.right);
                 }
-                
+
             }
             else splinePath = SplinePath(path[i].exit, path[i + 1].entrance);
             VisualisePath(splinePath, Color.blue);
@@ -461,7 +482,7 @@ public class RoomGenerator : NetworkBehaviour
     void LoadCmgtPrefabs(RoomInfo room)
     {
         int max = cmgtPrefabs.GetCount();
-        foreach(Transform spawnSpot in room.cmgtTransformSpawnpoints)
+        foreach (Transform spawnSpot in room.cmgtTransformSpawnpoints)
         {
             int rand = systemRand.Next(max);
             //float x = (float)systemRand.NextDouble() * 360f;
@@ -478,7 +499,7 @@ public class RoomGenerator : NetworkBehaviour
     {
         foreach (Transform child in parent)
         {
-            if (child.CompareTag("Interactable")) continue; 
+            if (child.CompareTag("Interactable")) continue;
             child.gameObject.layer = 6;
             if (child.childCount > 0)
             {
@@ -559,7 +580,7 @@ public class RoomGenerator : NetworkBehaviour
             newDoor.transform.position = room.exit.position;
             newDoor.transform.rotation = Quaternion.LookRotation(-room.exit.normal, Vector3.up);
 
-            int doorId = doorKeys.Count; 
+            int doorId = doorKeys.Count;
 
             doorKeys.Add(newDoor.GetComponent<Animator>());
 
@@ -609,6 +630,7 @@ public class RoomGenerator : NetworkBehaviour
         }
         spawnedEnemies.Clear();
         generation.Clear();
+        correctPath.Clear();
 
         StartCoroutine(GenerateNextFrame());
     }
@@ -692,7 +714,7 @@ public class RoomGenerator : NetworkBehaviour
         }
 
         Room to = roomLayers[0].roomPositions[0];
-        List<Room> correctPath = FindPath(from, to, roomLayers);
+        correctPath = FindPath(from, to, roomLayers);
         List<NavMeshSurface> navMeshSurfaces;
         GeneratePath(correctPath, Color.green, out navMeshSurfaces, out mainPathEnemies, true);
         List<NavMeshSurface> newNavMeshSurfaces;
