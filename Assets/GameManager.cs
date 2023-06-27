@@ -21,6 +21,7 @@ public class GameManager : NetworkBehaviour
     private List<EnemyType> allowedEnemyTypes;
     private string inputCheatCode = "";
     private const string cheatCode = "nextisland";
+    private const string cheatCode2 = "lastisland";
 
     [SerializeField] private ListSO INWorldTeachers;
 
@@ -187,12 +188,6 @@ public class GameManager : NetworkBehaviour
         GameObject teacherInstance =  Instantiate(teacher, spawnPoint.position, spawnPoint.rotation);
     }
 
-    [ClientRpc]
-    void SpawnInworldTeacherClientRpc()
-    {
-        Transform spawnPoint = levelGenerator.lastBossRoom.teacherSpawnPoint;
-        GameObject teacherInstance = Instantiate(npc, spawnPoint.position, spawnPoint.rotation);
-    }
     void CheckCheatCodes()
     {
         foreach (char c in Input.inputString)
@@ -229,8 +224,33 @@ public class GameManager : NetworkBehaviour
                     int index = inputCheatCode.IndexOf(cheatCode);
                     inputCheatCode = inputCheatCode.Substring(index + cheatCode.Length);
                 }
+                if (inputCheatCode.Contains(cheatCode2))
+                {
+                    Debug.Log("Cheat Code Activated");
+                    GoToLastRoom();
+
+                    // Remove cheatCode from inputCheatCode, keeping any characters that were entered after the cheat code
+                    int index = inputCheatCode.IndexOf(cheatCode);
+                    inputCheatCode = inputCheatCode.Substring(index + cheatCode.Length);
+                }
             }
         }
     }
+    void GoToLastRoom()
+    {
+        Room nextRoom = levelGenerator.GetCorrectPathRoom(levelGenerator.numberOfRooms+1);
+        if (nextRoom != null)
+        {
+            Vector3 tpPosition = nextRoom.roomPrefab.doorEntrance.position + nextRoom.GetRoomPosition();
+            ClientManager.MyClient.playerCharacter.transform.position = tpPosition;
+            levelGenerator.SpawnEnemiesInRoomServerRpc(levelGenerator.numberOfRooms+1);
+        }
+    }
 
+    [ClientRpc]
+    void SpawnInworldTeacherClientRpc()
+    {
+        Transform spawnPoint = levelGenerator.lastBossRoom.teacherSpawnPoint;
+        GameObject teacherInstance = Instantiate(npc, spawnPoint.position, spawnPoint.rotation);
+    }
 }

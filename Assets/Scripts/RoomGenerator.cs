@@ -203,11 +203,11 @@ public class RoomGenerator : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+/*        if (Input.GetKeyDown(KeyCode.R))
         {
             if (!IsServer) return;
             GenerateMapClientRpc(seed);//TODO: Replace with random seed?
-        }
+        }*/
         //ResetRooms();
         // if (Input.GetKeyDown(KeyCode.S)) SplineDemo();
     }
