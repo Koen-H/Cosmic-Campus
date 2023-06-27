@@ -80,13 +80,14 @@ public class Staff : Weapon
             Destroy(beams[0].gameObject);
             beams.Remove(beams[0]);
         }
-        Debug.Log("Beams destroyed");
+        playerController.playerSounds.staffUse.Stop();
     }
 
     public override void Attack()
     {
         isBeaming = true;
-        if(playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.STAFF;
+        if(!playerController.playerSounds.staffUse.isPlaying) playerController.playerSounds.staffUse.Play();
+        if (playerController.IsOwner) playerController.playerAnimationState.Value = PlayerAnimationState.STAFF;
 
         FindClosestEnemy();
     }

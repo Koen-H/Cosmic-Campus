@@ -95,7 +95,7 @@ public class Ability : MonoBehaviour
         //StartCoroutine(Cooldown(cooldown));
     }
 
-    protected IEnumerator Cooldown(float time)
+    public IEnumerator Cooldown(float time)
     {
         //Calculate on cooldown, incase we have a special effects that decreases the cooldown.
         onCooldown = true;

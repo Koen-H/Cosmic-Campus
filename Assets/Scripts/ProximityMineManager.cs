@@ -20,7 +20,6 @@ public class ProximityMineManager : NetworkBehaviour
 
     [SerializeField] private ParticleSystem explosionVfx;
     [SerializeField] private ParticleSystem mineVfx;
-    [SerializeField] private GameObject mesh;
 
     public override void OnNetworkSpawn()
     {
@@ -40,9 +39,9 @@ public class ProximityMineManager : NetworkBehaviour
         bool toggle = false;
         while(proximityTimer > 0)
         {
-            proximityTimer -= 0.1f;
-            mesh.SetActive(toggle);
-            yield return new WaitForSeconds(0.1f);
+            proximityTimer -= 0.25f;
+            mineVfx.gameObject.SetActive(toggle);
+            yield return new WaitForSeconds(0.25f);
             toggle = !toggle;
         }
         if (IsOwner) Explode();

@@ -197,6 +197,7 @@ MonoBehaviour:
   - {fileID: 32900000, guid: 78257151be3d9c8498cfba2fc13ac9a4, type: 3}
   - {fileID: 32900000, guid: a469b6fab42c4f347b44941155ad4ad6, type: 3}
   - {fileID: 32900000, guid: c9537c0586de2e945b5f3aab26fa58ed, type: 3}
+  - {fileID: 32900000, guid: 6d6b4595a2e31ba4d80f6b4f5a1de6d4, type: 3}
   player: {fileID: 3589217889526031978}
 --- !u!65 &4058119882224976203
 BoxCollider:
@@ -248,7 +249,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9471270de689c1b4da7dc9c1f76e5fca, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -293,7 +294,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -368,7 +369,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4058119882236917012
 Transform:
   m_ObjectHideFlags: 0

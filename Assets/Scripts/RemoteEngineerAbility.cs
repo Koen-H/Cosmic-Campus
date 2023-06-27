@@ -216,7 +216,6 @@ public class RemoteEngineerAbility : NetworkBehaviour
                 collider.GetComponentInParent<Enemy>().TakeDamage(damage,EnemyType.ENGINEER);//Hardcoded engineer, because it's a engineer ability
             }
         }
-        
         StartCoroutine(LateCameraMoveBack(1));
 
         IEnumerator LateCameraMoveBack(float duration)
@@ -228,7 +227,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
             ClientManager.MyClient.playerCharacter.LockPlayer(false);
             ClientManager.MyClient.playerCharacter.engineering = false;
             CanvasManager.Instance.SetEngineerPrompt(" ",false);
-           DestroyServerRpc();
+            playerController.StartAbilityCooldown(10);
+            DestroyServerRpc();
         }
     }
 
@@ -260,5 +260,6 @@ public class RemoteEngineerAbility : NetworkBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, collectRadius);
     }
+
 
 }

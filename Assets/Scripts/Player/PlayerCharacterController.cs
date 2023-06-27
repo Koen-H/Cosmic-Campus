@@ -258,7 +258,7 @@ public class PlayerCharacterController : NetworkBehaviour
         if (npc)
         {
             interactingNPC = npc;
-            if (!interactingNPC.isFollowing.Value) CanvasManager.Instance.ToggleInteract(true);
+            if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -635,6 +635,12 @@ public class PlayerCharacterController : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.OnAttackInputStop();
     }
+
+    public void StartAbilityCooldown(float cooldownTime)
+    {
+        StartCoroutine(ability.Cooldown(cooldownTime));
+    }
+
 }
 
 public enum PlayerAnimationState

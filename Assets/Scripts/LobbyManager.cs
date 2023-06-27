@@ -51,7 +51,8 @@ public class LobbyManager : MonoBehaviour
 
     public ClientManager GetClient(ulong id)
     {
-        return clients[id];
+        if (clients.ContainsKey(id)) return clients[id];
+        return null;
     }
 
     public Dictionary<ulong,ClientManager> GetClients()
@@ -92,6 +93,7 @@ public class LobbyManager : MonoBehaviour
     {
 
         ClientManager client = GetClient(lostClientID);
+        if (client == null) return;
         client.OnLeaving();
         
         if (NetworkManager.ServerClientId == lostClientID)//Lost connection with host

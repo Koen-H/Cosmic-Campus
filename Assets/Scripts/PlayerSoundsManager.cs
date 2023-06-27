@@ -11,4 +11,5 @@ public class PlayerSoundsManager : MonoBehaviour
     public AudioSource swordHit;
     public AudioSource playerHit;
     public AudioSource playerDowned;
+    public AudioSource staffUse;
 }
