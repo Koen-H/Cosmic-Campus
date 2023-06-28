@@ -308,6 +308,7 @@ public class ReadyUpManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        if (LobbyManager.Instance == null) return;//We don't need to do this if the game shuts down and the lobbymanager is deleted.
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
         foreach (ClientManager client in clients.Values) client.OnClientLeft -= ClientLeft;
     }

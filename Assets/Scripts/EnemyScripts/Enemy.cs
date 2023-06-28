@@ -14,38 +14,30 @@ public class Enemy : NetworkBehaviour
     [SerializeField] public GameObject avatar;
     [SerializeField] private GameObject enemyDebrisDrops;
     [SerializeField] public Transform centerPoint;
-    //TODO: Replace with slider?
-    [SerializeField] TextMeshPro healthText;
-
-    [SerializeField] HealthBar healthBar;
-
-    [SerializeField] EnemySO enemySO;
+    [SerializeField] private HealthBar healthBar;
+    [SerializeField] private EnemySO enemySO;
+    [SerializeField] private Animator animator;
     public EnemyState enemyState = EnemyState.IDLING;
-
+    public EffectManager effectManager;
     public EnemySoundManager soundManager;
 
     [Header("Enemy type variables")]
     public EnemyType enemyTypeInsp = EnemyType.NONE;
     [HideInInspector] public NetworkVariable<EnemyType> enemyType = new NetworkVariable<EnemyType>(default);
     [SerializeField] private bool startWithRandomType = false;
-    public float typeMatchDamageIncrease = 1.5f;//
-    public float typeMatchDamagePenalty = 1;//Default is none
-    public bool forceTypeMatch = false;
+    [SerializeField] private float typeMatchDamageIncrease = 1.5f;//
+    [SerializeField] private float typeMatchDamagePenalty = 1;//Default is none
+    [SerializeField] private bool forceTypeMatch = false;
     [SerializeField] private bool changeTypeOnCorrectHit;
+    private ulong lastClientDamageID;
+
 
     [Header("Enemy statistics")]
     [SerializeField] NetworkVariable<float> health = new(10);
+    public event System.Action OnReceivedDamage;
     private float maxHealth;
     private float moveSpeed;
-    protected float detectionRange;
-    private float trackingRange;
-    private float damage;
-    private float meleeRange;
-    protected float attackCooldown;
-    private float projectileSpeed;
 
-    Quaternion healthBarOriginalRotation; 
-    public event System.Action OnReceivedDamage;
 
     protected bool canAttack = true;
 
@@ -54,7 +46,6 @@ public class Enemy : NetworkBehaviour
 
     [Header("Targetting")]
     private EnemyTargettingBehaviour targetBehaviour;
-    public event System.Action<PlayerCharacterController> OnTargetChange;
     private PlayerCharacterController currentTarget;
     public PlayerCharacterController CurrentTarget
     {
@@ -66,18 +57,10 @@ public class Enemy : NetworkBehaviour
             if(OnTargetChange != null) OnTargetChange?.Invoke(currentTarget);
         }
     }
-
-
-    private ulong lastClientDamageID;
+    public event System.Action<PlayerCharacterController> OnTargetChange;
 
     [Header("Attacking")]
     private EnemyAttackBehaviour attackBehaviour;
-
-    public EffectManager effectManager;
-
-    [SerializeField] public Animator animator;
-
-
     [HideInInspector] public NetworkVariable<EnemyAnimationState> enemyAnimationState = new(EnemyAnimationState.IDLE, default, NetworkVariableWritePermission.Owner);
 
     void OnPlayerStateChanged(EnemyAnimationState pervAnimationState, EnemyAnimationState newAnimationState)
@@ -110,7 +93,6 @@ public class Enemy : NetworkBehaviour
 
     private void Start()
     {
-        healthBarOriginalRotation = healthBar.transform.rotation;
         enemyDebrisDrops.SetActive(false);
         if (IsOwner) enemyType.Value = enemyTypeInsp;
         if (IsOwner && startWithRandomType) enemyType.Value = enemyType.Value = GameManager.Instance.GetEnemyType();
@@ -145,19 +127,8 @@ public class Enemy : NetworkBehaviour
 
         if (!IsServer) return;//Everything below this line is handled on the server only!
         moveSpeed = enemySO.moveSpeed;
-        detectionRange = enemySO.detectionRange;
-        trackingRange = enemySO.trackingRange;
-        damage = enemySO.damage;
-        attackCooldown = enemySO.attackCooldown;
 
-        if (enemySO.enemyType == EnemySO.EnemyType.Melee)
-        {
-            meleeRange = enemySO.meleeRange;
-        }
-        if (enemySO.enemyType == EnemySO.EnemyType.Range)
-        {
-            projectileSpeed = enemySO.projectileSpeed;
-        }
+
     }
 
     #endregion
@@ -226,7 +197,6 @@ public class Enemy : NetworkBehaviour
     /// <param name="newHealth"></param>
     void OnHealthChange(float prevHealth, float newHealth)
     {
-        healthText.text = health.Value.ToString();
         healthBar.UpdateBar((int)newHealth);
         if (prevHealth > newHealth)//Do thing where the enemy takes damage!
         {
@@ -342,20 +312,20 @@ public class Enemy : NetworkBehaviour
     }
 
 
-    public virtual void AttackLogic(Transform target)
-    {
-        if ((target.position - transform.position).magnitude < meleeRange && canAttack)
-        {
-            Attack(target);
-            canAttack = false;
-        }
-    }
+    //public virtual void AttackLogic(Transform target)
+    //{
+    //    if ((target.position - transform.position).magnitude < meleeRange && canAttack)
+    //    {
+    //        Attack(target);
+    //        canAttack = false;
+    //    }
+    //}
 
-    public virtual void Attack(Transform target)
-    {
-        DealDamage(damage, target.GetComponent<PlayerCharacterController>());
-        StartCoroutine(AttackCoolDown(attackCooldown));
-    }
+    //public virtual void Attack(Transform target)
+    //{
+    //    DealDamage(damage, target.GetComponent<PlayerCharacterController>());
+    //    StartCoroutine(AttackCoolDown(attackCooldown));
+    //}
 
     void DealDamage(float damage, PlayerCharacterController to)
     {

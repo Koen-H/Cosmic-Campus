@@ -8,7 +8,7 @@ public class PunchAttack : EnemyAttackBehaviour
 
     [SerializeField, Tooltip("From what distance should we try the attack?")] 
     protected float attackRange = 2f;
-    Animator attackAnim;
+    private Animator attackAnim;
 
 
     [SerializeField] List<AttackCollider> attackColliders;

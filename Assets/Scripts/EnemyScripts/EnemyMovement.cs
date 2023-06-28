@@ -16,34 +16,40 @@ public class EnemyMovement : NetworkBehaviour
     [SerializeField] float wanderDistance = 5f;
     [SerializeField] Range wanderDelay = new Range(0,1);
 
-    //Nockback things
-    [SerializeField] private bool canBeNockedBack = true;
-    
+    [Header("Knockback related")]
+    [SerializeField] private bool canBeKnockedBack = true;
     private bool isKnockedBack = false;
     private Vector3 knockbackDirection;
     private float knockbackForce;
     private float knockbackDuration;
     private float knockbackTimer;
 
+    #region unity
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<Enemy>();
         enemy.OnTargetChange+= OnTargetChange;
-
     }
-
     private void Start()
     {
         if (!enemy.IsOwner) return;
         agent.enabled = true;
         if (canWander) StartCoroutine(Wander());
     }
-
+    private void Update()
+    {
+        if (!enemy.IsOwner) return;
+        if (isKnockedBack) Nockback();
+        else if (enemy.enemyState != EnemyState.ATTACKING) Move();
+        if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
+    }
     private void OnDisable()
     {
         enemy.OnTargetChange -= OnTargetChange;
     }
+
+    #endregion
 
     void OnTargetChange(PlayerCharacterController newTarget)
     {
@@ -56,7 +62,7 @@ public class EnemyMovement : NetworkBehaviour
     #region Nockback
     public void ApplyKnockback(Vector3 direction, float force, float duration)
     {
-        if (!canBeNockedBack) return;
+        if (!canBeKnockedBack) return;
         ApplyNockbackServerRpc(direction, force, duration);
     }
 
@@ -87,13 +93,6 @@ public class EnemyMovement : NetworkBehaviour
 
     #endregion
 
-    private void Update()
-    {
-        if (!enemy.IsOwner) return;
-        if (isKnockedBack) Nockback();
-        else if (enemy.enemyState != EnemyState.ATTACKING) Move();
-        if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
-    }
     bool DestinationReached()
     {
         if ((transform.position - agent.destination).magnitude <= agent.stoppingDistance)

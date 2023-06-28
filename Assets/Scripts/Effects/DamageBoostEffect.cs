@@ -18,7 +18,6 @@ public class DamageBoostEffect : Effect
         DamageBoostEffect orig = (DamageBoostEffect)original;
         increase = orig.increase;
     }
-
     public override float ApplyAttackEffect(float damage)
     {
         float newDamage = damage * (increase * strength);
