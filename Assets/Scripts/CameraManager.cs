@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
-    CinemachineBasicMultiChannelPerlin m_MultiChannelPerlin;
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    private CinemachineBasicMultiChannelPerlin m_MultiChannelPerlin;
 
     private static CameraManager _myCamera;
-
-    Coroutine shake = null;
+    private static Camera cam;
+    private Coroutine shake = null;
 
     public static CameraManager MyCamera
     {
@@ -25,6 +25,12 @@ public class CameraManager : MonoBehaviour
     {
         _myCamera = this;
         m_MultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        cam = this.GetComponent<Camera>();
+    }
+
+    public Camera GetCamera()
+    {
+        return cam;
     }
 
     public void SetLookTarg(Transform targ)
@@ -43,7 +49,6 @@ public class CameraManager : MonoBehaviour
         SetFollowTarg(playerTransform);
         SetLookTarg(playerTransform);
     }
-
 
     public void ShakeCamera(float intensity, float time)
     {

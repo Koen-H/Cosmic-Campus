@@ -16,6 +16,7 @@ public class QuestNPC : NetworkBehaviour
     [HideInInspector] public Vector3 doorPosition;
     [HideInInspector] public Vector3 doorNormal;
     [HideInInspector] public int doorId;
+    [SerializeField] GameObject questInfo;
 
     public NetworkVariable<bool> isFollowing = new(false);
 
@@ -56,10 +57,13 @@ public class QuestNPC : NetworkBehaviour
                 Destroy(student.GetComponent<CapsuleCollider>());
                 self.requiredStudents--;
             }
-            if (self.requiredStudents == 0) 
-                if(IsServer) OpenDoorClientRpc(doorId);
+            if (self.requiredStudents == 0)
+            if (IsServer)
+            {
+                OpenDoorClientRpc(doorId);
+                QuestCompleteRpc();
+            }
         }
-        
     }
     [ServerRpc(RequireOwnership = false)]
     public virtual void InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
@@ -96,6 +100,11 @@ public class QuestNPC : NetworkBehaviour
     public void OpenDoorClientRpc(int theDoorID)
     {
         RoomGenerator.Instance.OpenDoor(theDoorID);
+    }
+
+    public void QuestCompleteRpc()
+    {
+        if(questInfo) Destroy(questInfo.gameObject);
     }
 }
 

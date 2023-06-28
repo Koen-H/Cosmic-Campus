@@ -53,13 +53,4 @@ public class ArrowManager : MonoBehaviour
         }
     }
 
-    void DealDamage(float damage, PlayerCharacterController to)
-    {
-        if(to)
-        {
-            Debug.Log("to is not null");
-            to.TakeDamage(damage);
-        }
-    }
-
 }

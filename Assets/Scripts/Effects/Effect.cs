@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Effects can be applied and used by effectManagers, they work for enemies and players.
+/// Make sure to make the values public in new effects and update the copy from in the new effect.
+/// </summary>
 public abstract class Effect : MonoBehaviour
 {
     [SerializeField] public string effectName = "";
@@ -105,6 +109,8 @@ public abstract class Effect : MonoBehaviour
         loopSfx = original.loopSfx;
     }
 
+    #region effectsApplyment
+
     /// <summary>
     /// Applies the buff to the damage
     /// </summary>
@@ -137,7 +143,7 @@ public abstract class Effect : MonoBehaviour
         Debug.LogWarning("Apply Resistance Effect called but not implemented!");
         return incDamage;
     }
-
+#endregion
 }
 [System.Flags]
 public enum EffectType { NONE = 0, ATTACK = 1, MOVEMENT = 2, RESISTANCE = 4, }

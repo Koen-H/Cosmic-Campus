@@ -9,29 +9,43 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// The ready up manager handles the ready-up system at the start.
+/// </summary>
 public class ReadyUpManager : NetworkBehaviour
 {
-    [SerializeField] List<ReadyUpUIItems> avatarPlatform;
-    Dictionary<ulong, ReadyUpUIItems> clientItems = new Dictionary<ulong, ReadyUpUIItems>();
+    [SerializeField] private List<ReadyUpUIItems> avatarPlatform;
+    private Dictionary<ulong, ReadyUpUIItems> clientItems = new Dictionary<ulong, ReadyUpUIItems>();
 
-    Dictionary<ulong, bool> clientReady = new();
+    private Dictionary<ulong, bool> clientReady = new();
 
-    [SerializeField] GameObject charUI;
-    [SerializeField] Button charNextButton;
-    [SerializeField] TextMeshProUGUI charNextButtonText;
+    [SerializeField] private GameObject charUI;
+    [SerializeField] private Button charNextButton;
+    [SerializeField] private TextMeshProUGUI charNextButtonText;
 
-    [SerializeField] GameObject weaponUI;
-    [SerializeField] Button weaponNextButton;
-    [SerializeField] TextMeshProUGUI weaponNextButtonText;
+    [SerializeField] private GameObject weaponUI;
+    [SerializeField] private Button weaponNextButton;
+    [SerializeField] private TextMeshProUGUI weaponNextButtonText;
 
-    [SerializeField] List<GameObject> disableItemsOnClient = new List<GameObject>();
-    [SerializeField] GameObject lobbyUI;
+    [SerializeField] private List<GameObject> disableItemsOnClient = new List<GameObject>();
+    [SerializeField] private GameObject lobbyUI;
 
-    [SerializeField] WeaponSideClickerManager weaponSideClickerManager;
+    [SerializeField] private WeaponSideClickerManager weaponSideClickerManager;
 
-    bool weaponsSelected;
+    private bool weaponsSelected;
 
-    [SerializeField]public  List<ReadyOption> optionsTaken = new();
+    [SerializeField] public List<ReadyOption> optionsTaken = new();
+    private void Awake()
+    {
+        clientItems = new Dictionary<ulong, ReadyUpUIItems>();
+    }
+
+
+    private void Start()
+    {
+        LobbyManager.OnNewClientJoined += NewClientJoined;
+        SteamMatchmaking.OnLobbyEntered += LoadLobby;
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void TakeOptionServerRpc(ReadyOption option, bool take)
@@ -49,17 +63,6 @@ public class ReadyUpManager : NetworkBehaviour
     }
 
 
-    private void Awake()
-    {
-        clientItems = new Dictionary<ulong, ReadyUpUIItems>();
-    }
-
-
-    private void Start()
-    {
-        LobbyManager.OnNewClientJoined += NewClientJoined;
-        SteamMatchmaking.OnLobbyEntered += LoadLobby;
-    }
 
 
     public void StartNetcodeHost()
@@ -308,6 +311,7 @@ public class ReadyUpManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        if (LobbyManager.Instance == null) return;//We don't need to do this if the game shuts down and the lobbymanager is deleted.
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
         foreach (ClientManager client in clients.Values) client.OnClientLeft -= ClientLeft;
     }

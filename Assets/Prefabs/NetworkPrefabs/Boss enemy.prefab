@@ -583,7 +583,6 @@ MonoBehaviour:
   bgSprite: {fileID: 1171269140256144006}
   barSprite: {fileID: 4947389634624454406}
   fadeDuration: 1
-  dontFade: 0
 --- !u!1 &5079644971833973283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,7 +1231,7 @@ MonoBehaviour:
     min: 6
     max: 21
     diff: 1
-  canBeNockedBack: 0
+  canBeKnockedBack: 1
 --- !u!114 &1637057799621441293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1377,10 +1376,10 @@ MonoBehaviour:
   avatar: {fileID: 8452948687533037721}
   enemyDebrisDrops: {fileID: 2146854314577241736}
   centerPoint: {fileID: 6317668722418613023}
-  healthText: {fileID: 8452948688483813390}
   healthBar: {fileID: 7712691058309217934}
-  enemySO: {fileID: 11400000, guid: 19b59718d1bc24546b66c0a70f190141, type: 2}
+  animator: {fileID: 3490119401519944392}
   enemyState: 0
+  effectManager: {fileID: 1128526819805712506}
   soundManager: {fileID: 1757377027693536106}
   enemyTypeInsp: 0
   enemyType:
@@ -1391,9 +1390,8 @@ MonoBehaviour:
   forceTypeMatch: 1
   changeTypeOnCorrectHit: 1
   health:
-    m_InternalValue: 10
-  effectManager: {fileID: 1128526819805712506}
-  animator: {fileID: 3490119401519944392}
+    m_InternalValue: 1000
+  moveSpeed: 2
   enemyAnimationState:
     m_InternalValue: 0
 --- !u!114 &1128526819805712506
@@ -1853,11 +1851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -1911,11 +1905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -1944,11 +1934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -1971,11 +1957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2025,11 +2007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2052,11 +2030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2079,11 +2053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2106,11 +2076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2133,11 +2099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2160,11 +2122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2187,11 +2145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2214,11 +2168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2241,11 +2191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2268,11 +2214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2295,11 +2237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2322,11 +2260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2523,11 +2457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2550,11 +2480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2583,11 +2509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2610,11 +2532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2637,11 +2555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2664,11 +2578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2691,11 +2601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2718,11 +2624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2745,11 +2647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2772,11 +2670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2799,11 +2693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2826,11 +2716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2853,11 +2739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2880,11 +2762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2907,11 +2785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -2934,11 +2808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}

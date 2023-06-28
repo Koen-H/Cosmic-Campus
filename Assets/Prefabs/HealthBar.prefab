@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5432061652433371468}
   - component: {fileID: 5396103043133501357}
   - component: {fileID: 2208927744234522861}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 851246482198509870}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 9205936759317542542}
   - component: {fileID: 6721414116000848210}
   - component: {fileID: 855354976464925282}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 4937887772724085593}
   - component: {fileID: 2520134584174371631}
   - component: {fileID: 2351054177868934167}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5110720465872630165}
   - component: {fileID: 1478420707260650508}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,6 +331,7 @@ MonoBehaviour:
   bgSprite: {fileID: 8056292638113419268}
   barSprite: {fileID: 4261589158402528644}
   fadeDuration: 1
+  dontFade: 0
 --- !u!1 &4928173653639548499
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +343,7 @@ GameObject:
   - component: {fileID: 1090070869492154724}
   - component: {fileID: 5442958379566426042}
   - component: {fileID: 8056292638113419268}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +419,7 @@ GameObject:
   - component: {fileID: 170788067387636987}
   - component: {fileID: 8265360182557646070}
   - component: {fileID: 2503337953874341907}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -502,7 +503,7 @@ GameObject:
   - component: {fileID: 4840383127962399302}
   - component: {fileID: 2039526336402661907}
   - component: {fileID: 553778034654844033}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +608,7 @@ GameObject:
   - component: {fileID: 8152359141246672342}
   - component: {fileID: 3992152928983976437}
   - component: {fileID: 7142637869602441940}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +691,7 @@ GameObject:
   - component: {fileID: 8507838684929941915}
   - component: {fileID: 8956671903370395382}
   - component: {fileID: 4261589158402528644}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

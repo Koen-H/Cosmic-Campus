@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class EffectManager : MonoBehaviour
 {
-    [SerializeField] List<Effect> allEffects = new List<Effect>();
-    [SerializeField] List<Effect> attackEffects = new List<Effect>();
-    [SerializeField] List<Effect> movementEffects = new List<Effect>();
-    [SerializeField] List<Effect> resistanceEffects = new List<Effect>();
+    [SerializeField] private List<Effect> allEffects = new List<Effect>();
+    [SerializeField] private List<Effect> attackEffects = new List<Effect>();
+    [SerializeField] private List<Effect> movementEffects = new List<Effect>();
+    [SerializeField] private List<Effect> resistanceEffects = new List<Effect>();
 
     public event System.Action OnEffectChange;
 
@@ -16,6 +16,8 @@ public class EffectManager : MonoBehaviour
     public Enemy enemy;
     public bool isEnemy;
     public bool IsOwner;
+
+    #region unity
 
     private void Awake()
     {
@@ -36,9 +38,9 @@ public class EffectManager : MonoBehaviour
         }
     }
 
-    //Improvements:
-    //Store last recoreded value alongside a boolean which tracks if it has been changed or not.
+    #endregion
 
+    #region effectsManagement
     public void AddEffect(Effect newEffect)
     {
         // Check if the effect type isn't in the list yet
@@ -59,11 +61,9 @@ public class EffectManager : MonoBehaviour
             Effect existingEffect = allEffects.Find(effect => effect.GetType() == newEffect.GetType());
             existingEffect.ResetEffect(newEffect);
         }
-        if (OnEffectChange != null)
-        {
-            OnEffectChange.Invoke();
-        }
+        if (OnEffectChange != null) OnEffectChange.Invoke();
     }
+
     public void RemoveEffect(Effect oldEffect)
     {
         oldEffect.RemoveEffect();
@@ -72,12 +72,11 @@ public class EffectManager : MonoBehaviour
         if (oldEffect.effectTypes == EffectType.MOVEMENT) movementEffects.Remove(oldEffect);
         if (oldEffect.effectTypes == EffectType.RESISTANCE) resistanceEffects.Remove(oldEffect);
         Destroy(oldEffect);
-        if (OnEffectChange != null)
-        {
-            OnEffectChange.Invoke();
-        }
+        if (OnEffectChange != null) OnEffectChange.Invoke();
     }
+    #endregion
 
+    #region effectsApplyment
 
     public float ApplyAttackEffect(float oldDamage)
     {
@@ -109,5 +108,6 @@ public class EffectManager : MonoBehaviour
         return newIncDamage;
     }
 
+    #endregion
 
 }

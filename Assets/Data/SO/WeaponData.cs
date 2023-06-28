@@ -14,8 +14,8 @@ public class WeaponData : ScriptableObject
 
     public Range damage = new Range(0,1);
     public Range damageHeal = new Range(0,1);
-    [Tooltip("How long does the attack take?")]
-    public float speed = 0;
+    //[Tooltip("How long does the attack take?")]
+    //public float speed = 0;
     [Tooltip("How long till the attack can happen again?")]
     public float cooldown = 0;
 

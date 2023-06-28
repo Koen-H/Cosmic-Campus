@@ -11,32 +11,28 @@ using UnityEngine;
 public class SteamGameNetworkManager : MonoBehaviour
 {
 
-    public void UseSteam(bool toggle = false)   
-    {
-        NetworkManager.Singleton.NetworkConfig.NetworkTransport = toggle ? GetComponent<FacepunchTransport>() : GetComponent<UnityTransport>();
-        this.enabled = toggle;
-    }
 
     public static SteamGameNetworkManager Instance { get; private set; } = null;
     public Lobby? CurrentLobby { get; private set; } = null;
 
     private FacepunchTransport transport = null;
+    private FacepunchTransport facePunchTransport;
+    private UnityTransport unityTransport;
     
-    bool loggedIn = false;
 
+    #region unity
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if(Instance != null)
         {
             Destroy(gameObject);
             return;
         }
-        DontDestroyOnLoad(gameObject); 
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+        facePunchTransport = this.GetComponent<FacepunchTransport>();
+        unityTransport = this.GetComponent<UnityTransport>();
     }
 
     private void Start()
@@ -51,15 +47,6 @@ public class SteamGameNetworkManager : MonoBehaviour
         SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
     }
-
-
-    public void OpenFriends()
-    {
-        SteamFriends.OpenGameInviteOverlay(CurrentLobby.Value.Id);
-    }
-
-    public void OnApplicationQuit() => Disconnect();
-
     private void OnDestroy()
     {
         SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
@@ -77,12 +64,37 @@ public class SteamGameNetworkManager : MonoBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
 
     }
+    public void OnApplicationQuit() => Disconnect();
+
+    #endregion
+
+    /// <summary>
+    /// To enable the steam (facepunch) transport
+    /// </summary>
+    /// <param name="toggle">Wheter to use it or not</param>
+    public void UseSteam(bool toggle = false)   
+    {
+        facePunchTransport.enabled = toggle;//The steam transport
+        unityTransport.enabled = !toggle;//The unity transport
+        NetworkTransport selectedTransport = toggle ? facePunchTransport : unityTransport;
+        NetworkManager.Singleton.NetworkConfig.NetworkTransport = selectedTransport;
+        this.enabled = toggle;
+    }
+
+
+    /// <summary>
+    /// Open the friendlist overlay in steam.
+    /// </summary>
+    public void OpenFriends()
+    {
+        SteamFriends.OpenGameInviteOverlay(CurrentLobby.Value.Id);
+    }
+
 
     public async void StartHost(int maxMembers = 3)
     {
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
-        if (SteamClient.IsLoggedOn) loggedIn = true;
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
     }
 
@@ -94,6 +106,9 @@ public class SteamGameNetworkManager : MonoBehaviour
         NetworkManager.Singleton.Shutdown();
     }
 
+    /// <summary>
+    /// Tries to join a friend that's currently playing
+    /// </summary>
     public async void JoinFriend()
     {
         IEnumerable<Friend> friends = SteamFriends.GetFriends();
@@ -205,8 +220,10 @@ public class SteamGameNetworkManager : MonoBehaviour
     }
     #endregion
 
-
-
+    /// <summary>
+    /// Set the rich pressence on steam
+    /// </summary>
+    /// <param name="value"></param>
     public void UpdateRichPresenceStatus(string value)
     {
         

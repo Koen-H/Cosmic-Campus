@@ -6,22 +6,15 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private GameObject bar;
 
-    [SerializeField] Image bgSprite; 
-    [SerializeField] Image barSprite;
-    [SerializeField] float fadeDuration = 1f; 
+    [SerializeField] private Image bgSprite; 
+    [SerializeField] private Image barSprite;
+    [SerializeField] private float fadeDuration = 1f; 
  
     private float maxValue;
     private float barMult;
 
-    Coroutine coBg; 
-    Coroutine coBar;
-
-    [SerializeField] bool dontFade = false;
-
-    private void Start()
-    {
-        barMult = 1 / maxValue;
-    }
+    private Coroutine coBg;
+    private Coroutine coBar;
 
     public void ResetBar()
     {
@@ -38,7 +31,7 @@ public class HealthBar : MonoBehaviour
     /// Scales bar on X Axis accourding to the maximum value and given value
     /// </summary>
     /// <param name="value"></param>
-    public void UpdateBar(int value)
+    public void UpdateBar(float value)
     {
         if(coBg != null)StopCoroutine(coBg);
         if(coBar != null) StopCoroutine(coBar);
@@ -47,12 +40,11 @@ public class HealthBar : MonoBehaviour
         if (value < 0) xValue = 0;
         bar.transform.localScale = new Vector3(xValue, bar.transform.localScale.y, bar.transform.localScale.z);
 
-        if (dontFade) return;
         coBg = StartCoroutine(FadeInOut(bgSprite, fadeDuration));
         coBar = StartCoroutine(FadeInOut(barSprite, fadeDuration));
     }
 
-    IEnumerator FadeInOut(Image image, float duration, bool fadeIn = false)
+    IEnumerator FadeInOut(Image image, float duration)
     {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / duration)
             {
@@ -65,10 +57,5 @@ public class HealthBar : MonoBehaviour
                 image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(1, 0, t));
                 yield return null;
             }
-    }
-
-
-    private void OnDestroy()
-    {
     }
 }

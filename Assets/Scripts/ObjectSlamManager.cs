@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(ClientNetworkTransform),typeof(AudioSource))]
 public class ObjectSlamManager : NetworkBehaviour
 {
     public PlayerCharacterController playerController;
-    Rigidbody rb;
+    private Rigidbody rb;
     private bool hasFallen = false;
-    float slamDistance = 3;
-    float damage = 40;
-    float nockback = 20;
-    //GameObject slamObjVFX, slamExtraVFX;
-    List<Enemy> directHits = new List<Enemy>();
+    [SerializeField] private float slamDistance = 3;
+    [SerializeField] private float damage = 40;
+    [SerializeField] private float nockback = 20;
 
-    float dropSpeed = 0.1f;
-    
-    float sinkSpeed = 0.1f;
-    float sinkSpeedIncrement = 0.05f;
-    bool isSinking = false;
+    private float dropSpeed = 0.1f;
 
-    [SerializeField] GameObject collider;
-    [SerializeField] ParticleSystem vfxPrefab;
+    private float sinkSpeed = 0.1f;
+    private float sinkSpeedIncrement = 0.05f;
+    private bool isSinking = false;
 
-    [SerializeField] AudioSource impactSFX;
+    [FormerlySerializedAs("collider")]
+    [SerializeField] private GameObject coll;
+    [SerializeField] private ParticleSystem vfxPrefab;
+
+    [SerializeField] private AudioSource impactSFX;
 
     private void Awake()
     {
-        collider.SetActive(false);
+        coll.SetActive(false);
         if (!TryGetComponent(out rb)) rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = false;
     }
@@ -46,20 +46,6 @@ public class ObjectSlamManager : NetworkBehaviour
             SinkObject();
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (!hasFallen)
-    //    {
-    //        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("RainbowRoad"))
-    //        {
-    //            hasFallen = true;
-    //            GroundSlam();
-
-    //        }
-    //    }
-    //}
-
     private void OnCollisionEnter (Collision collision)
     {
         if (!hasFallen)
@@ -78,7 +64,7 @@ public class ObjectSlamManager : NetworkBehaviour
     private void GroundSlam()
     {
         rb.isKinematic = true;
-        collider.SetActive(true);
+        coll.SetActive(true);
 
         CameraManager.MyCamera.ShakeCamera(2,0.5f);
         StartCoroutine(SinkCountdown(1));
@@ -95,7 +81,6 @@ public class ObjectSlamManager : NetworkBehaviour
                     Vector3 knockbackDirection = enemy.transform.position - transform.position;
                     float knockbackForce = nockback;
                     float knockbackDuration = 0.5f;
-                    Debug.Log("DOING THINGS");
 
                     EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
                     knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);

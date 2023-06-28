@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class LobbyManager : MonoBehaviour
 {
-    [SerializeField] GameObject playerObj;
+    [SerializeField] private GameObject playerObj;
     private Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
     public static event System.Action<ClientManager> OnNewClientJoined;
-    [SerializeField] GameObject spawnLocation;
+    [SerializeField] private GameObject spawnLocation;
 
 
     private static LobbyManager _instance;
@@ -24,14 +24,17 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
+        if(_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         _instance = this;
     }
 
     private void Start()
     {
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientConnectionLost;
-        //NetworkManager.Singleton.OnTransportFailure += OnConnectionLost;
-        //NetworkManager.Singleton.
     }
 
 
@@ -51,7 +54,8 @@ public class LobbyManager : MonoBehaviour
 
     public ClientManager GetClient(ulong id)
     {
-        return clients[id];
+        if (clients.ContainsKey(id)) return clients[id];
+        return null;
     }
 
     public Dictionary<ulong,ClientManager> GetClients()
@@ -92,6 +96,7 @@ public class LobbyManager : MonoBehaviour
     {
 
         ClientManager client = GetClient(lostClientID);
+        if (client == null) return;
         client.OnLeaving();
         
         if (NetworkManager.ServerClientId == lostClientID)//Lost connection with host
