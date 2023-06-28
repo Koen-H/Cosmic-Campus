@@ -9,20 +9,9 @@ using UnityEngine;
 /// </summary>
 public class ServersManager : MonoBehaviour
 {
-    [SerializeField] GameObject openSteam;
+    [SerializeField] private GameObject openSteam;
     [SerializeField] private ServerItem serverItemPrefab;
     [SerializeField] private GameObject serverList;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnEnable()
     {
@@ -51,7 +40,7 @@ public class ServersManager : MonoBehaviour
         LoadLobbies(lobbyQuery);
     }
 
-    async void LoadLobbies(LobbyQuery query)
+    private async void LoadLobbies(LobbyQuery query)
     {
         Lobby[] lobbies = await query.RequestAsync();
         foreach (Lobby lobby in lobbies)
@@ -62,7 +51,7 @@ public class ServersManager : MonoBehaviour
 
     }
 
-    async void LoadFriendServers()
+    private void LoadFriendServers()
     {
         IEnumerable<Friend> friends = SteamFriends.GetFriends();
         foreach (Friend friend in friends)

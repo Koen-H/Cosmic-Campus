@@ -14,7 +14,6 @@ public class ObjectSlamManager : NetworkBehaviour
     [SerializeField] private float slamDistance = 3;
     [SerializeField] private float damage = 40;
     [SerializeField] private float nockback = 20;
-    //GameObject slamObjVFX, slamExtraVFX;
 
     private float dropSpeed = 0.1f;
 

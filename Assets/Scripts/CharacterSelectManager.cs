@@ -7,16 +7,16 @@ using UnityEngine;
 
 public class CharacterSelectManager : MonoBehaviour
 {
-    PlayerRoleData playerRoleData = null;
-    [SerializeField] TMP_InputField avatarIdInput;
-    [SerializeField] TMP_InputField weaponIdInput;
-    [SerializeField] GameObject avatarShowcase;
-    [SerializeField] GameObject weaponShowcase;
+    private PlayerRoleData playerRoleData = null;
+    [SerializeField] private TMP_InputField avatarIdInput;
+    [SerializeField] private TMP_InputField weaponIdInput;
+    [SerializeField] private GameObject avatarShowcase;
+    [SerializeField] private GameObject weaponShowcase;
 
 
-    PlayerRole playerRole;
-    int avatarId;
-    int weaponId;
+    private PlayerRole playerRole;
+    private int avatarId;
+    private int weaponId;
 
 
     public void AssignRole(int newRoleInt)
@@ -66,7 +66,6 @@ public class CharacterSelectManager : MonoBehaviour
     public void ConfirmPlayerCharacter()
     {
         ClientManager.MyClient.playerData.SetData(playerRole, avatarId, weaponId);
-       //NetworkManager.LocalClient.PlayerObject
     }
 
 

@@ -6,8 +6,8 @@ using UnityEngine.Video;
 
 public class TelevisionManager : NetworkBehaviour
 {
-    [SerializeField] List<VideoClip> clips;
-    [SerializeField] VideoPlayer player;
+    [SerializeField] private List<VideoClip> clips;
+    [SerializeField] private VideoPlayer player;
 
     public override void OnNetworkSpawn()
     {

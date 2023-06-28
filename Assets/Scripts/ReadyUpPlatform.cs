@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Changes the color of the platform when someone is ready
+/// </summary>
 public class ReadyUpPlatform : MonoBehaviour
 {
     [SerializeField] private Color unreadyColor = new Color(1, 0, 0, 1f);
@@ -9,9 +12,9 @@ public class ReadyUpPlatform : MonoBehaviour
 
     private Material[] myMaterials;
     private float[] myEmissionIntensity;
-    Coroutine coroutine;
+    private Coroutine coroutine;
 
-    [SerializeField] List<Renderer> renderers;
+    [SerializeField] private List<Renderer> renderers;
 
     private void Awake()
     {

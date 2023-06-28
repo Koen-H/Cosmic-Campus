@@ -10,20 +10,20 @@ using UnityEngine;
 public class ServerSpawner : NetworkBehaviour
 {
 
-    [SerializeField] GameObject remoteEngineerPrefab;
+    [SerializeField] private GameObject remoteEngineerPrefab;
 
-    [SerializeField] List<NetworkObject> designerObjects;
+    [SerializeField] private List<NetworkObject> designerObjects;
 
 
     [Header("Artist decals")]
-    [SerializeField] GameObject whiteDecal;
-    [SerializeField] GameObject blueDecal;
-    [SerializeField] GameObject yellowDecal;
-    [SerializeField] GameObject orangeDecal;
-    [SerializeField] GameObject redDecal;
-    [SerializeField] GameObject greenDecal;
-    [SerializeField] GameObject purpleDecal;
-    [SerializeField] GameObject pinkDecal;
+    [SerializeField] private GameObject whiteDecal;
+    [SerializeField] private GameObject blueDecal;
+    [SerializeField] private GameObject yellowDecal;
+    [SerializeField] private GameObject orangeDecal;
+    [SerializeField] private GameObject redDecal;
+    [SerializeField] private GameObject greenDecal;
+    [SerializeField] private GameObject purpleDecal;
+    [SerializeField] private GameObject pinkDecal;
 
     private static ServerSpawner _instance;
     public static ServerSpawner Instance
@@ -97,9 +97,6 @@ public class ServerSpawner : NetworkBehaviour
         NetworkObject instance = Instantiate(designerObjects[randomIndex], spawnSpot, Quaternion.identity);
         instance.GetComponent<ObjectSlamManager>().playerController = LobbyManager.Instance.GetClient(serverRpcParams.Receive.SenderClientId).playerCharacter;
         instance.Spawn();
-        //instance.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
-
-
     } 
 
 }

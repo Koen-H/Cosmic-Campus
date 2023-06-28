@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class LobbyManager : MonoBehaviour
 {
-    [SerializeField] GameObject playerObj;
+    [SerializeField] private GameObject playerObj;
     private Dictionary<ulong, ClientManager> clients = new Dictionary<ulong, ClientManager>();
     public static event System.Action<ClientManager> OnNewClientJoined;
-    [SerializeField] GameObject spawnLocation;
+    [SerializeField] private GameObject spawnLocation;
 
 
     private static LobbyManager _instance;
@@ -35,8 +35,6 @@ public class LobbyManager : MonoBehaviour
     private void Start()
     {
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientConnectionLost;
-        //NetworkManager.Singleton.OnTransportFailure += OnConnectionLost;
-        //NetworkManager.Singleton.
     }
 
 

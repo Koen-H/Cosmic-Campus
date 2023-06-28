@@ -16,7 +16,6 @@ public class WeaponSideClickerManager : SideClickerManager
         CheckTaken();
     }
 
-
     public override void CheckTaken()
     {
         bool isTaken = readyUpManager.optionsTaken.Contains(sideClickerValues[currentSideClick].option);
@@ -35,13 +34,12 @@ public class WeaponSideClickerManager : SideClickerManager
     public void SelectWeapon()
     {
         readyUpManager.SelectWeapon(int.Parse(sideClickerValues[currentSideClick].value));
-        
     }
 
     public void TakeOption(bool take)
     {
         readyUpManager.TakeOptionServerRpc(sideClickerValues[currentSideClick].option, take);
         readyUpManager.ReadyUpServerRpc(take);
-
     }
+
 }

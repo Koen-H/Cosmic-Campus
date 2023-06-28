@@ -8,7 +8,6 @@ using UnityEngine;
 public class ClientManager : NetworkBehaviour
 {
     private NetworkVariable<ulong> clientId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    //public NetworkVariable<string> playerName = null;
     public NetworkVariable<FixedString128Bytes> playerName = new NetworkVariable<FixedString128Bytes>("Player", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<ulong> steamId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> usingSteam = new NetworkVariable<bool>(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
@@ -33,23 +32,10 @@ public class ClientManager : NetworkBehaviour
             return _myClient;
         }
     }
-    
-    //private void Awake()
-    //{
-    //    Debug.Log("hey");
-    //    LobbyManager.Instance.AddClient(OwnerClientId, this);
-    //    DontDestroyOnLoad(this.gameObject);
-    //    if (!IsOwner) return;
-    //    _myClient = this;
-    //    clientId.Value = NetworkManager.Singleton.LocalClientId;
-    //    Debug.Log(GetClientId());
-    //    if (SteamClient.IsLoggedOn == true)
-    //    {
-    //        playerName.Value = SteamClient.Name;
-    //        steamAccountId.Value = SteamClient.SteamId.AccountId;
-    //        this.gameObject.name = $"Client ({SteamClient.Name})";
-    //    }
-    //}
+    private void Start()
+    {
+        LobbyManager.Instance.AddClient(OwnerClientId, this);//Do this after networkspawn so the data is synchronised
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -68,11 +54,6 @@ public class ClientManager : NetworkBehaviour
         }
         this.gameObject.name = $"Client ({playerName.Value})";
     }
-    private void Start()
-    {
-        LobbyManager.Instance.AddClient(OwnerClientId, this);//Do this after networkspawn so the data is synchronised
-
-    }
 
     public override void OnNetworkDespawn()
     {
@@ -83,7 +64,6 @@ public class ClientManager : NetworkBehaviour
     {
         return OwnerClientId;
     }
-
 
     public void OnLeaving()
     {

@@ -33,7 +33,6 @@ public class ServerItem : MonoBehaviour
             avatarImage.texture = avatarTexture;
         }
         playerNameText.text = steamPlayer.Name;
-
     }
 
 

@@ -33,33 +33,6 @@ public class FieldOfView : EnemyTargettingBehaviour
         return;
     }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    // Check if the current target is still within the tracking range
-    //    if (target != null && Vector3.Distance(transform.position, target.position) <= trackingRange)
-    //    {
-    //        // Visualization
-    //        Debug.DrawLine(transform.position, target.position, Color.green, 0.01f);
-
-    //        enemyMovement.SetTarget(currentTarget);
-    //        //AttackLogic(currentTarget);
-    //    }
-    //    else
-    //    {
-    //        target = FindClosestPlayer(90, detectionRange, 10, enemyEyes);
-    //        if (target != null)
-    //        {
-    //            enemyMovement.SetTarget(target);
-    //            //AttackLogic(target);
-    //        }
-    //        else
-    //        {
-    //            enemyMovement.RemoveTarget();
-    //        }
-    //    }
-    //}
-
     PlayerCharacterController FindClosestPlayer(float angle, float range, int amount, Transform transform)
     {
         PlayerCharacterController closest = null;

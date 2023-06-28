@@ -25,29 +25,52 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     private Vector3 currentDirection = Vector3.zero;
 
-    float t = 0;
-    int attachedObjects = 0;
-    [SerializeField] float timeTillExplosion = 15f;
-    [SerializeField] float explosionDamage = 1f;
-    [SerializeField] float damageIncreasePerObj = 1f;
-    [SerializeField] float explosionRange = 2f;
-    [SerializeField] float rangeIncreasePerObj = 0.2f;
-    [SerializeField] float maxExplosionRange = 20f;
+    private float t = 0;
+    private int attachedObjects = 0;
+    [SerializeField] private float timeTillExplosion = 15f;
+    [SerializeField] private float explosionDamage = 1f;
+    [SerializeField] private float damageIncreasePerObj = 1f;
+    [SerializeField] private float explosionRange = 2f;
+    [SerializeField] private float rangeIncreasePerObj = 0.2f;
+    [SerializeField] private float maxExplosionRange = 20f;
 
-    [SerializeField] GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
+    [SerializeField] private GameObject explosionVFX, electricityVFX, chargingVFX, boilingVFX;
 
-    ParticleSystem.ShapeModule shape;
+    private ParticleSystem.ShapeModule shape;
     private bool exploded = false;
 
-    Vector3 startPos;
+    private Vector3 startPos;
 
     private PlayerCharacterController playerController;
 
+    [SerializeField] private AudioSource chargingSFX;
+    [SerializeField] private AudioSource rollingSFX;
+    [SerializeField] private AudioSource explosionSFX;
+    public void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+        rigidbody.isKinematic = true;
+        chargingVFX.GetComponent<ParticleSystem>();
+        shape = chargingVFX.GetComponent<ParticleSystem>().shape;
+        sphereCollider = GetComponent<SphereCollider>();
+        startPos = transform.position;
+    }
 
-    [SerializeField] AudioSource chargingSFX;
-    [SerializeField] AudioSource rollingSFX;
-    [SerializeField] AudioSource explosionSFX;
-
+    public void Update()
+    {
+        if (isBuilding.Value)
+        {
+            
+            CollectBuildingPieces();
+            if (!IsOwner) return;
+            if (Input.GetMouseButtonUp(1))
+            {
+                isBuilding.Value = false;
+            }
+            return;
+        }
+        else if (IsOwner) Control();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -76,31 +99,6 @@ public class RemoteEngineerAbility : NetworkBehaviour
         }
     }
 
-    public void Start()
-    {
-        rigidbody = GetComponent<Rigidbody>();
-        rigidbody.isKinematic = true;
-        chargingVFX.GetComponent<ParticleSystem>();
-        shape = chargingVFX.GetComponent<ParticleSystem>().shape;
-        sphereCollider = GetComponent<SphereCollider>();
-        startPos = transform.position;
-    }
-
-    public void Update()
-    {
-        if (isBuilding.Value)
-        {
-            
-            CollectBuildingPieces();
-            if (!IsOwner) return;
-            if (Input.GetMouseButtonUp(1))
-            {
-                isBuilding.Value = false;
-            }
-            return;
-        }
-        else if (IsOwner) Control();
-    }
 
     public void Control()
     {

@@ -34,14 +34,6 @@ public class CrystalManager : MonoBehaviour
         return color;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            essence--;
-            StartCoroutine(DrainMaterialCoroutine());
-        }
-    }
 
     private void CalculateTargetEmission()
     {

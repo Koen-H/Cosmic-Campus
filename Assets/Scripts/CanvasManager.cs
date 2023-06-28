@@ -9,19 +9,19 @@ public class CanvasManager : MonoBehaviour
 {
 
     [Header("Prompts")]
-    [SerializeField] TextMeshProUGUI revivePrompt;
-    [SerializeField] TextMeshProUGUI engineerPrompt;
-    [SerializeField] GameObject interactPrompt;
+    [SerializeField] private TextMeshProUGUI revivePrompt;
+    [SerializeField] private TextMeshProUGUI engineerPrompt;
+    [SerializeField] private GameObject interactPrompt;
 
-    Camera cam;
+    private Camera cam;
 
-    [SerializeField] List<ArtistUIAbility> artistUIAbilities;
+    [SerializeField] private List<ArtistUIAbility> artistUIAbilities;
 
-    [SerializeField] UiDirectionIndicatorManager uiDirectionIndicatorManager;
-    [SerializeField] UiMoneyDroppedElement enemyDamageIndicator; 
+    [SerializeField] private UiDirectionIndicatorManager uiDirectionIndicatorManager;
+    [SerializeField] private UiMoneyDroppedElement enemyDamageIndicator; 
 
 
-    [SerializeField] GameObject loadingScreen;
+    [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject settingsUI;
@@ -57,8 +57,6 @@ public class CanvasManager : MonoBehaviour
         newDamageTest.SetText(damge.ToString()); 
         newDamageTest.SetPosition(worldPosition, cam);
     }
-
-
 
     public void DisableAll()
     {
@@ -99,7 +97,6 @@ public class CanvasManager : MonoBehaviour
         connectionLostUI.SetActive(toggle);
     }
 
-
     public void LoadGameUI(ulong clientLeft = ulong.MaxValue)
     {
         foreach(PlayerUIItem item in uiItems) item.DisableAll();
@@ -126,7 +123,6 @@ public class CanvasManager : MonoBehaviour
         uiDirectionIndicatorManager.InitiateDirections();
     }
 
-
     /// <summary>
     /// When a client leaves, we need to remove the related ui from the screen
     /// </summary>
@@ -143,8 +139,6 @@ public class CanvasManager : MonoBehaviour
         LoadGameUI(clientLeft.GetClientId());
 
     }
-
-
 
     public void ToggleRevive(bool toggle)
     {
@@ -174,7 +168,6 @@ public class CanvasManager : MonoBehaviour
             {
                 artistUIAbilities[i].UpdateImage(ArtistPaintColor.NONE);
             }
-            
         }
     }
 

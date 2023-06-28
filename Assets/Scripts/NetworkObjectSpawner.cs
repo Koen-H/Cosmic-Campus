@@ -6,17 +6,9 @@ using UnityEngine;
 public class NetworkObjectSpawner : MonoBehaviour
 {
 
-    [SerializeField] bool spawnOnNetwork;
+    [SerializeField] private bool spawnOnNetwork;
 
-    [SerializeField] GameObject networkObject;//Network Object
-
-    private void Update()
-    {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            if (Input.GetKeyDown(KeyCode.P)) SpawnObject();
-        }
-    }
+    [SerializeField] private GameObject networkObject;//Network Object
 
     private void Start()
     {
@@ -25,6 +17,14 @@ public class NetworkObjectSpawner : MonoBehaviour
             SpawnObject();
         }
     }
+    private void Update()
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            if (Input.GetKeyDown(KeyCode.P)) SpawnObject();
+        }
+    }
+
 
     public void SpawnObject()
     {

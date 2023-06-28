@@ -10,7 +10,7 @@ public class TransformLerper : MonoBehaviour
 
     public float lerpSpeed = 10f;
 
-    float closeDistance = 0.2f;
+    private float closeDistance = 0.2f;
 
     void Update()
     {

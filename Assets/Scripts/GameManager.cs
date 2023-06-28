@@ -14,8 +14,8 @@ public class GameManager : NetworkBehaviour
     public RoomGenerator levelGenerator;
     //[SerializeField] InworldController inworldController;
     //[SerializeField] InworldPlayer InworldPlayer;
-    [SerializeField] GameObject npc; 
-    Dictionary<ulong, bool> deadClients;
+    [SerializeField] private GameObject npc;
+    private Dictionary<ulong, bool> deadClients;
     [SerializeField] private bool useFairPlay = true;
     [SerializeField] private bool useWhiteEnemies = true;
     private List<EnemyType> allowedEnemyTypes;
@@ -37,6 +37,11 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         _instance = this;
+    }
+
+    private void Update()
+    {
+        CheckCheatCodes();
     }
 
     public void InitalizeLevel()

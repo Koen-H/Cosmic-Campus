@@ -6,11 +6,11 @@ public class DiscordManager : MonoBehaviour
 {
     public long applicationID;
     [Space]
-    public string details = "Fixing bugs Thomas made";
-    public string state = "STATE ";
+    public string details = "Playing a great game";
+    public string state = "playing";
     [Space]
     public string largeImage = "game_logo";
-    public string largeText = "Fixing bugs Thomas made";
+    public string largeText = "secret text!";
 
     private long time;
 
