@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -490,6 +491,8 @@ public class PlayerCharacterController : NetworkBehaviour
     void ToggleCart(bool old, bool toggle)
     {
         cartObject.SetActive(toggle);
+        if (toggle) playerSounds.cartUse.Play();
+        else playerSounds.cartUse.Stop();
         if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}", "Haha kart goes vroem", "karting");
     }
 

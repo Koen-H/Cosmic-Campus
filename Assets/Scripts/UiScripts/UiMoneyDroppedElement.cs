@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UiMoneyDroppedElement : MonoBehaviour
 {
@@ -17,17 +18,13 @@ public class UiMoneyDroppedElement : MonoBehaviour
     public void SetPosition(Vector3 worldPosition, Camera cam)
     {
         cam = CameraManager.MyCamera.GetCamera();
-        Vector3 pointOnPlane = cam.transform.position;
-        Vector3 point = worldPosition;
-        Vector3 normal = Vector3.Cross(cam.transform.right, cam.transform.up);
-        Vector3 planeToPoint = point - pointOnPlane;
-        float dotProduct = Vector3.Dot(planeToPoint, normal);
+        CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
 
+        float scaleFactor = canvasScaler.scaleFactor;
         Vector3 screenPosition = cam.WorldToScreenPoint(worldPosition);
-
-        if (dotProduct < 0) screenPosition *= -1;
-
-        self.anchoredPosition = screenPosition;
+        screenPosition.x /= scaleFactor;
+        screenPosition.y /= scaleFactor;
+        GetComponent<RectTransform>().anchoredPosition = screenPosition;
     }
 
     private void FadeOutAndMoveUp()

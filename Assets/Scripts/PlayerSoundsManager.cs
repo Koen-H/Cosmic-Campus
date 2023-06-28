@@ -12,4 +12,5 @@ public class PlayerSoundsManager : MonoBehaviour
     public AudioSource playerHit;
     public AudioSource playerDowned;
     public AudioSource staffUse;
+    public AudioSource cartUse;
 }

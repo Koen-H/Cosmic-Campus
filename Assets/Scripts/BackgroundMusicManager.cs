@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class BackgroundMusicManager : MonoBehaviour
 {
-    [SerializeField] AudioSource calmMusic;
-    [SerializeField] AudioSource battleMusic;
-    [SerializeField] AudioSource bossMusic;
+    [Header("Background Music")]
+    [SerializeField] private AudioSource calmMusic;
+    [SerializeField] private AudioSource battleMusic;
+    [SerializeField] private AudioSource bossMusic;
 
-    [SerializeField] private AudioSource currentMusic;
+    private AudioSource currentMusic;
 
-    [SerializeField] float maxVolume;
-    [SerializeField] float fadeDuration;
+    [SerializeField] private float maxVolume;
+    [SerializeField] private float fadeDuration;
 
     private Coroutine fade;
-    [SerializeField] bool groundBasedMusic = true;
+    [SerializeField] private bool groundBasedMusic = true;
 
+    private string lastTag = "";
 
     private static BackgroundMusicManager _instance;
     public static BackgroundMusicManager Instance
@@ -56,7 +58,6 @@ public class BackgroundMusicManager : MonoBehaviour
         currentMusic.volume = maxVolume;
     }
 
-    string lastTag = "";
     public void HandleGroundMusic(string groundTag)
     {
         if (!groundBasedMusic) return;
@@ -74,14 +75,11 @@ public class BackgroundMusicManager : MonoBehaviour
         }
     }
 
-
-
     public void PlayCalmMusic()
     {
         if (fade != null) { StopCoroutine(fade); }
         fade = StartCoroutine(FadeMusic(calmMusic));
     }
-
     public void PlayBattleMusic()
     {
         if (fade != null) { StopCoroutine(fade); }
