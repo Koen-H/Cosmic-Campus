@@ -8091,6 +8091,7 @@ GameObject:
   - component: {fileID: 822868518}
   - component: {fileID: 822868517}
   - component: {fileID: 822868516}
+  - component: {fileID: 822868520}
   - component: {fileID: 822868514}
   m_Layer: 0
   m_Name: Networkmanager
@@ -8153,7 +8154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e73753cf76a5a147b0fb3ea2073f2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  facePunchTransport: {fileID: 0}
 --- !u!114 &822868518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8167,7 +8167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RunInBackground: 1
-  LogLevel: 0
+  LogLevel: 1
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 822868516}
@@ -8207,6 +8207,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &822868520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822868513}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44dd247a00edbfa44b77868d755af6ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  steamAppId: 480
+  targetSteamId: 0
+  userSteamId: 0
 --- !u!1 &835572102
 GameObject:
   m_ObjectHideFlags: 0
@@ -8847,7 +8862,6 @@ GameObject:
   m_Component:
   - component: {fileID: 885216316}
   - component: {fileID: 885216317}
-  - component: {fileID: 885216318}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -8904,18 +8918,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &885216318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 885216315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c204038afb2a2b49bd98094175f707f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &885734879
 GameObject:
   m_ObjectHideFlags: 0
@@ -12782,8 +12784,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 885216318}
-        m_TargetAssemblyTypeName: TESTSCRIPT, Assembly-CSharp
+      - m_Target: {fileID: 822868517}
+        m_TargetAssemblyTypeName: SteamGameNetworkManager, Assembly-CSharp
         m_MethodName: JoinFriend
         m_Mode: 1
         m_Arguments:
@@ -22511,10 +22513,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 885216318}
-        m_TargetAssemblyTypeName: TESTSCRIPT, Assembly-CSharp
+      - m_Target: {fileID: 822868517}
+        m_TargetAssemblyTypeName: SteamGameNetworkManager, Assembly-CSharp
         m_MethodName: StartHost
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -31431,10 +31433,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 885216318}
-        m_TargetAssemblyTypeName: TESTSCRIPT, Assembly-CSharp
-        m_MethodName: ButtonClick
-        m_Mode: 1
+      - m_Target: {fileID: 822868517}
+        m_TargetAssemblyTypeName: SteamGameNetworkManager, Assembly-CSharp
+        m_MethodName: UseSteam
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

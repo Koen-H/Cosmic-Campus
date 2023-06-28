@@ -25,11 +25,17 @@ MonoBehaviour:
     min: 2.5
     max: 4
     diff: 1
-  speed: 1
   cooldown: 1
   range: 1
   projectilePrefab: {fileID: 0}
-  minProjectileSpeed: 0
-  maxProjectileSpeed: 0
+  maxChargeTime: 2
+  chargeProjectileSpeed:
+    min: 250
+    max: 1500
+    diff: 1250
+  chargeProjectileDamage:
+    min: 0
+    max: 15
+    diff: 15
   accuracy: 0
   beamVfx: {fileID: 0}

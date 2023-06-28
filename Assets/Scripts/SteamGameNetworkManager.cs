@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UNET;
 using Unity.Netcode.Transports.UTP;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SteamGameNetworkManager : MonoBehaviour
@@ -16,7 +17,7 @@ public class SteamGameNetworkManager : MonoBehaviour
     public Lobby? CurrentLobby { get; private set; } = null;
 
     private FacepunchTransport transport = null;
-    private FacepunchTransport facePunchTransport;
+    [SerializeField] private FacepunchTransport facePunchTransport;
     private UnityTransport unityTransport;
     
 
@@ -74,11 +75,13 @@ public class SteamGameNetworkManager : MonoBehaviour
     /// <param name="toggle">Wheter to use it or not</param>
     public void UseSteam(bool toggle = false)   
     {
-        facePunchTransport.enabled = toggle;//The steam transport
+        //facePunchTransport.enabled = toggle;//The steam transport
         unityTransport.enabled = !toggle;//The unity transport
-        NetworkTransport selectedTransport = toggle ? facePunchTransport : unityTransport;
+        NetworkTransport selectedTransport = toggle ? NetworkManager.Singleton.AddComponent<FacepunchTransport>() : unityTransport;
         NetworkManager.Singleton.NetworkConfig.NetworkTransport = selectedTransport;
         this.enabled = toggle;
+        //if (!SteamClient.IsValid) Debug.Log("yes");
+            // SteamClient.Init(480, false);
     }
 
 
@@ -96,6 +99,8 @@ public class SteamGameNetworkManager : MonoBehaviour
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
+       // SceneManager.Instance.LoadLobby();
+       // NetworkManager.SceneManager.LoadScene("LobbyScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     public void Disconnect()

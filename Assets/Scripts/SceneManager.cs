@@ -39,6 +39,12 @@ public class SceneManager : NetworkBehaviour
         NetworkManager.Singleton.SceneManager.OnSceneEvent -= SceneManager_OnSceneEvent;
     }
 
+    public void LoadLobby()
+    {
+        NetworkManager.SceneManager.LoadScene("LobbyScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+
+
     private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
     {
         // Both client and server receive these notifications

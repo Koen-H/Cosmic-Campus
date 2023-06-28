@@ -62,9 +62,6 @@ public class ReadyUpManager : NetworkBehaviour
         weaponSideClickerManager.CheckTaken();
     }
 
-
-
-
     public void StartNetcodeHost()
     {
         NetworkManager.Singleton.StartHost();
@@ -77,7 +74,7 @@ public class ReadyUpManager : NetworkBehaviour
 
     void LoadLobby(Steamworks.Data.Lobby lobby)
     {
-        foreach(GameObject obj in disableItemsOnClient) obj.SetActive(false);
+        foreach (GameObject obj in disableItemsOnClient) obj.SetActive(false);
         lobbyUI.SetActive(true);
     }
 
@@ -113,11 +110,11 @@ public class ReadyUpManager : NetworkBehaviour
         if (clientLeftId == NetworkManager.Singleton.LocalClientId) return;
         clientReady.Remove(clientLeftId);
         clientItems[clientLeftId].sideClickerManager.gameObject.SetActive(false);
-        UpdatePlayerCharacter(clientLeftId,true);
+        UpdatePlayerCharacter(clientLeftId, true);
         clientItems.Remove(clientLeftId);
 
         CheckReady();
-        clientLeft.OnClientLeft -= ClientLeft;//TODO Unsubscibe when scene changes
+        clientLeft.OnClientLeft -= ClientLeft;
     }
 
 
@@ -155,7 +152,8 @@ public class ReadyUpManager : NetworkBehaviour
         PlayerRoleData playerRoleData;
         switch (newValue)
         {
-            case 1: playerRoleData = GameData.Instance.artistData; 
+            case 1:
+                playerRoleData = GameData.Instance.artistData;
                 break;
             case 2:
                 playerRoleData = GameData.Instance.designerData;
@@ -164,13 +162,15 @@ public class ReadyUpManager : NetworkBehaviour
                 playerRoleData = GameData.Instance.engineerData;
                 break;
             default:
-                try {
-                    playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;}
+                try
+                {
+                    playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;
+                }
                 catch { return; }
                 break;
         }
 
-        if(playerRoleData == null) return;
+        if (playerRoleData == null) return;
         GameObject playerPlatform = clientItems[outdatedClientId].avatarPreview;
 
         GameObject newAvatar = playerRoleData.GetAvatar(0);
@@ -185,7 +185,7 @@ public class ReadyUpManager : NetworkBehaviour
     {
         ulong clientId = NetworkManager.Singleton.LocalClientId;
         LobbyManager.Instance.GetClient(clientId).playerData.playerRole.Value = (PlayerRole)newRoleInt;
-        UpdatePlayerCharacter(clientId,false, newRoleInt);
+        UpdatePlayerCharacter(clientId, false, newRoleInt);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -215,10 +215,10 @@ public class ReadyUpManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ReadyUpServerRpc(bool ready = true,ServerRpcParams serverRpcParams = default)
+    public void ReadyUpServerRpc(bool ready = true, ServerRpcParams serverRpcParams = default)
     {
         clientReady[serverRpcParams.Receive.SenderClientId] = ready;
-        ReadyUpClientRpc(ready,serverRpcParams.Receive.SenderClientId);
+        ReadyUpClientRpc(ready, serverRpcParams.Receive.SenderClientId);
         CheckReady();
 
         //StartGame(); 
@@ -241,7 +241,7 @@ public class ReadyUpManager : NetworkBehaviour
         {
             if (!weaponsSelected)
             {
-                if(IsServer)charNextButton.interactable = true;
+                if (IsServer) charNextButton.interactable = true;
                 charNextButtonText.text = "Everyone ready!";
             }
             else
@@ -304,16 +304,23 @@ public class ReadyUpManager : NetworkBehaviour
 
     public void StartGame()
     {
-        if(SteamGameNetworkManager.Instance.CurrentLobby != null)SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
+        if (SteamGameNetworkManager.Instance.CurrentLobby != null) SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
         EnableLoadingScreenClientRpc();
-        NetworkManager.SceneManager.LoadScene("Level 1",UnityEngine.SceneManagement.LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("Level 1", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     private void OnDisable()
     {
-        if (LobbyManager.Instance == null) return;//We don't need to do this if the game shuts down and the lobbymanager is deleted.
+        //if (LobbyManager.Instance == null) return;//We don't need to do this if the game shuts down and the lobbymanager is deleted.
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
-        foreach (ClientManager client in clients.Values) client.OnClientLeft -= ClientLeft;
+        foreach (ClientManager client in clients.Values)
+        {
+            Debug.Log("unsub!");
+            client.OnClientLeft -= ClientLeft;
+        }
+        clientItems.Clear();
+        LobbyManager.OnNewClientJoined -= NewClientJoined;
+        SteamMatchmaking.OnLobbyEntered -= LoadLobby;
     }
 
 
