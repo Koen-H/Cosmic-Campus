@@ -71,7 +71,7 @@ public class UiDirectionIndicator : MonoBehaviour
 
     private void SnapToPlayerPosition(Transform playerPosition)
     {
-        if (playerPosition == null) return;
+        //if (playerPosition == null) return;
 
         Vector3 pointOnPlane = cam.transform.position;
         Vector3 point = playerPosition.position;  
@@ -89,11 +89,14 @@ public class UiDirectionIndicator : MonoBehaviour
         if (screenPosition.x < margin) screenPosition.x = margin;
         if (screenPosition.y < margin) screenPosition.y = margin;
 
+        screenPosition.x *= 1920.0f/cam.pixelWidth;
+        screenPosition.y *= 1080.0f/cam.pixelHeight;
+
         self.anchoredPosition = screenPosition;
 
         Vector3 dir = cam.WorldToScreenPoint(playerPosition.position) - screenPosition;
-        if (diffCheck != screenPosition) disableArrow = true;
-        else disableArrow = false;
+/*        if (diffCheck != screenPosition) disableArrow = true;
+        else disableArrow = false;*/
         if (dotProduct < 0) dir *= -1;
         arrow.up = dir;
     }

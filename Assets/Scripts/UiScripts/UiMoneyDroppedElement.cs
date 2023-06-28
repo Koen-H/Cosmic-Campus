@@ -22,8 +22,8 @@ public class UiMoneyDroppedElement : MonoBehaviour
 
         float scaleFactor = canvasScaler.scaleFactor;
         Vector3 screenPosition = cam.WorldToScreenPoint(worldPosition);
-        screenPosition.x /= scaleFactor;
-        screenPosition.y /= scaleFactor;
+        screenPosition.x *= 1920.0f / cam.pixelWidth;
+        screenPosition.y *= 1080.0f / cam.pixelHeight;
         GetComponent<RectTransform>().anchoredPosition = screenPosition;
     }
 
