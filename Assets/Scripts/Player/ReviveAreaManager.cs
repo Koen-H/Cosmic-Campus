@@ -20,6 +20,10 @@ public class ReviveAreaManager : NetworkBehaviour
     {
         player = GetComponentInParent<PlayerCharacterController>();
     }
+    private void Update()
+    {
+        if (IsOwner) CheckRevive();
+    }
 
     private void OnEnable()
     {
@@ -57,10 +61,6 @@ public class ReviveAreaManager : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (IsOwner) CheckRevive();
-    }
 
     private void CheckRevive()
     {

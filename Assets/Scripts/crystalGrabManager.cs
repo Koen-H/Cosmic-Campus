@@ -5,12 +5,8 @@ using UnityEngine;
 public class crystalGrabManager : MonoBehaviour
 {
     public Transform staffObject;
-
     public Transform trail;
     [SerializeField] private float speed = 0.3f;
-
-    [SerializeField] private float rotationSpeed = 5f;
-
     private void Update()
     {
         transform.LookAt(staffObject.position);

@@ -58,7 +58,6 @@ public class Ability : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             Physics.Raycast(ray, out hit);
-            if (hit.point != null) player.DeactivateServerRpc(hit.point);
         }
     }
     protected GameObject GetTarget(Vector3 origin, Vector3 direction)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(ClientNetworkTransform),typeof(AudioSource))]
 public class ObjectSlamManager : NetworkBehaviour
@@ -22,14 +23,15 @@ public class ObjectSlamManager : NetworkBehaviour
     float sinkSpeedIncrement = 0.05f;
     bool isSinking = false;
 
-    [SerializeField] GameObject collider;
+    [FormerlySerializedAs("collider")]
+    [SerializeField] GameObject coll;
     [SerializeField] ParticleSystem vfxPrefab;
 
     [SerializeField] AudioSource impactSFX;
 
     private void Awake()
     {
-        collider.SetActive(false);
+        coll.SetActive(false);
         if (!TryGetComponent(out rb)) rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = false;
     }
@@ -78,7 +80,7 @@ public class ObjectSlamManager : NetworkBehaviour
     private void GroundSlam()
     {
         rb.isKinematic = true;
-        collider.SetActive(true);
+        coll.SetActive(true);
 
         CameraManager.MyCamera.ShakeCamera(2,0.5f);
         StartCoroutine(SinkCountdown(1));

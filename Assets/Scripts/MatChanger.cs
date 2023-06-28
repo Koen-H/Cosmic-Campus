@@ -3,14 +3,7 @@ using System.Collections;
 
 public class MatChanger : MonoBehaviour
 {
-    private Material[] currentMaterials;
-
-    [SerializeField] private float time = 2f;
-    [SerializeField] private Material[] defaultMat;
-    [SerializeField] private Material[] artistMat;
-    [SerializeField] private Material[] designerMat;
-    [SerializeField] private Material[] engineerMat;
-
+    [SerializeField] private float duration = 4f;
 
     private Material[] myMaterials;
     private float[] myEmissionIntensity;
@@ -31,13 +24,6 @@ public class MatChanger : MonoBehaviour
             myMaterials[i] = renderer.materials[i];
             myEmissionIntensity[i] = renderer.materials[i].GetFloat("_EmissiveIntensity");
         }
-
-        //currentMaterials = new Material[renderer.sharedMaterials.Length];
-        //for (int i = 0; i < currentMaterials.Length; i++)
-        //{
-        //    currentMaterials[i] = renderer.sharedMaterials[i];
-        //}
-        //    myMaterial = currentMaterials[0];
     }
 
     /// <summary>
@@ -56,24 +42,7 @@ public class MatChanger : MonoBehaviour
             }
         }
 
-        //coroutine = StartCoroutine(ChangeMaterialOverTime(currentMaterials, SelectTargetMat(enemyType), time));
     }
-
-
-    //private Material[] SelectTargetMat(EnemyType enemyType)
-    //{
-    //    switch (enemyType)
-    //    {
-    //        case EnemyType.ARTIST:
-    //            return artistMat;
-    //        case EnemyType.DESIGNER:
-    //            return designerMat;
-    //        case EnemyType.ENGINEER:
-    //            return engineerMat;
-    //        default:
-    //            return defaultMat;
-    //    }
-    //}
 
     private Color SelectTargetColor(EnemyType enemyType)
     {
@@ -90,32 +59,8 @@ public class MatChanger : MonoBehaviour
         }
     }
 
-    //private IEnumerator ChangeMaterialOverTime(Material[] startMaterials, Material[] targetMaterials, float duration)
-    //{
-    //    float time = 0;
-    //    Renderer renderer = GetComponent<Renderer>();
-    //    int numMaterials = Mathf.Min(startMaterials.Length, targetMaterials.Length);
-
-    //    for (int i = 0; i < numMaterials; i++)
-    //    {
-    //        Material startMat = startMaterials[i];
-    //        Material targetMat = targetMaterials[i];
-
-    //        while (time < duration)
-    //        {
-    //            time += Time.deltaTime;
-    //            float t = time / duration;
-    //            renderer.sharedMaterials[i].Lerp(startMat, targetMat, t);
-    //            yield return null;
-    //        }
-
-    //        time = 0;
-    //    }
-    //}
-
     private IEnumerator ChangeEmissionColor(Color newColor)
     {
-        //myMaterial = GetComponent<Renderer>().material;
         Color[] startColor = new Color[myMaterials.Length];
         for (int i = 0; i < myMaterials.Length; i++)
         {
@@ -123,7 +68,6 @@ public class MatChanger : MonoBehaviour
         }
 
         float elapsedTime = 0f;
-        float duration = 4f;
 
         while (elapsedTime < duration)
         {

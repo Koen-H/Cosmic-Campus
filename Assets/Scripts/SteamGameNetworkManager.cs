@@ -19,7 +19,6 @@ public class SteamGameNetworkManager : MonoBehaviour
     private FacepunchTransport facePunchTransport;
     private UnityTransport unityTransport;
     
-    bool loggedIn = false;
 
     #region unity
 
@@ -96,7 +95,6 @@ public class SteamGameNetworkManager : MonoBehaviour
     {
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
-        if (SteamClient.IsLoggedOn) loggedIn = true;
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
     }
 

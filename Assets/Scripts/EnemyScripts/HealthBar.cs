@@ -16,8 +16,6 @@ public class HealthBar : MonoBehaviour
     private Coroutine coBg;
     private Coroutine coBar;
 
-    [SerializeField] private bool dontFade = false;
-
     public void ResetBar()
     {
         bar.transform.localScale = new Vector3(1, bar.transform.localScale.y, bar.transform.localScale.z);
@@ -46,7 +44,7 @@ public class HealthBar : MonoBehaviour
         coBar = StartCoroutine(FadeInOut(barSprite, fadeDuration));
     }
 
-    IEnumerator FadeInOut(Image image, float duration, bool fadeIn = false)
+    IEnumerator FadeInOut(Image image, float duration)
     {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / duration)
             {

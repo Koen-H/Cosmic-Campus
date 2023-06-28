@@ -5,10 +5,9 @@ using TMPro;
 
 public class UiMoneyDroppedElement : MonoBehaviour
 {
-    [SerializeField] RectTransform self;
-    [SerializeField] TMP_Text moneyText; 
-    [SerializeField] float fadeDuration = 1f;
-    [SerializeField] float moveUpDistance = 1f;
+    [SerializeField] private RectTransform self;
+    [SerializeField] private TMP_Text moneyText; 
+    [SerializeField] private float fadeDuration = 1f;
 
     public void SetText(string text)
     {

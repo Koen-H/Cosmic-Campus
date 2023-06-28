@@ -12,182 +12,82 @@ using static PlayerSO;
 /// <summary>
 /// This is the player Character that is used to walk and attack within the game.
 /// </summary>
+/// In the future, it would be really nice to create different prefabs with inherited scripts 
+/// instead of dynamically adding the related script for roles as this limits the networking through the scripts that are already on the prefab.
 public class PlayerCharacterController : NetworkBehaviour
 {
-    //NetworkVariables
-    public NetworkVariable<float> maxHealth = new(50);
-    public NetworkVariable<float> health = new(25, default, NetworkVariableWritePermission.Owner);
-    [HideInInspector] public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
-    [HideInInspector]public NetworkVariable<Vector3> gunForward = new(default,default,NetworkVariableWritePermission.Owner);
-    //LocalVariables
-    //public float moveSpeed = 5f;
-    public bool canMove = true;
-    public bool canAttack = true;
-    public bool canAbility = true;
-    public bool engineering = false;
+    [Header("Player Variables")]
+    public Transform centerPoint;
+    [SerializeField] private GameObject playerAvatar;//The player mesh/model
+    public GameObject playerObj;//With weapon.
+    [SerializeField] private HealthBar healthBar;
+    [SerializeField] private ReviveAreaManager myReviveArea;
+    public EffectManager effectManager;
+    public PlayerSoundsManager playerSounds;//All player related sounds are on the player!
+    private PlayerData playerData;
+    private Rigidbody rigidbody;
+    private Animator animator;
 
+
+    [Header("Player lockment")]
+    [HideInInspector] public NetworkVariable<bool> isDead = new(false, default, NetworkVariableWritePermission.Owner);
+    [HideInInspector] public bool canMove = true;
+    [HideInInspector] public bool canAttack = true;
+    [HideInInspector] public bool canAbility = true;
+    [HideInInspector] public bool engineering = false;
+    public bool inSettings = false;
+
+
+    [Header("Player Health")]
+    public NetworkVariable<float> maxHealth = new(50);
+    public NetworkVariable<float> health = new(50, default, NetworkVariableWritePermission.Owner);
+    private bool canBeDamaged = true;
+    [SerializeField] private float invinsibilityDuration;
+
+    [Header("Weapon")]
+    [SerializeField] private GameObject playerWeapon;//The object
+    private Weapon weaponBehaviour;//The weapon behaviour
+    [HideInInspector] public NetworkVariable<Vector3> gunForward = new(default, default, NetworkVariableWritePermission.Owner);
+
+    [Header("Damage type")]
     [Tooltip("What enemytype will take critical damage?")]
     [HideInInspector] public EnemyType damageType = EnemyType.NONE;
 
-    [SerializeField] private GameObject playerAvatar;//The player mesh/model
-    public GameObject playerObj;//With weapon.
-    [SerializeField] TextMeshPro healthText;
-    [SerializeField] HealthBar healthBar;
-    [SerializeField] ReviveAreaManager myReviveArea;
-
-    [SerializeField] private float damage;
-    [SerializeField] private GameObject playerWeapon;//The object
-    private Weapon weaponBehaviour;//The weapon behaviour
+    [Header("Ability")]
     private Ability ability;
-    private Collider col;
 
-    [SerializeField]float accelerationTime = 0.5f;
-    [SerializeField]float decelerationTime = 0.5f;
-    [SerializeField]float maxSpeed = 10f;
-    [SerializeField]float currentSpeed = 0f;
-
-    public EffectManager effectManager;
-    public PlayerSoundsManager playerSounds;//All player related sounds are on the player!
-
-    private List<OnMapNPC> colllectedStudents = new List<OnMapNPC>();
-    private QuestNPC interactingNPC;
-    private List<GameObject> collectedStudents = new List<GameObject>();
-
-    private Animator animator;
-    public Vector3 checkPoint;
-    int checkPointRespawns = 0;
-
-    public Transform centerPoint;
-
-    protected bool canBeDamaged = true;
-    [SerializeField] float invinsibilityDuration;
-
-    [HideInInspector] public NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
-    float cartLoad = 0;
-    [SerializeField] private float cartEnterTime = 3;
-    [SerializeField] GameObject cartObject;
-    [SerializeField] float cartSpeed;
-    public bool inSettings = false;
-    public NetworkVariable<bool> isReviving = new(false,default,NetworkVariableWritePermission.Owner);
-
-
-    [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
-
-
-    [SerializeField] private float attackRange; // the range of the attack, adjustable in Unity's inspector
-    PlayerData playerData;
-
-    private Rigidbody rigidbody;
-    Vector3 movementDirection;
-
-    [SerializeField] float grav;
+    [Header("Movement")]
+    [SerializeField]private float accelerationTime = 0.5f;
+    [SerializeField]private float maxSpeed = 10f;
+    [SerializeField]private float currentSpeed = 0f;
+    private bool knockedBack = false;
+    ///groundcheck and gravity 
     private bool isGrounded;
     private float groundDistance = 0.2f;
+    [SerializeField] private float grav;
 
+    [Header("Cart")]
+    [HideInInspector] public NetworkVariable<bool> usingCart = new(false,NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+    private float cartLoad = 0;
+    [SerializeField] private float cartEnterTime = 3;
+    [SerializeField] private GameObject cartObject;
+    [SerializeField] private float cartSpeed;
 
-    private bool knockedBack = false;
+    [Header("Misc")]
+    private QuestNPC interactingNPC;
+    public NetworkVariable<bool> isReviving = new(false, default, NetworkVariableWritePermission.Owner);
+    [HideInInspector] public NetworkVariable<PlayerAnimationState> playerAnimationState = new(PlayerAnimationState.IDLE, default, NetworkVariableWritePermission.Owner); 
+    [HideInInspector] public Vector3 checkPoint;
+
+    [Header("Stats")]
+    private int checkPointRespawns = 0;
+
 
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
         effectManager = GetComponent<EffectManager>();
         animator = GetComponentInChildren<Animator>();
-    }
-
-    [ClientRpc]
-    public void HealPlayerClientRPC(float percentage)
-    {
-        if (!IsOwner) return;
-        Heal(percentage);
-    }
-    
-    /// <summary>
-    /// Heal the player based on percentage of max health.
-    /// </summary>
-    private void Heal(float percentage)
-    {
-        if (isDead.Value) return;//We don't heal when we are dead. Thats not how it works!
-        float addedHealth = maxHealth.Value * (percentage / 100);
-        if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
-        else health.Value += addedHealth;
-    }
-
-    /// <summary>
-    /// For when the server has to do damage to the client
-    /// </summary>
-    [ClientRpc]
-    public void TakeDamageClientRpc(float damage, bool inPercentage = false)
-    {
-        TakeDamage(damage, inPercentage);
-    }
-
-    public void TakeDamage(float damage, bool inPercentage = false)
-    {
-        if (!IsOwner) return;
-        if (isDead.Value) return;
-        if (!canBeDamaged) return;
-        if (usingCart.Value) usingCart.Value = false;
-        if (inPercentage) damage = maxHealth.Value * (damage / 100);
-        damage = effectManager.ApplyResistanceEffect(damage);
-        if (damage >= health.Value) damage = health.Value;
-        if (damage > 0) health.Value -= damage;
-        if (health.Value <= 0) isDead.Value = true;
-    }
-
-    void InjurePlayer(bool prevVal, bool isCurrentlyDead)
-    {
-        if (isCurrentlyDead)
-        {
-            //Tell the gamemanager that this player is dead, if all other players are dead it's a game over!
-            //Gamemanager.player died!
-            weaponBehaviour.CancelAttack();
-            //col.enabled= false;//Disable collider to make the enemy target a different player.
-            playerObj.gameObject.SetActive(false);
-            myReviveArea.gameObject.SetActive(true);
-            playerSounds.playerDowned.Play();
-            if (IsOwner) ClientManager.MyClient.timesDied.Value++;
-        }
-        else
-        {
-            myReviveArea.gameObject.SetActive(false);
-            //col.enabled = true;//Enable collider to allow it to be targeted and attacked again.
-            //Resurrected animation here!
-            playerObj.gameObject.SetActive(true);
-            StartCoroutine(InvinsibilityForTime(invinsibilityDuration));
-
-        }
-
-        if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
-        if (!IsOwner) return;
-        if (engineering) return;// Got revived during engineering ability go back
-        LockPlayer(isCurrentlyDead, true);
-    }
-    IEnumerator InvinsibilityForTime(float time)
-    {
-        canBeDamaged = false;
-        yield return new WaitForSeconds(time);
-        canBeDamaged = true;
-    }
-
-    public void LockPlayer(bool isLocked, bool deadOverride = false)
-    {
-        if (isDead.Value && !deadOverride) return;//If dead, you can't change this!
-        canMove = !isLocked;
-        canAttack = !isLocked;
-        canAbility = !isLocked;
-    }
-
-
-
-
-    /// <summary>
-    /// Revive the player
-    /// </summary>
-    public void Revive()
-    {
-        isDead.Value = false;
-        health.Value = maxHealth.Value * 0.25f;
     }
 
     public override void OnNetworkSpawn()
@@ -206,266 +106,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     }
 
-
-    /// <summary>
-    /// Handles the animations of the player. Automatically networked when the value is changed.
-    /// </summary>
-    void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
-    {
-        animator.SetBool("Bowing", false);
-        animator.SetBool("Running", false);
-        animator.SetBool("Staffing", false);
-
-        switch (newAnimationState)
-        {
-            case PlayerAnimationState.RUNNING:
-                animator.SetBool("Running", true);
-                break;
-            case PlayerAnimationState.SWORDSLASH:
-                animator.SetTrigger("SwordSlash");
-                break;
-            case PlayerAnimationState.BOW:
-                animator.SetBool("Bowing", true);
-                break;
-            case PlayerAnimationState.STAFF:
-                animator.SetBool("Staffing", true);
-                break;
-            case PlayerAnimationState.CART:
-                //TODO:: Change with cart pose
-                animator.SetBool("Running", false);
-                break;
-            default:
-                break;
-        }
-    }
-    void OnHealthChange(float prevHealth, float newHealth)
-    {
-        //healthText.text = health.Value.ToString();
-        healthBar.UpdateBar((int)newHealth);
-        if (prevHealth > newHealth)//Do thing where the player takes damage!
-        {
-            playerSounds.playerHit.Play();
-           // Debug.Log("Take damage!");
-        }
-        else if (prevHealth < newHealth)//Do things where the player gained health!
-        {
-            //Debug.Log("Gained healht!");
-        }
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
-        if (npc is QuestStudentNPC)
-        {
-            interactingNPC = npc;
-            if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
-        if (npc)
-        {
-            interactingNPC = null;
-            CanvasManager.Instance.ToggleInteract(false);
-        }
-    }
-
-    void Update()
-    {
-        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
-        if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
-        CheckIfGrounded();
-        DeathCheck();
-        TryRevive();
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            CanvasManager.Instance.ToggleSettingsUI(!inSettings);
-        }
-        if (inSettings) return;
-        if (canMove && !knockedBack) Move();
-        LoadCart();
-        if (usingCart.Value) return;//Below this is disabled while you are in a cart!
-        if (canAttack) HandleAttackInput();
-        if (canAbility) HandleAbilityInput();
-        if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
-    }
-
-    void LoadCart()
-    {
-        if (isDead.Value) cartLoad = 0;
-        if (Input.GetKey(KeyCode.Space)) cartLoad += Time.deltaTime;
-        else cartLoad = 0;
-        if (cartLoad >= cartEnterTime) usingCart.Value = true;
-        if (usingCart.Value && Input.GetKeyDown(KeyCode.Space)) usingCart.Value = false;
-
-    }
-
-    void DeathCheck()
-    {
-        if (transform.position.y < -20) Respawn();
-    }
-    void Respawn()
-    {
-        transform.position = checkPoint;
-        checkPointRespawns++;
-    }
-    void CheckNPCInteraction()
-    {
-        if (!interactingNPC) return;
-
-        interactingNPC.InteractServerRpc();//colllectedStudents,  //OnMapNPC student = 
-        /*        if (student is StudentNPC)
-                {
-                    collectedStudents.Add(interactingNPC.gameObject);
-                }
-                if(student is TeacherNPC)
-                {
-                    foreach (var tempStudent in collectedStudents) { tempStudent.GetComponent<QuestNPC>().CurrentTarget = null; }
-                    collectedStudents.Clear();
-                }
-                interactingNPC = null;
-                if (student != null) colllectedStudents.Add(student);*/
-    }
-
-
-    void TryRevive()
-    {
-        if (Input.GetKey(KeyCode.E) && !isDead.Value)
-        {
-            isReviving.Value = true;
-        }
-        else
-        {
-            isReviving.Value = false;
-        }
-    }
-
-    void HandleAttackInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            weaponBehaviour.OnAttackInputStart();
-            AttackServerRpc();//Tell the server, that we are attacking!
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            weaponBehaviour.OnAttackInputStop();
-            AttackStopServerRpc();
-        }
-        if (Input.GetMouseButton(0))
-        {
-            weaponBehaviour.OnAttackInputHold();
-        }
-    }
-
-    void HandleAbilityInput()
-    {
-        ability.AbilityInput();
-        
-    }
-
-    private void CheckIfGrounded()
-    {
-        // Cast a sphere downwards from the character
-        RaycastHit hit;
-        float radius = 0.5f; // Replace this with your sphere radius
-
-        if (Physics.SphereCast(transform.position + Vector3.up, radius, -Vector3.up, out hit, groundDistance + 1))
-        {
-            // If the sphere hit something, the character is grounded
-            BackgroundMusicManager.Instance.HandleGroundMusic(hit.transform.tag);
-            isGrounded = true;
-        }
-        else
-        {
-            // If the sphere didn't hit anything, the character is not grounded
-            isGrounded = false;
-        }
-    }
-
-
-    void ToggleCart(bool old, bool toggle)
-    {
-        cartObject.SetActive(toggle);
-        //Cart pose OR idle!
-        //TODO:: Change anim
-        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}", "Haha kart goes vroem", "karting");
-    }
-
-
-    /// <summary>
-    /// Movement
-    /// </summary>
-    private void Move()
-    {
-        int horizontalInput = 0;
-        int verticalInput = 0;
-
-        if (Input.GetKey(KeyCode.D)) horizontalInput = 1;
-        if (Input.GetKey(KeyCode.A)) horizontalInput = -1;
-        if (Input.GetKey(KeyCode.W)) verticalInput = 1;
-        if (Input.GetKey(KeyCode.S)) verticalInput = -1;
-
-
-        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
-        Quaternion rotationQuaternion = Quaternion.Euler(0, -45, 0);
-        movementDirection = rotationQuaternion * movementDirection;
-        // Check if there is input
-        if (movementDirection != Vector3.zero)
-        {
-            // If there is input, accelerate the object
-            float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
-
-            currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
-            playerAnimationState.Value = usingCart.Value ?  PlayerAnimationState.CART :PlayerAnimationState.RUNNING;
-        }
-        else
-        {
-            // If there is no input, decelerate the object
-            currentSpeed = 0;
-            playerAnimationState.Value = PlayerAnimationState.IDLE;
-            //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
-        }
-        // Apply the calculated speed to the Rigidbody
-        Vector3 velocityVector = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
-        if (!isGrounded) velocityVector += Vector3.up * grav;
-        rigidbody.velocity = velocityVector;
-
-        if (movementDirection.magnitude == 0) return;
-        playerObj.transform.forward = movementDirection; 
-    }
-
-
-    public void ApplyKnockback(Vector3 direction, float force, float duration)
-    {
-        ApplyKnockbackServerRpc(direction, force, duration);
-    }
-
-    [ServerRpc (RequireOwnership = false)]
-    private void ApplyKnockbackServerRpc(Vector3 direction, float force, float duration)
-    {
-        ApplyKnockbackClientRpc(direction, force, duration);
-    }
-
-    [ClientRpc]
-    private void ApplyKnockbackClientRpc(Vector3 direction, float force, float duration)
-    {
-        if (!IsOwner) return;
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.velocity = direction * force;
-        knockedBack= true;
-        StartCoroutine(KnockbackReset(duration));
-    }
-
-    private IEnumerator KnockbackReset(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        rigidbody.velocity = Vector3.zero;
-        knockedBack= false;
-    }
-
-
+    #region initalization
     /// <summary>
     /// Creates the character visually by loading the selected data from playerdata stored in MyClient
     /// </summary>
@@ -475,19 +116,8 @@ public class PlayerCharacterController : NetworkBehaviour
         foreach (Transform child in playerAvatar.transform) Destroy(child.gameObject);//Destroy previous model, if exists.
         GameObject newAvatar = playerData.playerRoleData.GetAvatar(playerData.avatarId.Value);//Get the new avatar
         Instantiate(newAvatar, playerAvatar.transform);
-        healthText.text = health.Value.ToString();
         damageType = (EnemyType)playerData.playerRole.Value;
         InitWeapon();
-    }
-
-
-
-    public void ToggleMovement(bool toggle)
-    {
-        if (isDead.Value) return;
-        if (engineering) return;
-        canMove = toggle;
-        if (toggle == false) animator.SetBool("Running", false);
     }
 
     public void InitWeapon()
@@ -544,8 +174,376 @@ public class PlayerCharacterController : NetworkBehaviour
                 return;
         }
     }
+    #endregion
 
-    public PlayerData GetPlayerData() => playerData; 
+    #region health
+
+    [ClientRpc]
+    public void HealPlayerClientRPC(float percentage)
+    {
+        if (!IsOwner) return;//Only the owner is allowed to write to the variable, here we prevent others
+        Heal(percentage);
+    }
+    
+    /// <summary>
+    /// Heal the player based on percentage of max health.
+    /// </summary>
+    private void Heal(float percentage)
+    {
+        if (isDead.Value) return;//We don't heal when we are dead. Thats not how it works!
+        float addedHealth = maxHealth.Value * (percentage / 100);
+        if(health.Value + addedHealth > maxHealth.Value) health.Value  = maxHealth.Value;
+        else health.Value += addedHealth;
+    }
+
+    /// <summary>
+    /// For when the server has to do damage to the client
+    /// </summary>
+    [ClientRpc]
+    public void TakeDamageClientRpc(float damage, bool inPercentage = false)
+    {
+        TakeDamage(damage, inPercentage);
+    }
+
+    public void TakeDamage(float damage, bool inPercentage = false)
+    {
+        if (!IsOwner) return;
+        if (isDead.Value) return;
+        if (!canBeDamaged) return;
+        if (usingCart.Value) usingCart.Value = false;
+        if (inPercentage) damage = maxHealth.Value * (damage / 100);
+        damage = effectManager.ApplyResistanceEffect(damage);
+        if (damage >= health.Value) damage = health.Value;
+        if (damage > 0) health.Value -= damage;
+        if (health.Value <= 0) isDead.Value = true;
+    }
+    void OnHealthChange(float prevHealth, float newHealth)
+    {
+        //healthText.text = health.Value.ToString();
+        healthBar.UpdateBar((int)newHealth);
+        if (prevHealth > newHealth)//Do thing where the player takes damage!
+        {
+            playerSounds.playerHit.Play();
+            // Debug.Log("Take damage!");
+        }
+        else if (prevHealth < newHealth)//Do things where the player gained health!
+        {
+            //Debug.Log("Gained healht!");
+        }
+    }
+
+
+    void InjurePlayer(bool prevVal, bool isCurrentlyDead)
+    {
+        if (isCurrentlyDead)
+        {
+            //Tell the gamemanager that this player is dead, if all other players are dead it's a game over!
+            //Gamemanager.player died!
+            weaponBehaviour.CancelAttack();
+            //col.enabled= false;//Disable collider to make the enemy target a different player.
+            playerObj.gameObject.SetActive(false);
+            myReviveArea.gameObject.SetActive(true);
+            playerSounds.playerDowned.Play();
+            if (IsOwner) ClientManager.MyClient.timesDied.Value++;
+        }
+        else
+        {
+            myReviveArea.gameObject.SetActive(false);
+            //col.enabled = true;//Enable collider to allow it to be targeted and attacked again.
+            //Resurrected animation here!
+            playerObj.gameObject.SetActive(true);
+            StartCoroutine(InvinsibilityForTime(invinsibilityDuration));
+
+        }
+
+        if (IsServer) GameManager.Instance.PlayerDeadStatus(OwnerClientId,isCurrentlyDead);
+        if (!IsOwner) return;
+        if (engineering) return;// Got revived during engineering ability go back
+        LockPlayer(isCurrentlyDead, true);
+    }
+
+    /// <summary>
+    /// Revive the player
+    /// </summary>
+    public void Revive()
+    {
+        isDead.Value = false;
+        health.Value = maxHealth.Value * 0.25f;
+    }
+    IEnumerator InvinsibilityForTime(float time)
+    {
+        canBeDamaged = false;
+        yield return new WaitForSeconds(time);
+        canBeDamaged = true;
+    }
+    #endregion
+
+    public void LockPlayer(bool isLocked, bool deadOverride = false)
+    {
+        if (isDead.Value && !deadOverride) return;//If dead, you can't change this!
+        canMove = !isLocked;
+        canAttack = !isLocked;
+        canAbility = !isLocked;
+    }
+
+    /// <summary>
+    /// Handles the animations of the player. Automatically networked when the value is changed.
+    /// </summary>
+    void OnPlayerStateChanged(PlayerAnimationState pervAnimationState, PlayerAnimationState newAnimationState)
+    {
+        animator.SetBool("Bowing", false);
+        animator.SetBool("Running", false);
+        animator.SetBool("Staffing", false);
+
+        switch (newAnimationState)
+        {
+            case PlayerAnimationState.RUNNING:
+                animator.SetBool("Running", true);
+                break;
+            case PlayerAnimationState.SWORDSLASH:
+                animator.SetTrigger("SwordSlash");
+                break;
+            case PlayerAnimationState.BOW:
+                animator.SetBool("Bowing", true);
+                break;
+            case PlayerAnimationState.STAFF:
+                animator.SetBool("Staffing", true);
+                break;
+            case PlayerAnimationState.CART:
+                //TODO:: Change with cart pose
+                animator.SetBool("Running", false);
+                break;
+            default:
+                break;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc is QuestStudentNPC && npc.CurrentTarget == null)
+        {
+            interactingNPC = npc;
+            if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
+        if (npc)
+        {
+            interactingNPC = null;
+            CanvasManager.Instance.ToggleInteract(false);
+        }
+    }
+
+    void Update()
+    {
+        healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
+        if (!IsOwner) return;//Things below this should only happen on the client that owns the object!
+        CheckIfGrounded();
+        DeathCheck();
+        TryRevive();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CanvasManager.Instance.ToggleSettingsUI(!inSettings);
+        }
+        if (inSettings) return;
+        if (canMove && !knockedBack) Move();
+        LoadCart();
+        if (usingCart.Value) return;//Below this is disabled while you are in a cart!
+        if (canAttack) HandleAttackInput();
+        if (canAbility) HandleAbilityInput();
+        if (Input.GetKeyDown(KeyCode.E)) CheckNPCInteraction();
+    }
+
+    #region updateChecks
+    private void CheckIfGrounded()
+    {
+        // Cast a sphere downwards from the character
+        RaycastHit hit;
+        float radius = 0.5f; // Replace this with your sphere radius
+
+        if (Physics.SphereCast(transform.position + Vector3.up, radius, -Vector3.up, out hit, groundDistance + 1))
+        {
+            // If the sphere hit something, the character is grounded
+            BackgroundMusicManager.Instance.HandleGroundMusic(hit.transform.tag);
+            isGrounded = true;
+        }
+        else
+        {
+            // If the sphere didn't hit anything, the character is not grounded
+            isGrounded = false;
+        }
+    }
+    
+    void DeathCheck()
+    {
+        if (transform.position.y < -20) Respawn();
+    }
+    
+    void TryRevive()
+    {
+        if (Input.GetKey(KeyCode.E) && !isDead.Value)
+        {
+            isReviving.Value = true;
+        }
+        else
+        {
+            isReviving.Value = false;
+        }
+    }
+    
+    /// <summary>
+    /// Handles the player movement
+    /// </summary>
+    private void Move()
+    {
+        int horizontalInput = 0;
+        int verticalInput = 0;
+
+        if (Input.GetKey(KeyCode.D)) horizontalInput = 1;
+        if (Input.GetKey(KeyCode.A)) horizontalInput = -1;
+        if (Input.GetKey(KeyCode.W)) verticalInput = 1;
+        if (Input.GetKey(KeyCode.S)) verticalInput = -1;
+
+
+        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        Quaternion rotationQuaternion = Quaternion.Euler(0, -45, 0);
+        movementDirection = rotationQuaternion * movementDirection;
+        // Check if there is input
+        if (movementDirection != Vector3.zero)
+        {
+            // If there is input, accelerate the object
+            float highSpeed = usingCart.Value ? cartSpeed : maxSpeed;
+
+            currentSpeed = Mathf.Lerp(currentSpeed, highSpeed, Time.deltaTime / accelerationTime);
+            playerAnimationState.Value = usingCart.Value ? PlayerAnimationState.CART : PlayerAnimationState.RUNNING;
+        }
+        else
+        {
+            // If there is no input, decelerate the object
+            currentSpeed = 0;
+            playerAnimationState.Value = PlayerAnimationState.IDLE;
+            //currentSpeed = Mathf.Lerp(currentSpeed, 0, Time.deltaTime / decelerationTime);
+        }
+        // Apply the calculated speed to the Rigidbody
+        Vector3 velocityVector = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
+        if (!isGrounded) velocityVector += Vector3.up * grav;
+        rigidbody.velocity = velocityVector;
+
+        if (movementDirection.magnitude == 0) return;
+        playerObj.transform.forward = movementDirection;
+    }
+   
+    void LoadCart()
+    {
+        if (isDead.Value) cartLoad = 0;
+        if (Input.GetKey(KeyCode.Space)) cartLoad += Time.deltaTime;
+        else cartLoad = 0;
+        if (cartLoad >= cartEnterTime) usingCart.Value = true;
+        if (usingCart.Value && Input.GetKeyDown(KeyCode.Space)) usingCart.Value = false;
+
+    }
+    
+    void Respawn()
+    {
+        transform.position = checkPoint;
+        checkPointRespawns++;
+    }
+    
+    void CheckNPCInteraction()
+    {
+        if (!interactingNPC) return;
+
+        interactingNPC.InteractServerRpc();
+        CanvasManager.Instance.ToggleInteract(false);
+    }
+
+    #endregion
+
+    void HandleAttackInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            weaponBehaviour.OnAttackInputStart();
+            AttackServerRpc();//Tell the server, that we are attacking!
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            weaponBehaviour.OnAttackInputStop();
+            AttackStopServerRpc();
+        }
+        if (Input.GetMouseButton(0))
+        {
+            weaponBehaviour.OnAttackInputHold();
+        }
+    }
+
+    void HandleAbilityInput()
+    {
+        ability.AbilityInput();
+        
+    }
+
+    #region movement
+
+    void ToggleCart(bool old, bool toggle)
+    {
+        cartObject.SetActive(toggle);
+        if (IsOwner && toggle) DiscordManager.Instance.UpdateStatus("Racing on rainbow road", $"Times fallen off: {checkPointRespawns}", "Haha kart goes vroem", "karting");
+    }
+
+    public void ApplyKnockback(Vector3 direction, float force, float duration)
+    {
+        ApplyKnockbackServerRpc(direction, force, duration);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void ApplyKnockbackServerRpc(Vector3 direction, float force, float duration)
+    {
+        ApplyKnockbackClientRpc(direction, force, duration);
+    }
+
+    [ClientRpc]
+    private void ApplyKnockbackClientRpc(Vector3 direction, float force, float duration)
+    {
+        if (!IsOwner) return;
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.velocity = direction * force;
+        knockedBack= true;
+        StartCoroutine(KnockbackReset(duration));
+    }
+
+    private IEnumerator KnockbackReset(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        rigidbody.velocity = Vector3.zero;
+        knockedBack= false;
+    }
+
+    #endregion
+
+
+
+    public PlayerData GetPlayerData() => playerData;
+
+
+
+    public void ToggleMovement(bool toggle)
+    {
+        if (isDead.Value) return;
+        if (engineering) return;
+        canMove = toggle;
+        if (toggle == false) animator.SetBool("Running", false);
+    }
+
+    public void StartAbilityCooldown(float cooldownTime)
+    {
+        StartCoroutine(ability.Cooldown(cooldownTime));
+    }
+
+    #region Remote Procedure Calls
+    /// These RPC's are purely to tell the server the client did something, and back
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -560,23 +558,6 @@ public class PlayerCharacterController : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         ability.Activate( origin, direction); 
     }
-
-
-    [ServerRpc]
-    public void DeactivateServerRpc(Vector3 clickPoint, ServerRpcParams serverRpcParams = default)
-    {
-        DeactivateAbilityClientRpc(clickPoint, serverRpcParams.Receive.SenderClientId);
-    }
-
-    [ClientRpc]
-    void DeactivateAbilityClientRpc(Vector3 clickPoint, ulong receivedClientId)
-    {
-        //Commented this line, please uncomment when the deactivate is modular!
-        //if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
-        //DesignerAbility bruh = (DesignerAbility)ability;
-        //bruh.PutDown(clickPoint);
-    }
-
 
     /// <summary>
     /// To notify the server, that the client is attacking
@@ -635,11 +616,8 @@ public class PlayerCharacterController : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == receivedClientId) return;
         weaponBehaviour.OnAttackInputStop();
     }
+    #endregion
 
-    public void StartAbilityCooldown(float cooldownTime)
-    {
-        StartCoroutine(ability.Cooldown(cooldownTime));
-    }
 
 }
 
