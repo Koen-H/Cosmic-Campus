@@ -59,6 +59,12 @@ public class SideClickerManager : MonoBehaviour
         return sideClickerValues[currentSideClick].value;
     }
     
+    public void SetValue(int newValue)
+    {
+        currentSideClick = newValue;
+        OnValueChanged();
+    }
+
     /// <summary>
     /// When the variable is changed by the user themself.
     /// </summary>

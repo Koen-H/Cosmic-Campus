@@ -45,6 +45,17 @@ public class ReadyUpManager : NetworkBehaviour
     {
         LobbyManager.OnNewClientJoined += NewClientJoined;
         SteamMatchmaking.OnLobbyEntered += LoadLobby;
+        LoadPlayers();
+    }
+
+    void LoadPlayers()
+    {
+        Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
+        foreach (ClientManager client in clients.Values)
+        {
+            if (clientItems.ContainsKey(client.GetClientId())) continue;
+            NewClientJoined(client);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -65,6 +76,7 @@ public class ReadyUpManager : NetworkBehaviour
     public void StartNetcodeHost()
     {
         NetworkManager.Singleton.StartHost();
+        SceneManager.Instance.LoadLobby();
     }
 
     public void StartNetcodeClient()
@@ -164,7 +176,20 @@ public class ReadyUpManager : NetworkBehaviour
             default:
                 try
                 {
-                    playerRoleData = LobbyManager.Instance.GetClient(outdatedClientId).playerData.playerRoleData;
+                    ClientManager client = LobbyManager.Instance.GetClient(outdatedClientId);
+                    playerRoleData = client.playerData.playerRoleData;
+                    switch (client.playerData.playerRole.Value)//If we already have one, try to set the value so the sideclicker shows the correct text!
+                    {
+                        case (PlayerRole.ARTIST):
+                            clientItems[outdatedClientId].sideClickerManager.SetValue(0);
+                            break;
+                        case (PlayerRole.DESIGNER):
+                            clientItems[outdatedClientId].sideClickerManager.SetValue(1);
+                            break;
+                        case (PlayerRole.ENGINEER):
+                            clientItems[outdatedClientId].sideClickerManager.SetValue(2);
+                            break;
+                    }
                 }
                 catch { return; }
                 break;
@@ -306,7 +331,7 @@ public class ReadyUpManager : NetworkBehaviour
     {
         if (SteamGameNetworkManager.Instance.CurrentLobby != null) SteamGameNetworkManager.Instance.CurrentLobby.Value.SetJoinable(false);
         EnableLoadingScreenClientRpc();
-        NetworkManager.SceneManager.LoadScene("Level 1", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        SceneManager.Instance.LoadLevel();
     }
 
     private void OnDisable()

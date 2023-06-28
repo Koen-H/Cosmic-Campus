@@ -8,6 +8,7 @@ using Unity.Netcode.Transports.UNET;
 using Unity.Netcode.Transports.UTP;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SteamGameNetworkManager : MonoBehaviour
 {
@@ -80,8 +81,7 @@ public class SteamGameNetworkManager : MonoBehaviour
         NetworkTransport selectedTransport = toggle ? NetworkManager.Singleton.AddComponent<FacepunchTransport>() : unityTransport;
         NetworkManager.Singleton.NetworkConfig.NetworkTransport = selectedTransport;
         this.enabled = toggle;
-        //if (!SteamClient.IsValid) Debug.Log("yes");
-            // SteamClient.Init(480, false);
+        transport = NetworkManager.Singleton.GetComponent<FacepunchTransport>();
     }
 
 
@@ -96,10 +96,11 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     public async void StartHost(int maxMembers = 3)
     {
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
-       // SceneManager.Instance.LoadLobby();
+        SceneManager.Instance.LoadLobby();
        // NetworkManager.SceneManager.LoadScene("LobbyScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 

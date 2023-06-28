@@ -17,4 +17,9 @@ public class TESTSCRIPT : MonoBehaviour
     {
         SteamGameNetworkManager.Instance.JoinFriend();
     }
+
+    public void NetCode()
+    {
+        SteamGameNetworkManager.Instance.UseSteam(false);
+    }
 }

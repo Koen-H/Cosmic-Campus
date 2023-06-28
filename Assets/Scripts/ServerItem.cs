@@ -39,5 +39,6 @@ public class ServerItem : MonoBehaviour
     public async void TryJoinServer()
     {
         await SteamMatchmaking.JoinLobbyAsync(serverOwnerId);
+        Debug.Log(await SteamMatchmaking.JoinLobbyAsync(serverOwnerId));
     }
 }

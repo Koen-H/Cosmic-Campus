@@ -2496,7 +2496,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 991578888}
         m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
         m_MethodName: Disconnect
         m_Mode: 1
@@ -7737,6 +7737,7 @@ GameObject:
   - component: {fileID: 991578886}
   - component: {fileID: 991578885}
   - component: {fileID: 991578884}
+  - component: {fileID: 991578888}
   m_Layer: 5
   m_Name: Main Screen
   m_TagString: Untagged
@@ -7826,6 +7827,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &991578888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991578883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d8fdba849098d841a371ef037b79686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 0}
 --- !u!1 &1118267658
 GameObject:
   m_ObjectHideFlags: 0
