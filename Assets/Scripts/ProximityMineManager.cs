@@ -32,7 +32,16 @@ public class ProximityMineManager : NetworkBehaviour
         if (other.CompareTag("Enemy") || other.CompareTag("InvincibleEnemy")) return;
         if (IsOwner) ExplodeClientRpc();
     }
+    private void OnDestroy()
+    {
+        //Spawn the explosion vfx!
+        Instantiate(explosionVfx, this.transform.position, Quaternion.identity);
+    }
 
+    /// <summary>
+    /// The timer that starts when someone enters the proximity area
+    /// </summary>
+    /// <returns></returns>
     IEnumerator ProximityTimer()
     {
         ///SOMEONE WALKED IN AND TRIGGERED IT! DO THINGS!
@@ -48,6 +57,11 @@ public class ProximityMineManager : NetworkBehaviour
 
     }
 
+    /// <summary>
+    /// The default timer that will destroy (and explore) the bomb after a certain amount of time.
+    /// </summary>
+    /// <param name="despawnTimer"></param>
+    /// <returns></returns>
     IEnumerator DespawnTimer(float despawnTimer)
     {
         yield return new WaitForSeconds(despawnTimer);
@@ -87,9 +101,4 @@ public class ProximityMineManager : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    private void OnDestroy()
-    {
-        //Spawn the explosion vfx!
-        Instantiate(explosionVfx, this.transform.position, Quaternion.identity);
-    }
 }
