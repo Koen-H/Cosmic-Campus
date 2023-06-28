@@ -315,7 +315,6 @@ public class ReadyUpManager : NetworkBehaviour
         Dictionary<ulong, ClientManager> clients = LobbyManager.Instance.GetClients();
         foreach (ClientManager client in clients.Values)
         {
-            Debug.Log("unsub!");
             client.OnClientLeft -= ClientLeft;
         }
         clientItems.Clear();

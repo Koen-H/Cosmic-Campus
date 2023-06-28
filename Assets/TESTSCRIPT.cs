@@ -7,7 +7,6 @@ public class TESTSCRIPT : MonoBehaviour
     public void ButtonClick()
     {
         SteamGameNetworkManager.Instance.UseSteam(true);
-        Debug.Log(LobbyManager.Instance.GetClients().Count);
     }
 
     public void StartHost()
