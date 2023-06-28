@@ -110,7 +110,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 681417067990674907}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.614, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2588,7 +2588,7 @@ Transform:
   m_GameObject: {fileID: 7513067803192467692}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7605605234655322254}
@@ -2608,7 +2608,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 0.81849885, z: 0.7012491}
-  m_Center: {x: 0, y: -0.090750575, z: -0.27413344}
+  m_Center: {x: 0, y: 0.47, z: -0.27413344}
 --- !u!82 &681417068995671452
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2737,7 +2737,7 @@ MonoBehaviour:
   collider: {fileID: 681417067990674907}
   vfxPrefab: {fileID: 7053791623634552737, guid: ad7d9d88e8272e4409c800930502443c,
     type: 3}
-  impactSFX: {fileID: 0}
+  impactSFX: {fileID: 681417068995671452}
 --- !u!114 &681417068995671453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3120,7 +3120,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8911074415641144345}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.614, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
