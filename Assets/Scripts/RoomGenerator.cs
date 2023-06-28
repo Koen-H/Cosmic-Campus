@@ -296,8 +296,8 @@ public class RoomGenerator : NetworkBehaviour
             {
                 currentTeacher.requiredStudents++;
                 newNPC.requiredStudents++;
-                //currentTeacher.dependency.Add(newNPC);
-                //newNPC.dependency.Add(currentTeacher);
+                currentTeacher.dependency.Add(newNPC);
+                newNPC.dependency.Add(currentTeacher);
             }
 
             // Decrease teacher ratio or reset it and prepare to draw a new teacher
@@ -826,7 +826,7 @@ public class Door
 public class OnMapNPC
 {
     public Vector3 position;
-    //public List<OnMapNPC> dependency = new List<OnMapNPC>();
+    public List<OnMapNPC> dependency = new List<OnMapNPC>();
     public int requiredStudents;
 
     public OnMapNPC(Vector3 position)

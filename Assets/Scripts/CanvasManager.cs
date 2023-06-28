@@ -11,7 +11,7 @@ public class CanvasManager : MonoBehaviour
     [Header("Prompts")]
     [SerializeField] TextMeshProUGUI revivePrompt;
     [SerializeField] TextMeshProUGUI engineerPrompt;
-    [SerializeField] TextMeshProUGUI interactPrompt;
+    [SerializeField] GameObject interactPrompt;
 
     Camera cam;
 

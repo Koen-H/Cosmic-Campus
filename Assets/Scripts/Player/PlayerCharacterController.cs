@@ -255,7 +255,7 @@ public class PlayerCharacterController : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
-        if (npc)
+        if (npc is QuestStudentNPC)
         {
             interactingNPC = npc;
             if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
