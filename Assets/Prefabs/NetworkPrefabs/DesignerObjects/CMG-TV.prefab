@@ -198,6 +198,13 @@ MonoBehaviour:
   - {fileID: 32900000, guid: a469b6fab42c4f347b44941155ad4ad6, type: 3}
   - {fileID: 32900000, guid: c9537c0586de2e945b5f3aab26fa58ed, type: 3}
   - {fileID: 32900000, guid: 6d6b4595a2e31ba4d80f6b4f5a1de6d4, type: 3}
+  - {fileID: 32900000, guid: 6021d9d8bd2513f4aae282f0bd86f0a4, type: 3}
+  - {fileID: 32900000, guid: cbc27930db18c6148bbc4beea0802dfc, type: 3}
+  - {fileID: 32900000, guid: 46d41e17de989b9478b9b5000d79d01c, type: 3}
+  - {fileID: 32900000, guid: 40942d82905b46a43980fea2d0b8e0b9, type: 3}
+  - {fileID: 32900000, guid: 97c1deee791839847a0a43ec6144a6e0, type: 3}
+  - {fileID: 32900000, guid: 50cd6f0a65f81fe459878f67244888dc, type: 3}
+  - {fileID: 32900000, guid: a3f1f45b37c29cb4180aeaa3e6871a17, type: 3}
   player: {fileID: 3589217889526031978}
 --- !u!65 &4058119882224976203
 BoxCollider:
@@ -347,7 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
-  collider: {fileID: 4058119882236917011}
+  coll: {fileID: 4058119882236917011}
   vfxPrefab: {fileID: 7053791623634552737, guid: ad7d9d88e8272e4409c800930502443c,
     type: 3}
   impactSFX: {fileID: 1272414656084540616}
