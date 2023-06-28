@@ -10,10 +10,9 @@ public class PunchAttack : EnemyAttackBehaviour
     protected float attackRange = 2f;
     private Animator attackAnim;
 
+    [SerializeField] private List<AttackCollider> attackColliders;
 
-    [SerializeField] List<AttackCollider> attackColliders;
-    
-    List<Transform> hits = new List<Transform>();
+    private List<Transform> hits = new List<Transform>();
 
     protected void Awake()
     {
@@ -47,21 +46,15 @@ public class PunchAttack : EnemyAttackBehaviour
     protected override void Attack()
     {
         Attacked();
-        //
         ToggleColliders(true);
 
         //Play the punch attack animation
-
-        //For now...
-        if (enemy.IsOwner)
-        {
-            enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
-        }
+        if (enemy.IsOwner) enemy.enemyAnimationState.Value = EnemyAnimationState.SWORDSLASH;
 
         /*  attackAnim = GetComponentInChildren<Animator>();
           attackAnim.SetTrigger("Animate");*/
 
-        float attackAnimDuration = 0.917f;
+        float attackAnimDuration = 0.917f;//Set the duration of the animation manually as we can't get it from the animator.
         StartCoroutine(AfterAttackAnim(attackAnimDuration));
     }
 

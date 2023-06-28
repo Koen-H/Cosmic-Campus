@@ -15,7 +15,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private GameObject enemyDebrisDrops;
     [SerializeField] public Transform centerPoint;
     [SerializeField] private HealthBar healthBar;
-    [SerializeField] private EnemySO enemySO;
+    //[SerializeField] private EnemySO enemySO;
     [SerializeField] private Animator animator;
     public EnemyState enemyState = EnemyState.IDLING;
     public EffectManager effectManager;
@@ -63,7 +63,7 @@ public class Enemy : NetworkBehaviour
     private EnemyAttackBehaviour attackBehaviour;
     [HideInInspector] public NetworkVariable<EnemyAnimationState> enemyAnimationState = new(EnemyAnimationState.IDLE, default, NetworkVariableWritePermission.Owner);
 
-    void OnPlayerStateChanged(EnemyAnimationState pervAnimationState, EnemyAnimationState newAnimationState)
+    void OnEnemyStateChanged(EnemyAnimationState pervAnimationState, EnemyAnimationState newAnimationState)
     {
         switch (newAnimationState)
         {
@@ -79,9 +79,7 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-
-
-    #region Initialization methods
+    #region unity
     private void Awake()
     {
 
@@ -100,14 +98,12 @@ public class Enemy : NetworkBehaviour
     }
 
 
-
     public override void OnNetworkSpawn()
     {
         health.OnValueChanged += OnHealthChange;
         effectManager.OnEffectChange += HandleEffectChange;
         enemyType.OnValueChanged+= OnEnemyTypeChange;
-        enemyAnimationState.OnValueChanged += OnPlayerStateChanged;
-        SetSOData();
+        enemyAnimationState.OnValueChanged += OnEnemyStateChanged;
         SetNavMeshData();
         maxHealth = health.Value;
         healthBar.SetMaxValue(maxHealth);
@@ -121,19 +117,11 @@ public class Enemy : NetworkBehaviour
         soundManager.PlayDeathSFX();
         FallApart();
     }
-    void SetSOData()
-    {
-        health.Value = enemySO.health;
-
-        if (!IsServer) return;//Everything below this line is handled on the server only!
-        moveSpeed = enemySO.moveSpeed;
-
-
-    }
 
     #endregion
 
-    #region Health related methods
+
+    #region Health
 
     /// <summary>
     /// Heal the player based on percentage of max health.
@@ -258,18 +246,7 @@ public class Enemy : NetworkBehaviour
         }
         return children; 
     }
-
-    /// <summary>
-    /// Destroy the enemy later, so it can sync up with the other clients.
-    /// </summary>
-    IEnumerator LateDestroy()
-    {
-        yield return new WaitForSeconds(5);
-        Destroy(gameObject);
-    }
-
     #endregion
-
 
     /// <summary>
     /// Because we use a navmesh agent and it rotates the whole gameobject, we need to counter rotate the healtbar each frame.
@@ -278,21 +255,6 @@ public class Enemy : NetworkBehaviour
     {
         healthBar.transform.LookAt(Camera.main.transform, -Vector3.up);
     }
-
-
-    /*    public void Update()
-        {
-            FixHealthBar();
-            if (enemyState == EnemyState.ATTACKING) return;
-            targetBehaviour.FindTarget();
-            attackBehaviour.TryAttack();
-
-            if (Input.GetKeyDown(KeyCode.Alpha1)) enemyType.Value = EnemyType.NONE;
-            if (Input.GetKeyDown(KeyCode.Alpha2)) enemyType.Value = EnemyType.ARTIST;
-            if (Input.GetKeyDown(KeyCode.Alpha3)) enemyType.Value = EnemyType.DESIGNER;
-            if (Input.GetKeyDown(KeyCode.Alpha4)) enemyType.Value = EnemyType.ENGINEER;
-        }
-    */
 
     IEnumerator EnemyLogic()
     {
@@ -311,57 +273,24 @@ public class Enemy : NetworkBehaviour
         attackBehaviour.TryAttack();
     }
 
-
-    //public virtual void AttackLogic(Transform target)
-    //{
-    //    if ((target.position - transform.position).magnitude < meleeRange && canAttack)
-    //    {
-    //        Attack(target);
-    //        canAttack = false;
-    //    }
-    //}
-
-    //public virtual void Attack(Transform target)
-    //{
-    //    DealDamage(damage, target.GetComponent<PlayerCharacterController>());
-    //    StartCoroutine(AttackCoolDown(attackCooldown));
-    //}
-
-    void DealDamage(float damage, PlayerCharacterController to)
-    {
-        to.TakeDamage(damage);
-    }
-
     void SetNavMeshData()
     {
         enemyMovement.SetSpeed(moveSpeed);
     }
-
-    protected IEnumerator AttackCoolDown(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        canAttack = true;
-    }
-
 
     void HandleEffectChange()
     {
         enemyMovement.SetSpeed(effectManager.ApplyMovementEffect(moveSpeed));
     }
 
-
-
-
     void OnEnemyTypeChange(EnemyType prevType, EnemyType newType)
     {
         MatChanger[] matChangers = GetComponentsInChildren<MatChanger>();
         foreach (MatChanger matChang in matChangers) matChang.ChangeMaterial(newType);
     }
-
 }
 public enum EnemyState { IDLING, CHASING, FIGHTING, RUNNING, ATTACKING }
 public enum EnemyType { NONE, ARTIST, DESIGNER, ENGINEER, WHITE}
-
 
 public enum EnemyAnimationState
 {

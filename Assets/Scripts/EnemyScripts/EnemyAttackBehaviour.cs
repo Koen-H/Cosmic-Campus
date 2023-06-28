@@ -6,10 +6,10 @@ using UnityEngine.AI;
 
 public abstract class EnemyAttackBehaviour : NetworkBehaviour
 {
-    protected Enemy enemy;
 
-    [SerializeField] bool canMoveDuringAttack = false;
+    protected Enemy enemy;
     protected NavMeshAgent agent;
+    [SerializeField] private bool canMoveDuringAttack = false;
     [SerializeField] protected float damage;
 
     protected void Awake()

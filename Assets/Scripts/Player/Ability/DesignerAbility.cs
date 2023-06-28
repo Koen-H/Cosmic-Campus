@@ -40,38 +40,7 @@ public class DesignerAbility : Ability
         if (player.IsOwner)
         {
             ServerSpawner.Instance.SpawnDesignerObjectServerRpc(hit.point);
-            Debug.Log("ST?");
             StartCoroutine(Cooldown(cooldown));
         }
-        //canUse = false;
-        //if (player.IsServer)
-        //{
-        //    target.GetComponent<NetworkObject>().ChangeOwnership(player.OwnerClientId);
-        //    target.transform.parent = player.playerObj.transform;
-        //    target.transform.localPosition = new Vector3(offset.x, offset.y + target.transform.localScale.y/2, offset.z + target.transform.localScale.z);
-        //}
-
-
-        //if (target.TryGetComponent(out Rigidbody rb)) rb.isKinematic = true;
     }
-
-
-    //public void PutDown(Vector3 clickPoint)
-    //{
-    //    player.playerObj.transform.LookAt(new Vector3(clickPoint.x,transform.position.y , clickPoint.z));
-    //    ObjectSlamManager objectSlamManager = target.AddComponent<ObjectSlamManager>();
-    //    objectSlamManager.playerController = player;
-    //    Debug.Log("put down");
-    //    // Place target on the ground
-    //    target.transform.parent = null;
-    //    target.transform.position = new Vector3(clickPoint.x, target.transform.position.y, clickPoint.z);
-    //    //target.transform.position = new Vector3(
-    //    //    target.transform.position.x,
-    //    //    target.transform.localScale.y / 2,
-    //    //    target.transform.position.z
-    //    //);
-    //    target = null;
-    //    StartCoroutine(Cooldown(cooldown));
-    //}
-
 }

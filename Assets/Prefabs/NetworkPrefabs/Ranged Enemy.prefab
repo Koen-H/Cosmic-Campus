@@ -1199,7 +1199,7 @@ MonoBehaviour:
     min: 6
     max: 21
     diff: 1
-  canBeNockedBack: 1
+  canBeKnockedBack: 1
 --- !u!114 &2328116851091482353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1320,10 +1320,11 @@ MonoBehaviour:
   avatar: {fileID: 0}
   enemyDebrisDrops: {fileID: 2146854314577241736}
   centerPoint: {fileID: 6317668722418613023}
-  healthText: {fileID: 8452948688483813390}
   healthBar: {fileID: 7712691058309217934}
   enemySO: {fileID: 11400000, guid: 1718a9f973b1f6441bb0b596bb92ec63, type: 2}
+  animator: {fileID: 8279705314238050102}
   enemyState: 0
+  effectManager: {fileID: 1128526819805712506}
   soundManager: {fileID: 4584546433348184059}
   enemyTypeInsp: 0
   enemyType:
@@ -1334,9 +1335,7 @@ MonoBehaviour:
   forceTypeMatch: 0
   changeTypeOnCorrectHit: 0
   health:
-    m_InternalValue: 10
-  effectManager: {fileID: 1128526819805712506}
-  animator: {fileID: 8279705314238050102}
+    m_InternalValue: 100
   enemyAnimationState:
     m_InternalValue: 0
 --- !u!114 &1128526819805712506

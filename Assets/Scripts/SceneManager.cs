@@ -23,11 +23,11 @@ public class SceneManager : NetworkBehaviour
     {
         if(instance != null)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public override void OnNetworkSpawn()

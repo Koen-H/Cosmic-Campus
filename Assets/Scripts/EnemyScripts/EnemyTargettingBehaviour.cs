@@ -30,17 +30,23 @@ public abstract class EnemyTargettingBehaviour : MonoBehaviour
         //The abstract class doesn't target. Silly enemy...
         return;
     }
-    
+
     protected void SetEnemyTarget()
     {
-        enemy.CurrentTarget= target;
+        enemy.CurrentTarget = target;
     }
 
+    /// <summary>
+    /// Whenever the enemy takes damage
+    /// </summary>
     protected virtual void OnTakeDamage()
     {
         if(hasThirdEye && (target == null || useThirdEyeOnDamage)) GetClosestPlayer();
     }
 
+    /// <summary>
+    /// Gets the closest player using a physics overlapsphere
+    /// </summary>
     protected void GetClosestPlayer()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, thirdEyeRange);

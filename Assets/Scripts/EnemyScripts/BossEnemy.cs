@@ -21,6 +21,11 @@ public class BossEnemy : PunchAttack
         BackgroundMusicManager.Instance.PlayBossMusic();
     }
 
+    private void OnDestroy()
+    {
+        if(IsServer)GameManager.Instance.OnBossDestroy();
+        BackgroundMusicManager.Instance.PlayCalmMusic();
+    }
 
     void LaunchMine()
     {
@@ -52,11 +57,6 @@ public class BossEnemy : PunchAttack
         }
     }
 
-    private void OnDestroy()
-    {
-        if(IsServer)GameManager.Instance.OnBossDestroy();
-        BackgroundMusicManager.Instance.PlayCalmMusic();
-    }
 
 
 }

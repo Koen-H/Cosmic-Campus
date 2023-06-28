@@ -10,11 +10,10 @@ public class EnemyMovement : NetworkBehaviour
     private NavMeshAgent agent;
     private Enemy enemy;
     private PlayerCharacterController target;
-
     
-    [SerializeField] bool canWander = true;
-    [SerializeField] float wanderDistance = 5f;
-    [SerializeField] Range wanderDelay = new Range(0,1);
+    [SerializeField] private bool canWander = true;
+    [SerializeField] private float wanderDistance = 5f;
+    [SerializeField] private Range wanderDelay = new Range(0,1);
 
     [Header("Knockback related")]
     [SerializeField] private bool canBeKnockedBack = true;
@@ -40,7 +39,7 @@ public class EnemyMovement : NetworkBehaviour
     private void Update()
     {
         if (!enemy.IsOwner) return;
-        if (isKnockedBack) Nockback();
+        if (isKnockedBack) Knockback();
         else if (enemy.enemyState != EnemyState.ATTACKING) Move();
         if(DestinationReached()) enemy.enemyAnimationState.Value = EnemyAnimationState.IDLE;
     }
@@ -59,7 +58,7 @@ public class EnemyMovement : NetworkBehaviour
 
     public void SetSpeed(float speed) { if (speed >= 0) agent.speed = speed;}
 
-    #region Nockback
+    #region Knockback
     public void ApplyKnockback(Vector3 direction, float force, float duration)
     {
         if (!canBeKnockedBack) return;
@@ -76,7 +75,7 @@ public class EnemyMovement : NetworkBehaviour
         isKnockedBack = true;
     }
 
-    private void Nockback()
+    private void Knockback()
     {
         // Apply knockback force
         agent.velocity = knockbackDirection.normalized * knockbackForce;
@@ -102,6 +101,9 @@ public class EnemyMovement : NetworkBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Move the target by setting the agent destination
+    /// </summary>
     protected virtual void Move()
     {
         //Simple walk towards target

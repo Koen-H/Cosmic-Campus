@@ -10,12 +10,11 @@ public class EnemyProjectile : MonoBehaviour
     public float damage = 0;
     public Enemy enemy;
 
-    [SerializeField] AudioClip playerHit;
-    [SerializeField] SFXPlayer sfxPlayer;
+    [SerializeField] private AudioClip playerHit;
+    [SerializeField] private SFXPlayer sfxPlayer;
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
         if (attached) return;
         if (other.tag == "Player")
         {
@@ -31,12 +30,6 @@ public class EnemyProjectile : MonoBehaviour
         StartCoroutine(KillAfterDuration(10));
     }
 
-    IEnumerator KillAfterDuration(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        Destroy(gameObject);
-    }
-
     private void Update()
     {
         if (attached)
@@ -48,13 +41,9 @@ public class EnemyProjectile : MonoBehaviour
             }
         }
     }
-
-    void DealDamage(float damage, PlayerCharacterController to)
+    IEnumerator KillAfterDuration(float duration)
     {
-        if (to)
-        {
-            Debug.Log("to is not null");
-            to.TakeDamage(damage);
-        }
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject);
     }
 }

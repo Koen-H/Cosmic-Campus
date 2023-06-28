@@ -9,6 +9,9 @@ public class EnemySoundManager : MonoBehaviour
     [SerializeField] private AudioClip enemyDeath;
     [SerializeField] private SFXPlayer sfxPlayer;
 
+    /// <summary>
+    /// Spawns the sfx
+    /// </summary>
     public void PlayDeathSFX()
     {
         Instantiate(sfxPlayer, transform.position, Quaternion.identity).audioClip = enemyDeath;

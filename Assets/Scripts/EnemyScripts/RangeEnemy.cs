@@ -5,28 +5,14 @@ using UnityEngine;
 
 public class RangeEnemy : PunchAttack
 {
-    [SerializeField] EnemyProjectile projectile;
-    [SerializeField] float projectileSpeed;
-    [SerializeField] float projectileDamage;
-    [SerializeField] GameObject projectileSpawner;
-    [SerializeField] float rangedAttackRange;
+    [SerializeField] private EnemyProjectile projectile;
+    [SerializeField] private float projectileSpeed;
+    [SerializeField] private float projectileDamage;
+    [SerializeField] private GameObject projectileSpawner;
+    [SerializeField] private float rangedAttackRange;
 
-    //public override void AttackLogic(Transform target)
-    //{
-    //    if ((target.position - transform.position).magnitude < detectionRange && canAttack)
-    //    {
-    //        ArrowManager newArrow = Instantiate(arrow, transform.position + transform.forward, transform.rotation);
-    //        newArrow.GetComponent<Rigidbody>().AddForce(transform.forward * arrowForce);
-    //        ArrowManager arrowManager = newArrow.GetComponent<ArrowManager>();
-    //        arrowManager.damage = arrowDamage;
-    //        arrowManager.rangeEnemy = this;
-
-
-    //        StartCoroutine(AttackCoolDown(attackCooldown));
-    //        //Attack(target);
-    //        canAttack = false;
-    //    }
-    //}
+    //TODO: Somehow find the value through code
+    [SerializeField] private float attackAnimLength = 0.917f;
 
     public override void TryAttack()
     {
@@ -38,7 +24,6 @@ public class RangeEnemy : PunchAttack
         if (dotProduct < 0) return;
         if ((currentTarget.transform.position - transform.position).magnitude < attackRange)
         {
-            //We are trying to punch on close distance!
             base.Attack();
         }
         else
@@ -57,12 +42,9 @@ public class RangeEnemy : PunchAttack
             ShootClientRpc(enemy.CurrentTarget.GetComponent<PlayerCharacterController>().centerPoint.position);
         }
 
-        //Todo: trail?
-        float attackAnimLength = 0.917f; 
         StartCoroutine(AfterAttackAnim(attackAnimLength));
 
     }
-
 
     [ClientRpc]
     void ShootClientRpc(Vector3 lookAtPos)

@@ -13,24 +13,17 @@ public class EnemySpawner : MonoBehaviour
     private const string cheatCode = "killenemies";
 
     GameObject spawnedEnemy;
-
-
-    private void Update()
-    {
-        if (NetworkManager.Singleton.IsServer)
-        {
-           // if(Input.GetKeyDown(KeyCode.P)) SpawnEnemy();
-        }
-
-        CheckCheatCodes();
-    }
-
     private void Start()
     {
         if (spawnOnNetwork && NetworkManager.Singleton.IsServer)
         {
             SpawnEnemy();
         }
+    }
+
+    private void Update()
+    {
+        CheckCheatCodes();
     }
 
     public void SpawnEnemy()

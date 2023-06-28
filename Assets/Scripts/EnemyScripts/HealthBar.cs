@@ -6,22 +6,17 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private GameObject bar;
 
-    [SerializeField] Image bgSprite; 
-    [SerializeField] Image barSprite;
-    [SerializeField] float fadeDuration = 1f; 
+    [SerializeField] private Image bgSprite; 
+    [SerializeField] private Image barSprite;
+    [SerializeField] private float fadeDuration = 1f; 
  
     private float maxValue;
     private float barMult;
 
-    Coroutine coBg; 
-    Coroutine coBar;
+    private Coroutine coBg;
+    private Coroutine coBar;
 
-    [SerializeField] bool dontFade = false;
-
-/*    private void Start()
-    {
-        barMult = 1 / maxValue;
-    }*/
+    [SerializeField] private bool dontFade = false;
 
     public void ResetBar()
     {
@@ -64,10 +59,5 @@ public class HealthBar : MonoBehaviour
                 image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Lerp(1, 0, t));
                 yield return null;
             }
-    }
-
-
-    private void OnDestroy()
-    {
     }
 }
