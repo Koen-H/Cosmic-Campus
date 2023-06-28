@@ -9,9 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9196430805420837850}
-  m_Layer: 0
+  - component: {fileID: 8512902523113481142}
+  - component: {fileID: 2980656931795216752}
+  - component: {fileID: 1379945028969993980}
+  m_Layer: 13
   m_Name: Torii
-  m_TagString: Untagged
+  m_TagString: Debris
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,6 +35,45 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8512902523113481142
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9196430805420837849}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.40548325, y: 3.8040137, z: 0.30699492}
+  m_Center: {x: -1.6057327, y: 1.8979142, z: 0.012363195}
+--- !u!65 &2980656931795216752
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9196430805420837849}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.29849005, y: 3.9369633, z: 0.29824162}
+  m_Center: {x: 1.5599251, y: 1.9318045, z: -0.032085896}
+--- !u!65 &1379945028969993980
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9196430805420837849}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.5997443, y: 1.285152, z: 0.24618721}
+  m_Center: {x: -0.044526815, y: 3.199128, z: -0.0436368}
 --- !u!1001 &9196430804681111256
 PrefabInstance:
   m_ObjectHideFlags: 0

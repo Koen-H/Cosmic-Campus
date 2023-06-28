@@ -176,7 +176,7 @@ public class GameManager : NetworkBehaviour
     public void OnBossDestroy()
     {
         int index = UnityEngine.Random.Range(0, INWorldTeachers.GetCount());
-        SpawnInworldTeacherClientRpc(index);
+       // SpawnInworldTeacherClientRpc(index);
     }
 
     [ClientRpc]

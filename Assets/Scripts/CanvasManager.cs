@@ -24,6 +24,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject winUI;
     [SerializeField] private GameObject settingsUI;
     [SerializeField] private GameObject connectionLostUI;
     [SerializeField] TextMeshProUGUI loadingHint;
@@ -69,7 +70,7 @@ public class CanvasManager : MonoBehaviour
     public void ToggleLoadingScreen(bool toggle)
     {
         loadingScreen.SetActive(toggle);
-        if (toggle) loadingHint.text = "Please do not jump off the map";
+        if (toggle) loadingHint.text = "Bring the student to the teacher!";
     }
     public GameObject GetGameUI()
     {
@@ -84,6 +85,11 @@ public class CanvasManager : MonoBehaviour
     public void ToggleGameUI(bool toggle)
     {
         gameUI.SetActive(toggle);
+    }
+    
+    public void ToggleWinUI(bool toggle)
+    {
+        winUI.SetActive(toggle);
     }
 
     public void ToggleSettingsUI(bool toggle)

@@ -25,6 +25,8 @@ public class BossEnemy : PunchAttack
     {
         if(IsServer)GameManager.Instance.OnBossDestroy();
         BackgroundMusicManager.Instance.PlayCalmMusic();
+        CanvasManager.Instance.ToggleGameUI(false);
+        CanvasManager.Instance.ToggleWinUI(true);
     }
 
     void LaunchMine()

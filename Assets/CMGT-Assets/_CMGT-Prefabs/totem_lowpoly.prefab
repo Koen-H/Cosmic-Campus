@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1788681525682832797}
-  m_Layer: 0
+  - component: {fileID: -235968696216106501}
+  m_Layer: 13
   m_Name: totem_lowpoly
-  m_TagString: Untagged
+  m_TagString: Debris
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,6 +33,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &-235968696216106501
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6523554237587670993}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.3573153, y: 0.6810533, z: 0.36455226}
+  m_Center: {x: -0.0048531294, y: 0.33344418, z: 0.024147987}
 --- !u!1001 &6019330036029107042
 PrefabInstance:
   m_ObjectHideFlags: 0
