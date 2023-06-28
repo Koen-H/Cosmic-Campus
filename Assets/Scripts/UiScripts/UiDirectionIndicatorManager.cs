@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class UiDirectionIndicatorManager : MonoBehaviour
 {
-    [SerializeField] UiDirectionIndicator deathPrefab;
-    [SerializeField] Camera cam;
-    [SerializeField] Canvas canvas;
+    [SerializeField] private UiDirectionIndicator deathPrefab;
+    [SerializeField] private Camera cam;
+    [SerializeField] private Canvas canvas;
 
-    [SerializeField] Sprite engineerSprite;
-    [SerializeField] Sprite artistSprite;
-    [SerializeField] Sprite designerSprite;
+    [SerializeField] private Sprite engineerSprite;
+    [SerializeField] private Sprite artistSprite;
+    [SerializeField] private Sprite designerSprite;
     
-    [SerializeField] Sprite engineerArrow;
-    [SerializeField] Sprite artistArrow;
-    [SerializeField] Sprite designerArrow;
+    [SerializeField] private Sprite engineerArrow;
+    [SerializeField] private Sprite artistArrow;
+    [SerializeField] private Sprite designerArrow;
 
     private List<PlayerCharacterController> characterControllers = new List<PlayerCharacterController>();
 

@@ -9,25 +9,24 @@ using UnityEngine.Serialization;
 public class ObjectSlamManager : NetworkBehaviour
 {
     public PlayerCharacterController playerController;
-    Rigidbody rb;
+    private Rigidbody rb;
     private bool hasFallen = false;
-    float slamDistance = 3;
-    float damage = 40;
-    float nockback = 20;
+    [SerializeField] private float slamDistance = 3;
+    [SerializeField] private float damage = 40;
+    [SerializeField] private float nockback = 20;
     //GameObject slamObjVFX, slamExtraVFX;
-    List<Enemy> directHits = new List<Enemy>();
 
-    float dropSpeed = 0.1f;
-    
-    float sinkSpeed = 0.1f;
-    float sinkSpeedIncrement = 0.05f;
-    bool isSinking = false;
+    private float dropSpeed = 0.1f;
+
+    private float sinkSpeed = 0.1f;
+    private float sinkSpeedIncrement = 0.05f;
+    private bool isSinking = false;
 
     [FormerlySerializedAs("collider")]
-    [SerializeField] GameObject coll;
-    [SerializeField] ParticleSystem vfxPrefab;
+    [SerializeField] private GameObject coll;
+    [SerializeField] private ParticleSystem vfxPrefab;
 
-    [SerializeField] AudioSource impactSFX;
+    [SerializeField] private AudioSource impactSFX;
 
     private void Awake()
     {
@@ -48,20 +47,6 @@ public class ObjectSlamManager : NetworkBehaviour
             SinkObject();
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (!hasFallen)
-    //    {
-    //        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("RainbowRoad"))
-    //        {
-    //            hasFallen = true;
-    //            GroundSlam();
-
-    //        }
-    //    }
-    //}
-
     private void OnCollisionEnter (Collision collision)
     {
         if (!hasFallen)
@@ -97,7 +82,6 @@ public class ObjectSlamManager : NetworkBehaviour
                     Vector3 knockbackDirection = enemy.transform.position - transform.position;
                     float knockbackForce = nockback;
                     float knockbackDuration = 0.5f;
-                    Debug.Log("DOING THINGS");
 
                     EnemyMovement enemyMovement = enemy.GetComponentInParent<EnemyMovement>();
                     knockbackDirection = new Vector3(knockbackDirection.x, 0, knockbackDirection.z);

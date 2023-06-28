@@ -36,7 +36,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] NetworkVariable<float> health = new(10);
     public event System.Action OnReceivedDamage;
     private float maxHealth;
-    private float moveSpeed;
+    [SerializeField] private float moveSpeed = 1.5f;
 
 
     protected bool canAttack = true;

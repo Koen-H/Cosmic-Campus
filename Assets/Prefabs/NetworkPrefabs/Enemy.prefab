@@ -2676,7 +2676,6 @@ MonoBehaviour:
   enemyDebrisDrops: {fileID: 4033461453204819054}
   centerPoint: {fileID: 9051757472967971321}
   healthBar: {fileID: 4700184518596695144}
-  enemySO: {fileID: 11400000, guid: 1718a9f973b1f6441bb0b596bb92ec63, type: 2}
   animator: {fileID: 7715964056141395901}
   enemyState: 0
   effectManager: {fileID: 2709977735729543836}
@@ -2691,6 +2690,7 @@ MonoBehaviour:
   changeTypeOnCorrectHit: 0
   health:
     m_InternalValue: 100
+  moveSpeed: 1.5
   enemyAnimationState:
     m_InternalValue: 0
 --- !u!114 &2709977735729543836
@@ -3068,11 +3068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -3708,11 +3704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -3838,11 +3830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
@@ -4091,11 +4079,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbb0c3a1177f53c4f897efb917c877b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
-  defaultMat: []
-  artistMat: []
-  designerMat: []
-  engineerMat: []
+  duration: 4
   defaultCol2: {r: 1, g: 1, b: 1, a: 1}
   artistCol2: {r: 1, g: 0.121, b: 0, a: 1}
   designerCol2: {r: 0, g: 0.878, b: 0.278, a: 1}
