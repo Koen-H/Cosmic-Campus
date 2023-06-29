@@ -17,7 +17,7 @@ public class QuestNPC : NetworkBehaviour
     [HideInInspector] public Vector3 doorNormal;
     [HideInInspector] public int doorId;
     [SerializeField] GameObject questInfo;
-
+    private NetworkVariable<bool> saved = new(false);
     public NetworkVariable<bool> isFollowing = new(false);
 
 
@@ -53,8 +53,8 @@ public class QuestNPC : NetworkBehaviour
             QuestStudentNPC student = other.GetComponent<QuestStudentNPC>();
             if (student && student.self is StudentNPC)
             {
-                student.CurrentTarget = null;
-                Destroy(student.GetComponent<CapsuleCollider>());
+                student.saved.Value = true;
+                student.SavedClientRpc();
                 self.requiredStudents--;
             }
             if (self.requiredStudents == 0)
@@ -65,6 +65,15 @@ public class QuestNPC : NetworkBehaviour
             }
         }
     }
+
+    [ClientRpc]
+    public void SavedClientRpc()
+    {
+        CurrentTarget = null;
+        Destroy(GetComponent<CapsuleCollider>());
+        
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public virtual void InteractServerRpc(ServerRpcParams serverRpcParams = default)//List<OnMapNPC> students, 
     {
