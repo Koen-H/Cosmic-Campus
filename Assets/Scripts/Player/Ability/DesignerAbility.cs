@@ -11,11 +11,11 @@ public class DesignerAbility : Ability
     //public float maxScale = 30;
     //public float minScale = 0.2f;
 
-    private GameObject target;
+    //private GameObject target;
     public LayerMask groundLayer;
-    private float scaleAmount = 1;
+    //private float scaleAmount = 1;
 
-    Vector3 offset = new Vector3(0,2.5f,2);
+    //Vector3 offset = new Vector3(0,2.5f,2);
 
     protected override void Awake()
     {

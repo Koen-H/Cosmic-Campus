@@ -1,15 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ParticleTravelDistance : MonoBehaviour
 {
     public float distance = 10f; // Desired travel distance
     private float duration = 2f; // Duration in seconds
 
-    public ParticleSystem particleSystem;
+    [FormerlySerializedAs("particleSystem")]
+    public ParticleSystem particleSys;
 
     private void Start()
     {
-        particleSystem = GetComponent<ParticleSystem>();
+        particleSys = GetComponent<ParticleSystem>();
     }
 
     private void Update()
@@ -26,7 +28,7 @@ public class ParticleTravelDistance : MonoBehaviour
         ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
         emitParams.velocity = CalculateVelocity();
 
-        particleSystem.Emit(emitParams, 1);
+        particleSys.Emit(emitParams, 1);
     }
 
     private Vector3 CalculateVelocity()

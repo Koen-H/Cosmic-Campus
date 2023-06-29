@@ -9,11 +9,6 @@ public class Sword : Weapon
 
     List<Transform> hits = new List<Transform>();
 
-    private void Awake()
-    {
-        base.Awake();
-    }
-
     void OnAttackColliderEnter(Transform enteredTransform)
     {
         if (hits.Contains(enteredTransform)) return;

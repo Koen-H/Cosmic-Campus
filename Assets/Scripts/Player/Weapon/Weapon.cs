@@ -7,7 +7,7 @@ public abstract class Weapon : MonoBehaviour
 {
     internal WeaponData weaponData;
 
-    private bool canAttack = true;
+    //private bool canAttack = true;
     internal PlayerCharacterController playerController;
     internal GameObject weaponObj;//The object that exists
 
@@ -89,7 +89,7 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void Attack()
     {
-        canAttack = false;
+        //canAttack = false;
         weaponState= WeaponState.COOLDOWN;
         StartCoroutine(Cooldown(weaponData.cooldown));
     }
@@ -97,7 +97,7 @@ public abstract class Weapon : MonoBehaviour
     IEnumerator Cooldown(float time)
     {
         yield return new WaitForSeconds(time);
-        canAttack = true;
+        //canAttack = true;
         weaponState = WeaponState.READY;
     }
 

@@ -14,7 +14,7 @@ public class PunchAttack : EnemyAttackBehaviour
 
     private List<Transform> hits = new List<Transform>();
 
-    protected void Awake()
+    protected override void Awake()
     {
         base.Awake();
         
