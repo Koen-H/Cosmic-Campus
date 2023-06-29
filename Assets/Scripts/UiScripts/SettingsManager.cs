@@ -30,8 +30,10 @@ public class SettingsManager : MonoBehaviour
     public void Disconnect()
     {
         CanvasManager.Instance.DisableAll();
+        SteamGameNetworkManager.Instance.Disconnect();
         NetworkManager.Singleton.Shutdown();
         CanvasManager.Instance.ToggleLoadingScreen(true);
+        DiscordManager.Instance.randomUpdates = false;
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
         CanvasManager.Instance.ToggleLoadingScreen(false);
     }

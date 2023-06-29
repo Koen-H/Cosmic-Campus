@@ -106,7 +106,8 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     public void Disconnect()
     {
-        CurrentLobby?.Leave();
+        if(NetworkManager.Singleton.IsServer && CurrentLobby != null) CurrentLobby?.SetJoinable(false);
+        if (CurrentLobby != null) CurrentLobby?.Leave();
         if (NetworkManager.Singleton == null) return;
 
         NetworkManager.Singleton.Shutdown();
@@ -194,7 +195,7 @@ public class SteamGameNetworkManager : MonoBehaviour
         }
         //lobby.SetFriendsOnly();
         lobby.SetPublic();
-        lobby.SetData("name", "Awesome lobby name");
+        lobby.SetData("name", $"{SteamClient.Name} Crystal Crusaders");
         lobby.SetJoinable(true);
         Debug.Log($"Lobby {lobby.Id} has been created with name {lobby.GetData("name")}!", this);
     }

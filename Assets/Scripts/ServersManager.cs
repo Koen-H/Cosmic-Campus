@@ -46,7 +46,7 @@ public class ServersManager : MonoBehaviour
         foreach (Lobby lobby in lobbies)
         {
             ServerItem serverItem = Instantiate(serverItemPrefab, serverList.transform);
-            serverItem.SetServerOwnerId(lobby.Owner.Id);
+            serverItem.SetServerOwnerId(lobby);
         }
 
     }
