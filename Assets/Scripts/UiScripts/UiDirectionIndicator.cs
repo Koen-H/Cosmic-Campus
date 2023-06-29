@@ -81,23 +81,25 @@ public class UiDirectionIndicator : MonoBehaviour
 
         Vector3 screenPosition = cam.WorldToScreenPoint(playerPosition.position);
 
+        screenPosition.x *= 1920.0f/cam.pixelWidth;
+        screenPosition.y *= 1080.0f/cam.pixelHeight;
         if (dotProduct < 0) screenPosition *= -1;
-        Vector3 diffCheck = screenPosition; 
+        Vector3 diffCheck = screenPosition;
 
-        if (screenPosition.x > cam.pixelWidth - margin) screenPosition.x = cam.pixelWidth - margin;
-        if (screenPosition.y > cam.pixelHeight - margin) screenPosition.y = cam.pixelHeight - margin;
+
+        Vector2 camScale = new Vector2(cam.pixelWidth * 1920.0f / cam.pixelWidth, cam.pixelHeight * 1080.0f / cam.pixelHeight);
+        if (screenPosition.x > camScale.x - margin) screenPosition.x = camScale.x - margin;
+        if (screenPosition.y > camScale.y - margin) screenPosition.y = camScale.y - margin;
         if (screenPosition.x < margin) screenPosition.x = margin;
         if (screenPosition.y < margin) screenPosition.y = margin;
 
-        screenPosition.x *= 1920.0f/cam.pixelWidth;
-        screenPosition.y *= 1080.0f/cam.pixelHeight;
 
         self.anchoredPosition = screenPosition;
 
-        Vector3 dir = cam.WorldToScreenPoint(playerPosition.position) - screenPosition;
+        Vector3 dir = diffCheck - screenPosition;
         if (diffCheck != screenPosition) disableArrow = true;
         else disableArrow = false;
-        if (dotProduct < 0) dir *= -1;
+       // if (dotProduct < 0) dir *= -1;
         arrow.up = dir;
     }
     IEnumerator ScaleOverTime(Transform target, Vector3 endScale, float duration)
