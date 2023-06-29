@@ -164,6 +164,7 @@ public class GameManager : NetworkBehaviour
         CanvasManager.Instance.ToggleGameUI(false);
         CanvasManager.Instance.ToggleGameOverScreen(true);
         yield return new WaitForSeconds(5);//Wait for some bit
+        BackgroundMusicManager.Instance.PlayCalmMusic();
         CanvasManager.Instance.ToggleGameOverScreen(false);
         //CanvasManager.Instance.ToggleLoadingScreen(true);
         //  if(IsServer)NetworkManager.SceneManager.LoadScene("Level 1",LoadSceneMode.Single);
