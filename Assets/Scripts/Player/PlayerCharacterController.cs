@@ -325,6 +325,7 @@ public class PlayerCharacterController : NetworkBehaviour
         QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
         if (npc is QuestStudentNPC && npc.CurrentTarget == null)
         {
+            if (interactingNPC != null && interactingNPC.saved.Value) return;
             interactingNPC = npc;
             if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
         }
@@ -457,7 +458,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void CheckNPCInteraction()
     {
         if (!interactingNPC) return;
-
+        if (interactingNPC.saved.Value) return;
         interactingNPC.InteractServerRpc();
         CanvasManager.Instance.ToggleInteract(false);
     }

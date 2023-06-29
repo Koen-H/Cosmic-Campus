@@ -17,7 +17,7 @@ public class QuestNPC : NetworkBehaviour
     [HideInInspector] public Vector3 doorNormal;
     [HideInInspector] public int doorId;
     [SerializeField] GameObject questInfo;
-    private NetworkVariable<bool> saved = new(false);
+    public NetworkVariable<bool> saved = new(false);
     public NetworkVariable<bool> isFollowing = new(false);
 
 
