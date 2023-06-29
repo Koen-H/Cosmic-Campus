@@ -9,6 +9,8 @@ using UnityEngine;
 /// </summary>
 public class SceneManager : NetworkBehaviour
 {
+    enum CurrentScene { MAIN_MENU, LOBBY, LEVEL  }
+    private CurrentScene currentScene;
 
     private static SceneManager instance;
 
@@ -37,6 +39,18 @@ public class SceneManager : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         NetworkManager.Singleton.SceneManager.OnSceneEvent -= SceneManager_OnSceneEvent;
+    }
+
+    public void LoadLobby()
+    {
+        currentScene = CurrentScene.LOBBY;
+        NetworkManager.SceneManager.LoadScene("LobbyScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+
+    public void LoadLevel()
+    {
+        currentScene = CurrentScene.LEVEL;
+        NetworkManager.SceneManager.LoadScene("Level 1", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
@@ -113,7 +127,7 @@ public class SceneManager : NetworkBehaviour
                         // Example of parsing through the clients that completed list
                         if (IsServer && NetworkManager.LocalClientId == clientId)
                         {
-                            GameManager.Instance.InitalizeLevel();
+                            if(currentScene == CurrentScene.LEVEL) GameManager.Instance.InitalizeLevel();
                         }
                         else
                         {

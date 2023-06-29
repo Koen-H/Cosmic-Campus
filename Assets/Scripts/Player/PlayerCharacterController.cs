@@ -7,6 +7,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using static PlayerSO;
 
 
@@ -26,7 +27,8 @@ public class PlayerCharacterController : NetworkBehaviour
     public EffectManager effectManager;
     public PlayerSoundsManager playerSounds;//All player related sounds are on the player!
     private PlayerData playerData;
-    private Rigidbody rigidbody;
+    [FormerlySerializedAs("rigidbody")]
+    private Rigidbody rigid;
     private Animator animator;
 
 
@@ -86,7 +88,7 @@ public class PlayerCharacterController : NetworkBehaviour
 
     private void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
         effectManager = GetComponent<EffectManager>();
         animator = GetComponentInChildren<Animator>();
     }
@@ -323,6 +325,7 @@ public class PlayerCharacterController : NetworkBehaviour
         QuestNPC npc = other.gameObject.GetComponent<QuestNPC>();
         if (npc is QuestStudentNPC && npc.CurrentTarget == null)
         {
+            if (interactingNPC != null && interactingNPC.saved.Value) return;
             interactingNPC = npc;
             if (!interactingNPC.isFollowing.Value && IsOwner) CanvasManager.Instance.ToggleInteract(true);
         }
@@ -430,7 +433,7 @@ public class PlayerCharacterController : NetworkBehaviour
         // Apply the calculated speed to the Rigidbody
         Vector3 velocityVector = movementDirection * effectManager.ApplyMovementEffect(currentSpeed);
         if (!isGrounded) velocityVector += Vector3.up * grav;
-        rigidbody.velocity = velocityVector;
+        rigid.velocity = velocityVector;
 
         if (movementDirection.magnitude == 0) return;
         playerObj.transform.forward = movementDirection;
@@ -455,7 +458,7 @@ public class PlayerCharacterController : NetworkBehaviour
     void CheckNPCInteraction()
     {
         if (!interactingNPC) return;
-
+        if (interactingNPC.saved.Value) return;
         interactingNPC.InteractServerRpc();
         CanvasManager.Instance.ToggleInteract(false);
     }
@@ -511,8 +514,8 @@ public class PlayerCharacterController : NetworkBehaviour
     private void ApplyKnockbackClientRpc(Vector3 direction, float force, float duration)
     {
         if (!IsOwner) return;
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.velocity = direction * force;
+        rigid.velocity = Vector3.zero;
+        rigid.velocity = direction * force;
         knockedBack= true;
         StartCoroutine(KnockbackReset(duration));
     }
@@ -520,7 +523,7 @@ public class PlayerCharacterController : NetworkBehaviour
     private IEnumerator KnockbackReset(float duration)
     {
         yield return new WaitForSeconds(duration);
-        rigidbody.velocity = Vector3.zero;
+        rigid.velocity = Vector3.zero;
         knockedBack= false;
     }
 

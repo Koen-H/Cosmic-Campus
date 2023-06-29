@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UNET;
 using Unity.Netcode.Transports.UTP;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SteamGameNetworkManager : MonoBehaviour
 {
@@ -16,9 +18,9 @@ public class SteamGameNetworkManager : MonoBehaviour
     public Lobby? CurrentLobby { get; private set; } = null;
 
     private FacepunchTransport transport = null;
-    private FacepunchTransport facePunchTransport;
+    [SerializeField] private FacepunchTransport facePunchTransport;
     private UnityTransport unityTransport;
-    
+    NetworkTransport selectedTransport;
 
     #region unity
 
@@ -74,11 +76,13 @@ public class SteamGameNetworkManager : MonoBehaviour
     /// <param name="toggle">Wheter to use it or not</param>
     public void UseSteam(bool toggle = false)   
     {
-        facePunchTransport.enabled = toggle;//The steam transport
+        if (selectedTransport is FacepunchTransport) return;//WE already settled on using steam
+        //facePunchTransport.enabled = toggle;//The steam transport
         unityTransport.enabled = !toggle;//The unity transport
-        NetworkTransport selectedTransport = toggle ? facePunchTransport : unityTransport;
+        selectedTransport = toggle ? NetworkManager.Singleton.AddComponent<FacepunchTransport>() : unityTransport;
         NetworkManager.Singleton.NetworkConfig.NetworkTransport = selectedTransport;
         this.enabled = toggle;
+        transport = NetworkManager.Singleton.GetComponent<FacepunchTransport>();
     }
 
 
@@ -93,14 +97,18 @@ public class SteamGameNetworkManager : MonoBehaviour
 
     public async void StartHost(int maxMembers = 3)
     {
+        //UnityEngine.SceneManagement.SceneManager.LoadScene("LobbyScene");
         NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
         NetworkManager.Singleton.StartHost();
         CurrentLobby = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
+        SceneManager.Instance.LoadLobby();
+       // NetworkManager.SceneManager.LoadScene("LobbyScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     public void Disconnect()
     {
-        CurrentLobby?.Leave();
+        if(NetworkManager.Singleton.IsServer && CurrentLobby != null) CurrentLobby?.SetJoinable(false);
+        if (CurrentLobby != null) CurrentLobby?.Leave();
         if (NetworkManager.Singleton == null) return;
 
         NetworkManager.Singleton.Shutdown();
@@ -188,7 +196,7 @@ public class SteamGameNetworkManager : MonoBehaviour
         }
         //lobby.SetFriendsOnly();
         lobby.SetPublic();
-        lobby.SetData("name", "Awesome lobby name");
+        lobby.SetData("name", $"{SteamClient.Name} Crystal Crusaders");
         lobby.SetJoinable(true);
         Debug.Log($"Lobby {lobby.Id} has been created with name {lobby.GetData("name")}!", this);
     }

@@ -149,10 +149,11 @@ public class GameManager : NetworkBehaviour
                 deadPlayers++;
             }
         }
-        if (deadPlayers == deadClients.Count) OnAllPlayersDied();
+        if (deadPlayers == deadClients.Count) OnAllPlayersDiedClientRpc();
     }
 
-    void OnAllPlayersDied()
+    [ClientRpc]
+    void OnAllPlayersDiedClientRpc()
     {
         Debug.Log("All players died");
         StartCoroutine(AfterDead());
@@ -163,9 +164,11 @@ public class GameManager : NetworkBehaviour
         CanvasManager.Instance.ToggleGameUI(false);
         CanvasManager.Instance.ToggleGameOverScreen(true);
         yield return new WaitForSeconds(5);//Wait for some bit
+        BackgroundMusicManager.Instance.PlayCalmMusic();
         CanvasManager.Instance.ToggleGameOverScreen(false);
-        CanvasManager.Instance.ToggleLoadingScreen(true);
-        if(IsServer)NetworkManager.SceneManager.LoadScene("Level 1",LoadSceneMode.Single);
+        //CanvasManager.Instance.ToggleLoadingScreen(true);
+        //  if(IsServer)NetworkManager.SceneManager.LoadScene("Level 1",LoadSceneMode.Single);
+        if (IsServer) SceneManager.Instance.LoadLobby();
         yield return null;
     }
 

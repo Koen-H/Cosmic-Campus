@@ -11,7 +11,8 @@ public class SettingsManager : MonoBehaviour
 
     private void Awake()
     {
-        volumeSlider.onValueChanged.AddListener(SetVolume);
+        if(volumeSlider != null)
+            volumeSlider.onValueChanged.AddListener(SetVolume);
     }
 
     /// <summary>
@@ -29,9 +30,20 @@ public class SettingsManager : MonoBehaviour
     public void Disconnect()
     {
         CanvasManager.Instance.DisableAll();
+        SteamGameNetworkManager.Instance.Disconnect();
         NetworkManager.Singleton.Shutdown();
         CanvasManager.Instance.ToggleLoadingScreen(true);
+        DiscordManager.Instance.randomUpdates = false;
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu Scene");
         CanvasManager.Instance.ToggleLoadingScreen(false);
+    }
+
+    public void QuitApplication()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

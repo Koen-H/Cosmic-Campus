@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 180113725547071734}
   - component: {fileID: 180113725547071733}
   - component: {fileID: 180113725547071732}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BossRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,9 +156,9 @@ GameObject:
   - component: {fileID: 180113726063239854}
   - component: {fileID: 180113726063239855}
   - component: {fileID: 180113726063239848}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -836,9 +836,9 @@ GameObject:
   - component: {fileID: 180113726843366141}
   - component: {fileID: 180113726843366142}
   - component: {fileID: 180113726843366143}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1638,6 +1638,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 180113725547071734}
     m_Modifications:
+    - target: {fileID: 1032228689966921590, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2312873962055031307, guid: 78f3889dea11bc84da42f206cabf92c9,
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key0.b
@@ -1667,6 +1672,21 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key1.r
       value: 0.99215686
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665593094405934246, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2864265090627425403, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3606412454563298722, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3707662267376463662, guid: 78f3889dea11bc84da42f206cabf92c9,
         type: 3}
@@ -1768,11 +1788,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0.544
       objectReference: {fileID: 0}
+    - target: {fileID: 4004455873711798659, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4273044294408539395, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4519237939161695554, guid: 78f3889dea11bc84da42f206cabf92c9,
         type: 3}
       propertyPath: m_Name
       value: Bridge
       objectReference: {fileID: 0}
+    - target: {fileID: 4519237939161695554, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4519237939161695554, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293146188455099494, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7383522903657456827, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7426229915649537591, guid: 78f3889dea11bc84da42f206cabf92c9,
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key0.b
@@ -1803,6 +1853,11 @@ PrefabInstance:
       propertyPath: ColorModule.gradient.maxGradient.key1.r
       value: 0.99215686
       objectReference: {fileID: 0}
+    - target: {fileID: 8107905640249185727, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8267518383256707054, guid: 78f3889dea11bc84da42f206cabf92c9,
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key0.b
@@ -1832,6 +1887,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key1.r
       value: 0.99215686
+      objectReference: {fileID: 0}
+    - target: {fileID: 8438394794822799774, guid: 78f3889dea11bc84da42f206cabf92c9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78f3889dea11bc84da42f206cabf92c9, type: 3}

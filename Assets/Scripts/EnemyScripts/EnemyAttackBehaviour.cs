@@ -12,7 +12,7 @@ public abstract class EnemyAttackBehaviour : NetworkBehaviour
     [SerializeField] private bool canMoveDuringAttack = false;
     [SerializeField] protected float damage;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         enemy = GetComponent<Enemy>();
         agent = GetComponent<NavMeshAgent>();

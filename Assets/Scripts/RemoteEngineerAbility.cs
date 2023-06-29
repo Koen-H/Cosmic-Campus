@@ -19,8 +19,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
     [SerializeField] private float accelerationTime = 0.5f;
     [SerializeField] private float maxSpeed = 10f;
-    private float currentSpeed = 5f;
-    private Rigidbody rigidbody;
+    //private float currentSpeed = 5f;
+    private Rigidbody rigid;
     private SphereCollider sphereCollider;
 
     private Vector3 currentDirection = Vector3.zero;
@@ -48,8 +48,8 @@ public class RemoteEngineerAbility : NetworkBehaviour
     [SerializeField] private AudioSource explosionSFX;
     public void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
-        rigidbody.isKinematic = true;
+        rigid = GetComponent<Rigidbody>();
+        rigid.isKinematic = true;
         chargingVFX.GetComponent<ParticleSystem>();
         shape = chargingVFX.GetComponent<ParticleSystem>().shape;
         sphereCollider = GetComponent<SphereCollider>();
@@ -94,7 +94,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             chargingSFX.Stop();
             rollingSFX.Play();
             boilingVFX.GetComponent<ParticleSystem>().Play();
-            rigidbody.isKinematic = false;
+            rigid.isKinematic = false;
             if(IsOwner)StartCoroutine(ExplosionCountdown());
         }
     }
@@ -133,7 +133,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
             Vector2 lerpDir = Vector2.Lerp(currentDir, movementDir, t * accelerationTime);
             currentDirection = new Vector3(lerpDir.x, 0, lerpDir.y);
         }
-        rigidbody.velocity = currentDirection * playerController.effectManager.ApplyMovementEffect(maxSpeed);
+        rigid.velocity = currentDirection * playerController.effectManager.ApplyMovementEffect(maxSpeed);
     }
 
 
@@ -218,7 +218,7 @@ public class RemoteEngineerAbility : NetworkBehaviour
 
         IEnumerator LateCameraMoveBack(float duration)
         {
-            rigidbody.isKinematic = true;
+            rigid.isKinematic = true;
 
             yield return new WaitForSeconds(duration);
             CameraManager.MyCamera.TargetPlayer();

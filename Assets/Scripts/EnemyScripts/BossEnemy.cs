@@ -14,15 +14,16 @@ public class BossEnemy : PunchAttack
     [SerializeField] private Range launchInterval = new Range(16, 30);
 
 
-    protected void Awake()
+    protected override void Awake()
     {
         base.Awake();
         StartCoroutine(ShootMines());
         BackgroundMusicManager.Instance.PlayBossMusic();
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         if(IsServer)GameManager.Instance.OnBossDestroy();
         BackgroundMusicManager.Instance.PlayCalmMusic();
         CanvasManager.Instance.ToggleGameUI(false);

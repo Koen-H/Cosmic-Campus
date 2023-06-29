@@ -44,7 +44,7 @@ public class Walker : MonoBehaviour
         rb.isKinematic = true;
         //Do fancy particle stuff
         explodeVFX = Instantiate(explodeVFX, transform.position, Quaternion.identity);
-        explodeVFX.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
+        //explodeVFX.GetComponent<ParticleSystem>().startSpeed = transform.lossyScale.x * transform.lossyScale.y * transform.lossyScale.z;
         
         
         //If the current client is the owner, we deal the damage

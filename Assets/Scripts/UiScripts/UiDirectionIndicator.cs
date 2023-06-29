@@ -23,7 +23,7 @@ public class UiDirectionIndicator : MonoBehaviour
     Vector3 arrowOgSize;
     float spawnAnimationDelay = 0.2f;
 
-    bool disableArrow = false; 
+    bool disableArrow = true; 
 
     void OnPlayerDeath(bool oldValue, bool newValue)
     {
@@ -95,8 +95,8 @@ public class UiDirectionIndicator : MonoBehaviour
         self.anchoredPosition = screenPosition;
 
         Vector3 dir = cam.WorldToScreenPoint(playerPosition.position) - screenPosition;
-/*        if (diffCheck != screenPosition) disableArrow = true;
-        else disableArrow = false;*/
+        if (diffCheck != screenPosition) disableArrow = true;
+        else disableArrow = false;
         if (dotProduct < 0) dir *= -1;
         arrow.up = dir;
     }

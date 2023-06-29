@@ -32,7 +32,7 @@ public class ProximityMineManager : NetworkBehaviour
         if (other.CompareTag("Enemy") || other.CompareTag("InvincibleEnemy")) return;
         if (IsOwner) ExplodeClientRpc();
     }
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         //Spawn the explosion vfx!
         Instantiate(explosionVfx, this.transform.position, Quaternion.identity);

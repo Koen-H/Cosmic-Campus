@@ -99,7 +99,7 @@ public class PlayerUIItem : MonoBehaviour
 
     async void LoadSteamAvatar(){
         if(playerImage == null) return;
-        if(!SteamClient.IsLoggedOn) return;
+        if(!SteamClient.IsValid) return;
         if(!relatedClient.usingSteam.Value) return;
         var avatarTask = SteamAvatarTest.GetAvatar(relatedClient.steamId.Value);
 
