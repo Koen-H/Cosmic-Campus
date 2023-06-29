@@ -239,6 +239,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4364712401104244884, guid: abc507b4ce76dcf4782e94ecf53a6bee,
         type: 3}
+      propertyPath: lengthInSec
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4364712401104244884, guid: abc507b4ce76dcf4782e94ecf53a6bee,
+        type: 3}
       propertyPath: ShapeModule.radius.value
       value: 8
       objectReference: {fileID: 0}
@@ -246,6 +251,11 @@ PrefabInstance:
         type: 3}
       propertyPath: VelocityModule.inWorldSpace
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4364712401104244884, guid: abc507b4ce76dcf4782e94ecf53a6bee,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4364712401104244885, guid: abc507b4ce76dcf4782e94ecf53a6bee,
         type: 3}
