@@ -20,7 +20,7 @@ public class SteamGameNetworkManager : MonoBehaviour
     private FacepunchTransport transport = null;
     [SerializeField] private FacepunchTransport facePunchTransport;
     private UnityTransport unityTransport;
-    
+    NetworkTransport selectedTransport;
 
     #region unity
 
@@ -76,9 +76,10 @@ public class SteamGameNetworkManager : MonoBehaviour
     /// <param name="toggle">Wheter to use it or not</param>
     public void UseSteam(bool toggle = false)   
     {
+        if (selectedTransport is FacepunchTransport) return;//WE already settled on using steam
         //facePunchTransport.enabled = toggle;//The steam transport
         unityTransport.enabled = !toggle;//The unity transport
-        NetworkTransport selectedTransport = toggle ? NetworkManager.Singleton.AddComponent<FacepunchTransport>() : unityTransport;
+        selectedTransport = toggle ? NetworkManager.Singleton.AddComponent<FacepunchTransport>() : unityTransport;
         NetworkManager.Singleton.NetworkConfig.NetworkTransport = selectedTransport;
         this.enabled = toggle;
         transport = NetworkManager.Singleton.GetComponent<FacepunchTransport>();
