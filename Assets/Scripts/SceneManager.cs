@@ -9,21 +9,25 @@ using UnityEngine;
 /// </summary>
 public class SceneManager : NetworkBehaviour
 {
-    enum CurrentScene { MAIN_MENU, LOBBY, LEVEL  }
+    enum CurrentScene { MAIN_MENU, LOBBY, LEVEL }
     private CurrentScene currentScene;
+
+    private bool useFairPlay = true;
 
     private static SceneManager instance;
 
     public static SceneManager Instance
     {
-        get {
+        get
+        {
             if (instance == null) Debug.LogError("SceneManager is null!");
-            return instance; }
+            return instance;
+        }
     }
 
     private void Awake()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Destroy(this.gameObject);
             return;
@@ -127,7 +131,11 @@ public class SceneManager : NetworkBehaviour
                         // Example of parsing through the clients that completed list
                         if (IsServer && NetworkManager.LocalClientId == clientId)
                         {
-                            if(currentScene == CurrentScene.LEVEL) GameManager.Instance.InitalizeLevel();
+                            if (currentScene == CurrentScene.LEVEL)
+                            {
+                                GameManager.Instance.SetFairPlay(useFairPlay);
+                                GameManager.Instance.InitalizeLevel();
+                            }
                         }
                         else
                         {
@@ -157,5 +165,6 @@ public class SceneManager : NetworkBehaviour
                 }
         }
     }
+    public void SetFairPlay(bool state)=> useFairPlay = state;
 }
 

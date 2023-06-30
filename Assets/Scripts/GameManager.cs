@@ -172,6 +172,9 @@ public class GameManager : NetworkBehaviour
         yield return null;
     }
 
+    public void SetFairPlay(bool state)=> useFairPlay = state;
+
+
 
     /// <summary>
     /// Happens on the server, when the boss is destroyed.
