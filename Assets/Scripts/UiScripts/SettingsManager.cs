@@ -9,6 +9,7 @@ public class SettingsManager : MonoBehaviour
 
     [SerializeField] Slider volumeSlider;
 
+
     private void Awake()
     {
         if(volumeSlider != null)
@@ -23,6 +24,8 @@ public class SettingsManager : MonoBehaviour
     {
         BackgroundMusicManager.Instance.SetVolume(newValue);
     }
+
+
 
     /// <summary>
     /// Disconnect the player and load back to the main menu.

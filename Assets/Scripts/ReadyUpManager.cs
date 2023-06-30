@@ -32,6 +32,8 @@ public class ReadyUpManager : NetworkBehaviour
 
     [SerializeField] private WeaponSideClickerManager weaponSideClickerManager;
 
+    [SerializeField] private GameObject fairPlayToggle;
+
     private bool weaponsSelected;
 
     [SerializeField] public List<ReadyOption> optionsTaken = new();
@@ -46,6 +48,7 @@ public class ReadyUpManager : NetworkBehaviour
         LobbyManager.OnNewClientJoined += NewClientJoined;
         SteamMatchmaking.OnLobbyEntered += LoadLobby;
         LoadPlayers();
+        if (IsServer) fairPlayToggle.SetActive(true);
     }
 
     void LoadPlayers()
@@ -357,6 +360,8 @@ public class ReadyUpManager : NetworkBehaviour
         weaponUI.SetActive(true);
         UnreadyAll();
     }
+
+    public void SetFairPlay(bool state) => SceneManager.Instance.SetFairPlay(state);
 
 }
 
