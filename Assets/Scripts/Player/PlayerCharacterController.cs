@@ -347,6 +347,7 @@ public class PlayerCharacterController : NetworkBehaviour
         CheckIfGrounded();
         DeathCheck();
         TryRevive();
+        if (Input.GetKey(KeyCode.V)) return;//Is moving the camera!
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             CanvasManager.Instance.ToggleSettingsUI(!inSettings);

@@ -13,6 +13,12 @@ public class CameraManager : MonoBehaviour
     private static Camera cam;
     private Coroutine shake = null;
 
+    public float movementSpeed = 10f;
+    public float rotationSpeed = 3f;
+    public float zoomSpeed = 5f;
+    public float minZoomDistance = 5f;
+    public float maxZoomDistance = 20f;
+
     public static CameraManager MyCamera
     {
         get
@@ -27,6 +33,54 @@ public class CameraManager : MonoBehaviour
         m_MultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         cam = this.GetComponent<Camera>();
     }
+
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.B))
+        {
+            SetFollowTarg(ClientManager.MyClient.playerCharacter.transform);
+            SetLookTarg(ClientManager.MyClient.playerCharacter.transform);
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            SetFollowTarg(null);
+            SetLookTarg(null);
+        }
+        //Moving camera
+        if (Input.GetKey(KeyCode.V))
+        {
+            float horizontal = 0;
+            float vertical = 0;
+            float up = 0;
+            Vector3 upAxis = transform.up;
+            if (Input.GetKey(KeyCode.RightArrow)) horizontal = 1;
+            if (Input.GetKey(KeyCode.LeftArrow)) horizontal = -1;
+            if (Input.GetKey(KeyCode.UpArrow)) vertical = 1;
+            if (Input.GetKey(KeyCode.DownArrow)) vertical = -1;
+            if (!Input.GetKey(KeyCode.LeftShift))
+            {
+                if (Input.GetKey(KeyCode.Space)) up = 1;
+                Vector3 forward = transform.forward;
+                forward.y = 0;
+                forward.Normalize();
+                Vector3 right = transform.right;
+
+                Vector3 moveDirection = (forward * vertical + right * horizontal + transform.up * up).normalized;
+
+                virtualCamera.transform.position += moveDirection * movementSpeed * Time.deltaTime;
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.Space)) up = -1;
+                Vector3 moveDirection = (transform.up * up).normalized;
+                virtualCamera.transform.position += moveDirection * movementSpeed * Time.deltaTime;
+                Vector3 eulerRotation = new Vector3(-vertical, horizontal, 0f);
+                virtualCamera.transform.Rotate(eulerRotation);
+            }
+        }
+    }
+
 
     public Camera GetCamera()
     {

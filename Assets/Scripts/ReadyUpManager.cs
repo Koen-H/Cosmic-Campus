@@ -363,6 +363,8 @@ public class ReadyUpManager : NetworkBehaviour
 
     public void SetFairPlay(bool state) => SceneManager.Instance.SetFairPlay(state);
 
+    public void SetSpectator(bool state) => ClientManager.MyClient.isSpectator.Value = state;
+
 }
 
 [System.Serializable]
